@@ -38,14 +38,14 @@ struct HomeView: View {
                 
                 // Move Menu inside HStack
                 Menu {
-                    Button("Eat and drink") {
-                        self.selectedMenu = "Eat and drink"
+                    Button(isEnglish ? "Syö ja juo" : "Eat and drink") {
+                        self.selectedMenu = isEnglish ? "Syö ja juo" : "Eat and drink"
                     }
-                    Button("Sights") {
-                        self.selectedMenu = "Sights"
+                    Button(isEnglish ? "Nähtävyydet" : "Sights") {
+                        self.selectedMenu = isEnglish ? "Nähtävyydet" : "Sights"
                     }
-                    Button("Fun") {
-                        self.selectedMenu = "Fun"
+                    Button(isEnglish ? "Pidä hauskaa" : "Fun") {
+                        self.selectedMenu = isEnglish ? "Pidä hauskaa" : "Fun"
                     }
                 } label: {
                     Image(systemName: "list.bullet")
@@ -74,16 +74,17 @@ struct HomeView: View {
             
             Spacer()
         }
+        .environment(\.locale, isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
     }
     
     func destinationForMenu() -> some View {
         switch selectedMenu {
-        case "Eat and drink":
-            return AnyView(Text("Eat and drink"))
-        case "Sights":
-            return AnyView(Text("Sights"))
-        case "Fun":
-            return AnyView(Text("Fun"))
+        case isEnglish ? "Syö ja juo" : "Eat and drink":
+            return AnyView(Text(isEnglish ? "Syö ja juo" : "Eat and drink"))
+        case isEnglish ? "Nähtävyydet" : "Sights":
+            return AnyView(Text(isEnglish ? "Nähtävyydet" : "Sigths"))
+        case isEnglish ? "Pidät hauskaa" : "Fun":
+            return AnyView(Text(isEnglish ? "Pidä hauskaa" : "Fun"))
         default:
             return AnyView(EmptyView())
         }
