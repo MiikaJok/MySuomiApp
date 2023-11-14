@@ -1,6 +1,6 @@
 # Xcode
 .DS_Store
-Secrets.swift
+Views/Secrets.swift
 build/
 *.pbxuser
 !default.pbxuser
