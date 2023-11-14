@@ -9,9 +9,11 @@ import SwiftUI
 
 @main
 struct MySuomiAppApp: App {
+    @StateObject private var languageSettings = LanguageSettings()
     var body: some Scene {
         WindowGroup {
             HomeView()
+                .environmentObject(languageSettings)
         }
     }
 }
