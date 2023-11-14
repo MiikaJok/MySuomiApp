@@ -5,4 +5,8 @@
 //  Created by iosdev on 14.11.2023.
 //
 
-import Foundation
+import SwiftUI
+//for holding the language settings of the app
+class LanguageSettings: ObservableObject {
+    @Published var isFinnish = true
+}

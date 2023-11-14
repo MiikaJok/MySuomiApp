@@ -5,4 +5,8 @@
 //  Created by iosdev on 14.11.2023.
 //
 
-import Foundation
+import SwiftUI
+
+class LanguageSettings: ObservableObject {
+    @Published var isEnglish = true
+}

@@ -11,6 +11,9 @@
 		6A0A671B2AFD15780028328E /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0A671A2AFD15780028328E /* HomeView.swift */; };
 		6A0A671D2AFD15790028328E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A0A671C2AFD15790028328E /* Assets.xcassets */; };
 		6A0A67202AFD15790028328E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A0A671F2AFD15790028328E /* Preview Assets.xcassets */; };
+		6A48741D2B03A29E00ADD0FF /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A48741C2B03A29E00ADD0FF /* MapView.swift */; };
+		6A4874212B03A93600ADD0FF /* LanguageSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4874202B03A93600ADD0FF /* LanguageSettings.swift */; };
+		6A4874272B03B7CB00ADD0FF /* Secrets.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4874262B03B7CB00ADD0FF /* Secrets.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -19,6 +22,10 @@
 		6A0A671A2AFD15780028328E /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		6A0A671C2AFD15790028328E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6A0A671F2AFD15790028328E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		6A48741C2B03A29E00ADD0FF /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
+		6A4874202B03A93600ADD0FF /* LanguageSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LanguageSettings.swift; path = MySuomiApp/Views/LanguageSettings.swift; sourceTree = SOURCE_ROOT; };
+		6A4874242B03B48C00ADD0FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		6A4874262B03B7CB00ADD0FF /* Secrets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = Secrets.swift; path = MySuomiApp/Views/Secrets.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -36,6 +43,7 @@
 			isa = PBXGroup;
 			children = (
 				6A0A671A2AFD15780028328E /* HomeView.swift */,
+				6A48741C2B03A29E00ADD0FF /* MapView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -43,6 +51,8 @@
 		3FCA50732B038B4600FDF254 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				6A4874202B03A93600ADD0FF /* LanguageSettings.swift */,
+				6A4874262B03B7CB00ADD0FF /* Secrets.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -66,6 +76,7 @@
 		6A0A67172AFD15780028328E /* MySuomiApp */ = {
 			isa = PBXGroup;
 			children = (
+				6A4874242B03B48C00ADD0FF /* Info.plist */,
 				3FCA50732B038B4600FDF254 /* Models */,
 				3FCA50722B038B2400FDF254 /* Views */,
 				6A0A67182AFD15780028328E /* MySuomiAppApp.swift */,
@@ -154,6 +165,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A0A671B2AFD15780028328E /* HomeView.swift in Sources */,
+				6A4874272B03B7CB00ADD0FF /* Secrets.swift in Sources */,
+				6A48741D2B03A29E00ADD0FF /* MapView.swift in Sources */,
+				6A4874212B03A93600ADD0FF /* LanguageSettings.swift in Sources */,
 				6A0A67192AFD15780028328E /* MySuomiAppApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -285,6 +299,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"MySuomiApp/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MySuomiApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -313,6 +328,7 @@
 				DEVELOPMENT_ASSET_PATHS = "\"MySuomiApp/Preview Content\"";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = MySuomiApp/Info.plist;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
