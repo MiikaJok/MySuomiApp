@@ -18,7 +18,7 @@ struct MapView: View {
                 Button(action: {
                     self.languageSettings.isFinnish.toggle()
                 }) {
-                    Text(languageSettings.isFinnish ? "FIN" : "ENG")
+                    Text(languageSettings.isFinnish ? "ENG" : "FIN")
                         .padding(8)
                         .foregroundColor(.white)
                         .background(Color.blue)
@@ -32,14 +32,14 @@ struct MapView: View {
                     .bold()
                 Spacer()
             }
-            TextField("Search", text: $searchText)
+            TextField(languageSettings.isFinnish ? "Search" : "Haku", text: $searchText)
                 .padding()
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
             Spacer()
         }
         //locale for the view based on the language setting
-        .environment(\.locale, languageSettings.isFinnish ? Locale(identifier: "fi") : Locale(identifier: "en"))
+        .environment(\.locale, languageSettings.isFinnish ? Locale(identifier: "en") : Locale(identifier: "fi"))
     }
 }
 
