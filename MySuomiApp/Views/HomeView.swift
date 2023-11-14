@@ -4,7 +4,7 @@ struct HomeView: View {
     @State private var isEnglish = true
     @State private var isSearchBarVisible = false
     @State private var searchText = ""
-    @State private var isMenuVisible = false
+    @State private var selectedMenu: String? = nil
     
     var body: some View {
         VStack {
@@ -36,13 +36,23 @@ struct HomeView: View {
                         .padding()
                 }
                 
-                Button(action: {
-                    withAnimation {
-                        self.isMenuVisible.toggle()
+                // Move Menu inside HStack
+                Menu {
+                    Button("Eat and drink") {
+                        self.selectedMenu = "Eat and drink"
                     }
-                }) {
+                    Button("Sights") {
+                        self.selectedMenu = "Sights"
+                    }
+                    Button("Fun") {
+                        self.selectedMenu = "Fun"
+                    }
+                } label: {
                     Image(systemName: "list.bullet")
                         .padding()
+                }
+                .onChange(of: selectedMenu) { newValue in
+                    // functionality here
                 }
             }
             
@@ -52,38 +62,30 @@ struct HomeView: View {
                     .textFieldStyle(RoundedBorderTextFieldStyle())
                     .padding()
             }
-            
-            if isMenuVisible {
-                NavigationView {
-                    List {
-                        NavigationLink(destination: Text("Eat and drink")) {
-                            Text("Eat and drink")
-                        }
-                        NavigationLink(destination: Text("Sights")) {
-                            Text("Sights")
-                        }
-                        NavigationLink(destination: Text("Fun")) {
-                            Text("Fun")
-                        }
-                    }
-                    .listRowInsets(EdgeInsets())
-                    .frame(width: 200)
-                    .background(Color.clear)
-                    .padding()
-                }
-                .navigationViewStyle(StackNavigationViewStyle())
-            }
-            
-            
             Image("helsinki")
                 .resizable()
                 .scaledToFill()
                 .frame(height: UIScreen.main.bounds.height * 0.3)
                 .clipped()
             
-           
+            NavigationLink(destination: destinationForMenu(), tag: selectedMenu ?? "", selection: $selectedMenu) {
+                EmptyView()
+            }
             
             Spacer()
+        }
+    }
+    
+    func destinationForMenu() -> some View {
+        switch selectedMenu {
+        case "Eat and drink":
+            return AnyView(Text("Eat and drink"))
+        case "Sights":
+            return AnyView(Text("Sights"))
+        case "Fun":
+            return AnyView(Text("Fun"))
+        default:
+            return AnyView(EmptyView())
         }
     }
 }
@@ -93,3 +95,4 @@ struct HomeView_Previews: PreviewProvider {
         HomeView()
     }
 }
+
