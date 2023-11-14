@@ -32,6 +32,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		3FCA50722B038B2400FDF254 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				6A0A671A2AFD15780028328E /* HomeView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		3FCA50732B038B4600FDF254 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		6A0A670C2AFD15780028328E = {
 			isa = PBXGroup;
 			children = (
@@ -51,8 +66,9 @@
 		6A0A67172AFD15780028328E /* MySuomiApp */ = {
 			isa = PBXGroup;
 			children = (
+				3FCA50732B038B4600FDF254 /* Models */,
+				3FCA50722B038B2400FDF254 /* Views */,
 				6A0A67182AFD15780028328E /* MySuomiAppApp.swift */,
-				6A0A671A2AFD15780028328E /* HomeView.swift */,
 				6A0A671C2AFD15790028328E /* Assets.xcassets */,
 				6A0A671E2AFD15790028328E /* Preview Content */,
 			);
