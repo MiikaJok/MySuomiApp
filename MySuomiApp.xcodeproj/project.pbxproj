@@ -42,19 +42,12 @@
 		3FCA50722B038B2400FDF254 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				6A4874262B03B7CB00ADD0FF /* Secrets.swift */,
+				6A4874202B03A93600ADD0FF /* LanguageSettings.swift */,
 				6A0A671A2AFD15780028328E /* HomeView.swift */,
 				6A48741C2B03A29E00ADD0FF /* MapView.swift */,
 			);
 			path = Views;
-			sourceTree = "<group>";
-		};
-		3FCA50732B038B4600FDF254 /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				6A4874202B03A93600ADD0FF /* LanguageSettings.swift */,
-				6A4874262B03B7CB00ADD0FF /* Secrets.swift */,
-			);
-			path = Models;
 			sourceTree = "<group>";
 		};
 		6A0A670C2AFD15780028328E = {
@@ -77,7 +70,6 @@
 			isa = PBXGroup;
 			children = (
 				6A4874242B03B48C00ADD0FF /* Info.plist */,
-				3FCA50732B038B4600FDF254 /* Models */,
 				3FCA50722B038B2400FDF254 /* Views */,
 				6A0A67182AFD15780028328E /* MySuomiAppApp.swift */,
 				6A0A671C2AFD15790028328E /* Assets.xcassets */,
