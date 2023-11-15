@@ -7,6 +7,7 @@ import SwiftUI
 import MapKit
 
 struct MapView: View {
+    
     private let manager = CLLocationManager()
 
     @State private var region = MKCoordinateRegion(center: CLLocationCoordinate2D(latitude: 60.1695, longitude: 24.9354), span: MKCoordinateSpan(latitudeDelta: 0.5, longitudeDelta: 0.5))
@@ -14,9 +15,15 @@ struct MapView: View {
     @EnvironmentObject var languageSettings: LanguageSettings //
     
     @State private var searchText = ""
-
+    
     var body: some View {
         VStack {
+            Button("Locate me") {
+                manager.desiredAccuracy = kCLLocationAccuracyBest
+                manager.requestWhenInUseAuthorization()
+                manager.startUpdatingLocation()
+            }
+            
             HStack {
                 // FIN/ENG toggle
                 Button(action: {
@@ -69,10 +76,15 @@ struct MapView: View {
                 .padding()
 
            
+            
             // Map View
-            Map(coordinateRegion: $region)
+            Map(
+                coordinateRegion: $region,
+                showsUserLocation: true,
+                userTrackingMode: .constant(.follow)
+            )
                 .frame(width: 400, height: 300)
-
+                
             Spacer()
         }
         .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))

@@ -11,6 +11,7 @@
 		6A0A671B2AFD15780028328E /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0A671A2AFD15780028328E /* HomeView.swift */; };
 		6A0A671D2AFD15790028328E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A0A671C2AFD15790028328E /* Assets.xcassets */; };
 		6A0A67202AFD15790028328E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A0A671F2AFD15790028328E /* Preview Assets.xcassets */; };
+		6A417AA52B052C1300B02EC7 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A417AA42B052C1300B02EC7 /* MapKit.framework */; };
 		6A48741D2B03A29E00ADD0FF /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A48741C2B03A29E00ADD0FF /* MapView.swift */; };
 		6A4874212B03A93600ADD0FF /* LanguageSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4874202B03A93600ADD0FF /* LanguageSettings.swift */; };
 /* End PBXBuildFile section */
@@ -21,6 +22,7 @@
 		6A0A671A2AFD15780028328E /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		6A0A671C2AFD15790028328E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6A0A671F2AFD15790028328E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		6A417AA42B052C1300B02EC7 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		6A48741C2B03A29E00ADD0FF /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		6A4874202B03A93600ADD0FF /* LanguageSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LanguageSettings.swift; path = MySuomiApp/Views/LanguageSettings.swift; sourceTree = SOURCE_ROOT; };
 		6A4874242B03B48C00ADD0FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
@@ -31,6 +33,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6A417AA52B052C1300B02EC7 /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -52,6 +55,7 @@
 			children = (
 				6A0A67172AFD15780028328E /* MySuomiApp */,
 				6A0A67162AFD15780028328E /* Products */,
+				6A417AA32B052C1200B02EC7 /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -81,6 +85,14 @@
 				6A0A671F2AFD15790028328E /* Preview Assets.xcassets */,
 			);
 			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		6A417AA32B052C1200B02EC7 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				6A417AA42B052C1300B02EC7 /* MapKit.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

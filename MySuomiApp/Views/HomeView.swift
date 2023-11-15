@@ -1,7 +1,7 @@
 import SwiftUI
 
-
 struct HomeView: View {
+    
     @EnvironmentObject var languageSettings: LanguageSettings //for language tracking
 
     @State private var isSearchBarVisible = false
