@@ -77,8 +77,11 @@ struct MapView: View {
                 coordinateRegion: $region,
                 showsUserLocation: true
             )
+                .onAppear {
+                    manager.requestWhenInUseAuthorization()
+                    manager.startUpdatingLocation()
+                }
                 .frame(width: 400, height: 300)
-                
             Spacer()
         }
         .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
