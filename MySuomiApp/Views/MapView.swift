@@ -18,11 +18,6 @@ struct MapView: View {
     
     var body: some View {
         VStack {
-            Button("Locate me") {
-                manager.desiredAccuracy = kCLLocationAccuracyBest
-                manager.requestWhenInUseAuthorization()
-                manager.startUpdatingLocation()
-            }
             
             HStack {
                 // FIN/ENG toggle
@@ -80,8 +75,7 @@ struct MapView: View {
             // Map View
             Map(
                 coordinateRegion: $region,
-                showsUserLocation: true,
-                userTrackingMode: .constant(.follow)
+                showsUserLocation: true
             )
                 .frame(width: 400, height: 300)
                 
