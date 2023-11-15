@@ -14,9 +14,9 @@ struct HomeView: View {
                 HStack {
                     //button to toggle FIN/ENG
                     Button(action: {
-                        self.languageSettings.isFinnish.toggle()
+                        self.languageSettings.isEnglish.toggle()
                     }) {
-                        Text(languageSettings.isFinnish ? "ENG" : "FIN")
+                        Text(languageSettings.isEnglish ? "ENG" : "FIN")
                             .padding(8)
                             .foregroundColor(.white)
                             .background(Color.blue)
@@ -41,14 +41,14 @@ struct HomeView: View {
                     }
                     //navigation menu content with language dependency
                     Menu {
-                        Button(languageSettings.isFinnish ? "Eat and drink" : "Syö ja juo") {
-                            self.selectedMenu = languageSettings.isFinnish ? "Eat and drink" : "Syö ja juo"
+                        Button(languageSettings.isEnglish ? "Eat and drink" : "Syö ja juo") {
+                            self.selectedMenu = languageSettings.isEnglish ? "Eat and drink" : "Syö ja juo"
                         }
-                        Button(languageSettings.isFinnish ? "Sights" : "Nähtävyydet") {
-                            self.selectedMenu = languageSettings.isFinnish ? "Sights" : "Nähtävyydet"
+                        Button(languageSettings.isEnglish ? "Sights" : "Nähtävyydet") {
+                            self.selectedMenu = languageSettings.isEnglish ? "Sights" : "Nähtävyydet"
                         }
-                        Button(languageSettings.isFinnish ? "Fun" : "Pidä hauskaa") {
-                            self.selectedMenu = languageSettings.isFinnish ? "Fun" : "Pidä hauskaa"
+                        Button(languageSettings.isEnglish ? "Fun" : "Pidä hauskaa") {
+                            self.selectedMenu = languageSettings.isEnglish ? "Fun" : "Pidä hauskaa"
                         }
                     } label: {
                         Image(systemName: "list.bullet")
@@ -60,7 +60,7 @@ struct HomeView: View {
                 }
                 //toggled search bar style
                 if isSearchBarVisible {
-                    TextField(languageSettings.isFinnish ? "Search" : "Haku", text: $searchText)
+                    TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
                         .padding()
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding()
@@ -74,7 +74,7 @@ struct HomeView: View {
                 
                 //navigation to MapView.swift
                 NavigationLink(destination: MapView()) {
-                    Text(languageSettings.isFinnish ? "Map" : "Kartta")
+                    Text(languageSettings.isEnglish ? "Map" : "Kartta")
                         .padding()
                         .foregroundColor(.white)
                         .background(Color.blue)
@@ -84,18 +84,18 @@ struct HomeView: View {
                 Spacer()
             }
             //locale for the view based on the language setting
-            .environment(\.locale, languageSettings.isFinnish ? Locale(identifier: "en") : Locale(identifier: "fi"))
+            .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
         }
     }
 
     func destinationForMenu() -> some View {
         switch selectedMenu {
-        case languageSettings.isFinnish ? "Eat and drink" : "Syö ja juo":
-            return AnyView(Text(languageSettings.isFinnish ? "Eat and drink" : "Syö ja juo"))
-        case languageSettings.isFinnish ? "Sights" : "Nähtävyydet":
-            return AnyView(Text(languageSettings.isFinnish ? "Sights" : "Nähtävyydet"))
-        case languageSettings.isFinnish ? "Fun" : "Pidät hauskaa":
-            return AnyView(Text(languageSettings.isFinnish ? "Fun" : "Pidä hauskaa"))
+        case languageSettings.isEnglish ? "Eat and drink" : "Syö ja juo":
+            return AnyView(Text(languageSettings.isEnglish ? "Eat and drink" : "Syö ja juo"))
+        case languageSettings.isEnglish ? "Sights" : "Nähtävyydet":
+            return AnyView(Text(languageSettings.isEnglish ? "Sights" : "Nähtävyydet"))
+        case languageSettings.isEnglish ? "Fun" : "Pidät hauskaa":
+            return AnyView(Text(languageSettings.isEnglish ? "Fun" : "Pidä hauskaa"))
         default:
             return AnyView(EmptyView())
         }

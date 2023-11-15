@@ -20,9 +20,9 @@ struct MapView: View {
             HStack {
                 // FIN/ENG toggle
                 Button(action: {
-                    self.languageSettings.isFinnish.toggle()
+                    self.languageSettings.isEnglish.toggle()
                 }) {
-                    Text(languageSettings.isFinnish ? "ENG" : "FIN")
+                    Text(languageSettings.isEnglish ? "ENG" : "FIN")
                         .padding(8)
                         .foregroundColor(.white)
                         .background(Color.blue)
@@ -63,7 +63,7 @@ struct MapView: View {
                                 .padding(8)
                         }
 
-            TextField(languageSettings.isFinnish ? "Search" : "Haku", text: $searchText)
+            TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
                 .padding()
                 .textFieldStyle(RoundedBorderTextFieldStyle())
                 .padding()
@@ -75,7 +75,7 @@ struct MapView: View {
 
             Spacer()
         }
-        .environment(\.locale, languageSettings.isFinnish ? Locale(identifier: "en") : Locale(identifier: "fi"))
+        .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
     }
 }
 
