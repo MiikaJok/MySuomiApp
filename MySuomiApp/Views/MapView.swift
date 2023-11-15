@@ -97,3 +97,4 @@ struct MapView_Previews: PreviewProvider {
             .environmentObject(LanguageSettings())
     }
 }
+
