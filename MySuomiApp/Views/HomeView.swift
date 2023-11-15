@@ -87,6 +87,7 @@ struct HomeView: View {
             .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
         }
     }
+    // testi commit
 
     func destinationForMenu() -> some View {
         switch selectedMenu {
