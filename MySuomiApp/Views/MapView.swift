@@ -39,6 +39,7 @@ struct MapView: View {
                 Spacer()
             }
             
+            
             // Zoom In Button
                         Button(action: {
                             self.region.span.latitudeDelta /= 2
@@ -77,16 +78,18 @@ struct MapView: View {
                 coordinateRegion: $region,
                 showsUserLocation: true
             )
-                .onAppear {
+                .frame(width: 400, height: 300)
+                .onAppear{
                     manager.requestWhenInUseAuthorization()
                     manager.startUpdatingLocation()
                 }
-                .frame(width: 400, height: 300)
+
             Spacer()
         }
         .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
     }
 }
+
 
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
