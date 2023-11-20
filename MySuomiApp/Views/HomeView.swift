@@ -3,11 +3,11 @@ import SwiftUI
 struct HomeView: View {
     
     @EnvironmentObject var languageSettings: LanguageSettings //for language tracking
-
+    
     @State private var isSearchBarVisible = false
     @State private var searchText = ""
     @State private var selectedMenu: String? = nil
-
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -23,14 +23,14 @@ struct HomeView: View {
                             .cornerRadius(8)
                             .padding(8)
                     }
-
+                    
                     Spacer()
-
+                    
                     Text("MySuomiApp")
                         .padding(8)
                         .font(.title)
                         .bold()
-
+                    
                     Spacer()
                     //search bar visibility toggle
                     Button(action: {
@@ -65,7 +65,7 @@ struct HomeView: View {
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding()
                 }
-
+                
                 Image("helsinki")
                     .resizable()
                     .scaledToFill()
@@ -80,14 +80,14 @@ struct HomeView: View {
                         .background(Color.blue)
                         .cornerRadius(8)
                 }
-
+                
                 Spacer()
             }
             //locale for the view based on the language setting
             .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
         }
     }
-
+    
     func destinationForMenu() -> some View {
         switch selectedMenu {
         case languageSettings.isEnglish ? "Eat and drink" : "Syö ja juo":
