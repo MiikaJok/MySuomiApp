@@ -38,11 +38,13 @@ final class LocationManager: NSObject, ObservableObject {
         let request = MKLocalSearch.Request()
         
         // Specify the cities you want to search in
-        let cities = ["Helsinki", "Espoo", "Kauniainen", "Vantaa"]
-        let cityQuery = cities.joined(separator: " OR ")
+        //let cities = ["Helsinki", "Espoo", "Kauniainen", "Vantaa"]
+        //let cityQuery = cities.joined(separator: " OR ")
         
         // Combine the user's query with the specified cities
-        request.naturalLanguageQuery = "\(query) AND (\(cityQuery))"
+        /*request.naturalLanguageQuery = "(\(query) OR Suomi OR Finland) AND (\(cityQuery))"*/
+        request.naturalLanguageQuery = query
+
         
         //local search and updates the searchResult with placemarks
         let search = MKLocalSearch(request: request)
