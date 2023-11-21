@@ -9,17 +9,14 @@ struct HomeView: View {
     @State private var selectedMenu: String? = nil
     
     @State private var cardOffset: CGFloat = 0
+    
     @State private var isNavigationActive: Bool = false
     
-    @State private var showEatAndDrink = false
-    @State private var showSights = false
-    @State private var showFun = false
-    
     var body: some View {
-        NavigationStack {
+        NavigationView {
             VStack {
                 HStack {
-                    //button to toggle FIN/ENG
+                    // Language toggle button
                     Button(action: {
                         self.languageSettings.isEnglish.toggle()
                     }) {
@@ -33,13 +30,15 @@ struct HomeView: View {
                     
                     Spacer()
                     
+                    // MySuomiApp title
                     Text("MySuomiApp")
                         .padding(8)
                         .font(.title)
                         .bold()
                     
                     Spacer()
-                    //search bar visibility toggle
+                    
+                    // Search bar visibility toggle
                     Button(action: {
                         self.isSearchBarVisible.toggle()
                     }) {
@@ -48,48 +47,45 @@ struct HomeView: View {
                     }
                     
                     
+                    // Menu button using Menu
                     Menu {
                         Button(action: {
-                            self.showEatAndDrink.toggle()
+                            selectedMenu = "Eat"
+                            isNavigationActive.toggle()
                         }) {
-                            Text(languageSettings.isEnglish ? "Eat and drink" : "Syö ja juo")
-                        }
-                        .navigationDestination(isPresented: $showEatAndDrink) {
-                            EatView()
+                            Label(languageSettings.isEnglish ? "Eat and drink" : "Syö ja juo", systemImage: "fork.knife.circle")
                         }
                         
                         Button(action: {
-                            self.showSights.toggle()
+                            selectedMenu = "Sights"
+                            isNavigationActive.toggle()
                         }) {
-                            Text(languageSettings.isEnglish ? "Sights" : "Nähtävyydet")
-                        }
-                        .navigationDestination(isPresented: $showSights) {
-                            SightsView()
+                            Label(languageSettings.isEnglish ? "Sights" : "Nähtävyydet", systemImage: "eye")
                         }
                         
                         Button(action: {
-                            self.showFun.toggle()
+                            selectedMenu = "Accommodation"
+                            isNavigationActive.toggle()
                         }) {
-                            Text(languageSettings.isEnglish ? "Fun" : "Pidä hauskaa")
-                        }
-                        .navigationDestination(isPresented: $showFun) {
-                            AccommodationView()
+                            Label(languageSettings.isEnglish ? "Fun" : "Pidä hauskaa", systemImage: "star")
                         }
                     } label: {
                         Image(systemName: "line.horizontal.3")
-                            .font(.title)
-                            .foregroundColor(.blue)
-                    }
-                    
-                    
-                    //toggled search bar style
-                    if isSearchBarVisible {
-                        TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
-                            .padding()
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
                             .padding()
                     }
-                    
+                }
+                
+                
+                // Toggled search bar style
+                if isSearchBarVisible {
+                    TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
+                        .padding()
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
+                }
+                
+                // Image and carousel of cards
+                VStack {
                     Image("helsinki")
                         .resizable()
                         .scaledToFill()
@@ -111,29 +107,66 @@ struct HomeView: View {
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
                     .frame(height: 150) // Adjust the height as needed
                     .offset(x: cardOffset * -(UIScreen.main.bounds.width - 30))
-                    
-                    //navigation to MapView.swift
-                    NavigationLink(destination: MapView()) {
-                        Text(languageSettings.isEnglish ? "Map" : "Kartta")
-                            .padding()
-                            .foregroundColor(.white)
-                            .background(Color.blue)
-                            .cornerRadius(8)
-                    }
-                    
-                    Spacer()
                 }
-                //locale for the view based on the language setting
-                .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
-            }
+                .padding()
+                
+                // Navigation to MapView.swift
+                NavigationLink(destination: MapView()) {
+                    Text(languageSettings.isEnglish ? "Map" : "Kartta")
+                        .padding()
+                        .foregroundColor(.white)
+                        .background(Color.blue)
+                        .cornerRadius(8)
+                }
+                
+                Spacer()
+                
+                    .background(
+                                    Group {
+                                        if selectedMenu == "Eat" {
+                                            NavigationLink(
+                                                destination: EatView(),
+                                                isActive: $isNavigationActive,
+                                                label: {
+                                                    EmptyView()
+                                                }
+                                            )
+                                            .hidden()
+                                        } else if selectedMenu == "Sights" {
+                                            NavigationLink(
+                                                destination: SightsView(),
+                                                isActive: $isNavigationActive,
+                                                label: {
+                                                    EmptyView()
+                                                }
+                                            )
+                                            .hidden()
+                                        } else if selectedMenu == "Accommodation" {
+                                            NavigationLink(
+                                                destination: AccommodationView(),
+                                                isActive: $isNavigationActive,
+                                                label: {
+                                                    EmptyView()
+                                                }
+                                            )
+                                            .hidden()
+                                        }
+                                    }
+                                    .onAppear {
+                                        selectedMenu = nil // Reset the selection after navigation
+                                    }
+                                    .opacity(0)
+                                    .buttonStyle(PlainButtonStyle())
+                                )
+                            }
+            .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
         }
     }
-        
-        struct HomeView_Previews: PreviewProvider {
-            static var previews: some View {
-                HomeView()
-                    .environmentObject(LanguageSettings())
-            }
+    
+    struct HomeView_Previews: PreviewProvider {
+        static var previews: some View {
+            HomeView()
+                .environmentObject(LanguageSettings())
         }
     }
-
+}
