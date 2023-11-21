@@ -67,7 +67,7 @@ struct HomeView: View {
                             selectedMenu = "Accommodation"
                             isNavigationActive.toggle()
                         }) {
-                            Label(languageSettings.isEnglish ? "Fun" : "Pidä hauskaa", systemImage: "star")
+                            Label(languageSettings.isEnglish ? "Accommodation" : "Majoitus", systemImage: "house")
                         }
                     } label: {
                         Image(systemName: "line.horizontal.3")
@@ -122,43 +122,43 @@ struct HomeView: View {
                 Spacer()
                 
                     .background(
-                                    Group {
-                                        if selectedMenu == "Eat" {
-                                            NavigationLink(
-                                                destination: EatView(),
-                                                isActive: $isNavigationActive,
-                                                label: {
-                                                    EmptyView()
-                                                }
-                                            )
-                                            .hidden()
-                                        } else if selectedMenu == "Sights" {
-                                            NavigationLink(
-                                                destination: SightsView(),
-                                                isActive: $isNavigationActive,
-                                                label: {
-                                                    EmptyView()
-                                                }
-                                            )
-                                            .hidden()
-                                        } else if selectedMenu == "Accommodation" {
-                                            NavigationLink(
-                                                destination: AccommodationView(),
-                                                isActive: $isNavigationActive,
-                                                label: {
-                                                    EmptyView()
-                                                }
-                                            )
-                                            .hidden()
-                                        }
+                        Group {
+                            if selectedMenu == "Eat" {
+                                NavigationLink(
+                                    destination: EatView(),
+                                    isActive: $isNavigationActive,
+                                    label: {
+                                        EmptyView()
                                     }
-                                    .onAppear {
-                                        selectedMenu = nil // Reset the selection after navigation
-                                    }
-                                    .opacity(0)
-                                    .buttonStyle(PlainButtonStyle())
                                 )
+                                .hidden()
+                            } else if selectedMenu == "Sights" {
+                                NavigationLink(
+                                    destination: SightsView(),
+                                    isActive: $isNavigationActive,
+                                    label: {
+                                        EmptyView()
+                                    }
+                                )
+                                .hidden()
+                            } else if selectedMenu == "Accommodation" {
+                                NavigationLink(
+                                    destination: AccommodationView(),
+                                    isActive: $isNavigationActive,
+                                    label: {
+                                        EmptyView()
+                                    }
+                                )
+                                .hidden()
                             }
+                        }
+                            .onAppear {
+                                selectedMenu = nil // Reset the selection after navigation
+                            }
+                            .opacity(0)
+                            .buttonStyle(PlainButtonStyle())
+                    )
+            }
             .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
         }
     }
