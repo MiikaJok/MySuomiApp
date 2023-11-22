@@ -85,12 +85,6 @@ struct HomeView: View {
             .padding()
         }
         
-        Image("helsinki")
-          .resizable()
-          .scaledToFill()
-          .frame(height: UIScreen.main.bounds.height * 0.3)
-          .clipped()
-        
         // Image and carousel of cards
         VStack {
           Image("helsinki")
