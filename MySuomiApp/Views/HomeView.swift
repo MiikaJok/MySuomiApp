@@ -2,8 +2,9 @@ import SwiftUI
 
 struct HomeView: View {
     
-    @EnvironmentObject var languageSettings: LanguageSettings // for language tracking
-    
+
+    @EnvironmentObject var languageSettings: LanguageSettings //for language tracking
+
     @State private var isSearchBarVisible = false
     @State private var searchText = ""
     @State private var selectedMenu: String? = nil
@@ -11,7 +12,7 @@ struct HomeView: View {
     @State private var cardOffset: CGFloat = 0
     
     @State private var isNavigationActive: Bool = false
-    
+
     var body: some View {
         NavigationView {
             VStack {
@@ -83,6 +84,12 @@ struct HomeView: View {
                         .textFieldStyle(RoundedBorderTextFieldStyle())
                         .padding()
                 }
+          
+                Image("helsinki")
+                    .resizable()
+                    .scaledToFill()
+                    .frame(height: UIScreen.main.bounds.height * 0.3)
+                    .clipped()
                 
                 // Image and carousel of cards
                 VStack {
@@ -167,6 +174,18 @@ struct HomeView: View {
         static var previews: some View {
             HomeView()
                 .environmentObject(LanguageSettings())
+
+    func destinationForMenu() -> some View {
+        switch selectedMenu {
+        case languageSettings.isEnglish ? "Eat and drink" : "Syö ja juo":
+            return AnyView(Text(languageSettings.isEnglish ? "Eat and drink" : "Syö ja juo"))
+        case languageSettings.isEnglish ? "Sights" : "Nähtävyydet":
+            return AnyView(Text(languageSettings.isEnglish ? "Sights" : "Nähtävyydet"))
+        case languageSettings.isEnglish ? "Fun" : "Pidät hauskaa":
+            return AnyView(Text(languageSettings.isEnglish ? "Fun" : "Pidä hauskaa"))
+        default:
+            return AnyView(EmptyView())
+
         }
     }
 }
