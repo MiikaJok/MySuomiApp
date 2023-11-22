@@ -44,6 +44,7 @@ final class LocationManager: NSObject, ObservableObject {
         // Combine the user's query with the specified cities
         /*request.naturalLanguageQuery = "(\(query) OR Suomi OR Finland) AND (\(cityQuery))"*/
         request.naturalLanguageQuery = query
+        print(query)
 
         
         //local search and updates the searchResult with placemarks
