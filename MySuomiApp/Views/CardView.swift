@@ -5,7 +5,8 @@
 
 import SwiftUI
 
-struct CardView: View {
+struct CardView: View{
+  
   let title: String
   let imageName: String
   @Binding var likes: [(String,String)]
@@ -16,8 +17,11 @@ struct CardView: View {
       Button(action: {
         // Toggle the favorite state
         isFavorite.toggle()
-        if isFavorite == true {
+        if isFavorite {
           likes.append((title,imageName))
+        } else {
+          likes.removeAll {$0 == (title,imageName)}
+          
         }
         print(likes)
       }) {
