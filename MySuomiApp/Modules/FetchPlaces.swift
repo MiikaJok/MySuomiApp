@@ -11,7 +11,7 @@ struct PlacesResponse: Codable {
 }
 
 func fetchRandomPlaces(completion: @escaping ([Place]?) -> Void) {
-    let apiKey = "AIzaSyDY3khBmbbqd7-HIhuSWkugrbmO0kI8PSA"
+    let apiKey = APIKeys.googlePlacesAPIKey
     let baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
     let baseLocation = "60.1695,24.9354" // Example: Latitude,Longitude
     let radius = "10000" // Example: 5000 meters
