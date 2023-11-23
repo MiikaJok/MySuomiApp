@@ -148,6 +148,7 @@ struct HomeView: View {
                 
                 // Navigation links to specific category views
                     .background(
+<<<<<<< HEAD
                         Group {
                             if selectedMenu == "Eat" {
                                 NavigationLink(
@@ -176,14 +177,36 @@ struct HomeView: View {
                                     }
                                 )
                                 .hidden()
+=======
+                Group {
+                    if selectedMenu == "Eat" {
+                        NavigationLink(
+                            destination: EatView(),
+                            isActive: $isNavigationActive,
+                            label: {
+                                EmptyView()
+>>>>>>> 91877464536e09f9f0c2a468d3f34feaab2e1d67
                             }
                         }
                             .onAppear {
                                 selectedMenu = nil
                             }
+<<<<<<< HEAD
                             .opacity(0)
                             .buttonStyle(PlainButtonStyle())
                     )
+=======
+                        )
+                        .hidden()
+                    }
+                }
+                .onAppear {
+                    selectedMenu = nil
+                }
+                .opacity(0)
+                .buttonStyle(PlainButtonStyle())
+                )
+>>>>>>> 91877464536e09f9f0c2a468d3f34feaab2e1d67
             }
             .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
         }
