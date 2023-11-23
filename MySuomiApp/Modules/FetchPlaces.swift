@@ -1,84 +1,109 @@
-// FetchPlaces.swift
-
 import Foundation
+
+// Structure to represent a location
+struct Location: Codable {
+    let lat: Double
+    let lng: Double
+}
 
 // Structure to represent a place
 struct Place: Codable {
-    let name: String
+    var name: String
+    let place_id: String
+    let rating: Double
+    let types: [String]
+    let vicinity: String
 }
 
-// Structure to represent the response from the Google Places API
 struct PlacesResponse: Codable {
     let results: [Place]
 }
 
-// Function to fetch random places from the Google Places API
-func fetchRandomPlaces(completion: @escaping ([Place]?) -> Void) {
+// Enum to represent place types
+enum PlaceType: String {
+    case restaurant
+    case bar
+    case lodging
+    case cafe
+    case park
+    case shopping_mall
+    case museum
+    case tourist_attraction
+    case zoo
+    case spa
+    case movie_theater
+    case aquarium
+    case bakery
+    case campground
+    // Add more types as needed
+}
+
+// Constants for default values
+let defaultLatitude: Double = 60.1695
+let defaultLongitude: Double = 24.9354
+let defaultRadius: Int = 100000
+let defaultPlaceTypes: [PlaceType] = [.restaurant, .bar]
+
+// Function to fetch places from the Google Places API
+func fetchPlaces(completion: @escaping ([Place]?) -> Void) {
     let apiKey = APIKeys.googlePlacesAPIKey
     
     // Base URL for the Google Places API nearby search
-    let baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json?"
+    let baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
     
-    // Base location for the search (Example: Latitude, Longitude)
-    let baseLocation = "60.1695,24.9354"
-    let radius = "10000"
-    // Limit the number of results
-    let limit = 25
-    // Type of place to search for (Example: "bar")
-    let type = "bar"
-    // Generate random latitude and longitude offsets
-    let latOffset = Double.random(in: -0.1...0.1)
-    let lonOffset = Double.random(in: -0.1...0.1)
+    // Base location for the search
+    let baseLocation = "\(defaultLatitude),\(defaultLongitude)"
     
-    // Create a random location by applying offsets to the base location
-    let randomLocation = "\(baseLocation)"
-        .components(separatedBy: ",")
-        .compactMap { Double($0) }
-        .enumerated()
-        .map { index, value in
-            return index == 0 ? "\(value + latOffset)" : "\(value + lonOffset)"
-        }
-        .joined(separator: ",")
+    // Combine multiple types using a pipe (|)
+    let types = defaultPlaceTypes.map { $0.rawValue }.joined(separator: "|")
     
     // Construct the complete URL for the API request
-    let urlString = "\(baseUrl)location=\(randomLocation)&radius=\(radius)&key=\(apiKey)&limit=\(limit)&type=\(type)"
+    var components = URLComponents(string: baseUrl)
+    components?.queryItems = [
+        URLQueryItem(name: "location", value: baseLocation),
+        URLQueryItem(name: "radius", value: "\(defaultRadius)"),
+        URLQueryItem(name: "key", value: apiKey),
+        URLQueryItem(name: "type", value: types)
+    ]
     
     // Validate and create a URL from the constructed string
-    guard let url = URL(string: urlString) else {
+    guard let url = components?.url else {
         print("Invalid URL")
         completion(nil)
         return
     }
     
-    // Create a URLSession data task to perform the API request
-    let task = URLSession.shared.dataTask(with: url) { (data, response, error) in
-        if let error = error {
-            print("Error: \(error)")
-            completion(nil)
-            return
-        }
-        
-        guard let data = data else {
-            print("No data received")
-            completion(nil)
-            return
-        }
-        
+    // Use async/await to perform the API request
+    Task {
         do {
+            let (data, _) = try await URLSession.shared.data(from: url)
+            
             // Decode the JSON response using JSONDecoder
             let decoder = JSONDecoder()
-            let response = try decoder.decode(PlacesResponse.self, from: data)
-            
-            // Simplify the response by extracting only the place names
-            let simplifiedPlaces = response.results.map { Place(name: $0.name) }
-            
-            // Call the completion handler with the simplified places
-            completion(simplifiedPlaces)
+            do {
+                let response = try decoder.decode(PlacesResponse.self, from: data)
+                
+                // Map API response to custom Place struct
+                let places = response.results.map { apiPlace -> Place in
+                    return Place(
+                        name: apiPlace.name,
+                        place_id: apiPlace.place_id,
+                        rating: apiPlace.rating,
+                        types: apiPlace.types,
+                        vicinity: apiPlace.vicinity
+                        
+                    )
+                }
+                
+                // Call the completion handler with the mapped places
+                completion(places)
+            } catch {
+                print("Error decoding JSON: \(error)")
+                completion(nil)
+            }
         } catch {
-            print("Error decoding JSON: \(error)")
+            print("Error: \(error)")
             completion(nil)
         }
     }
-    task.resume()
 }
-

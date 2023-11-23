@@ -1,31 +1,50 @@
 // EatView.swift
-
 import SwiftUI
 
 struct EatView: View {
-    // Sample data for demo
-    let items = [
-        ("jeren keittiö", "hollola"),
-        ("miikan keittiö", "helsinki"),
-        ("Item 3", "hollola"),
-    ]
-
-    //@ObservedObject var languageSettings: LanguageSettings
-
+    @State private var places: [Place] = []
+    
     var body: some View {
         NavigationView {
             List {
-                ForEach(items, id: \.0) { item, imageName in
-                    NavigationLink(destination: Text("Details for \(item)")) {
-                        CardView(title: item, imageName: imageName)
+                ForEach(places, id: \.place_id) { place in
+                    NavigationLink(destination: PlaceDetailView(place: place)) {
+                        Text(place.name)
                     }
                     .buttonStyle(PlainButtonStyle())
+                }
+            }
+            .onAppear {
+                // Fetch places when the view appears
+                fetchPlaces { fetchedPlaces in
+                    if let fetchedPlaces = fetchedPlaces {
+                        // Update the state with fetched places
+                        places = fetchedPlaces
+                    }
                 }
             }
             .navigationTitle("Restaurants")
         }
         .navigationViewStyle(StackNavigationViewStyle())
-        //.environmentObject(languageSettings) // Pass the language settings to EatView
+    }
+}
 
+struct PlaceDetailView: View {
+    let place: Place
+    
+    var body: some View {
+        Form {
+            Section(header: Text("Details for \(place.name)").font(.title2)) {
+                VStack(alignment: .leading, spacing: 10) {
+                    Text("Rating: \(place.rating, specifier: "%.1f")")
+                        .font(.headline)
+                    Text("Types: \(place.types.joined(separator: ", "))")
+                        .font(.headline)
+                    Text("Address: \(place.vicinity)")
+                        .font(.headline)
+                }
+            }
+        }
+        .navigationTitle(place.name)
     }
 }

@@ -110,7 +110,7 @@ struct HomeView: View {
                 // Button to fetch places
                 Button(action: {
                     print("Fetching places...")
-                    fetchRandomPlaces { fetchedPlaces in
+                    fetchPlaces { fetchedPlaces in
                         if let fetchedPlaces = fetchedPlaces {
                             DispatchQueue.main.async {
                                 places = fetchedPlaces
@@ -147,41 +147,43 @@ struct HomeView: View {
                 Spacer()
                 
                 // Navigation links to specific category views
-                Group {
-                    if selectedMenu == "Eat" {
-                        NavigationLink(
-                            destination: EatView(),
-                            isActive: $isNavigationActive,
-                            label: {
-                                EmptyView()
+                    .background(
+                        Group {
+                            if selectedMenu == "Eat" {
+                                NavigationLink(
+                                    destination: EatView(),
+                                    isActive: $isNavigationActive,
+                                    label: {
+                                        EmptyView()
+                                    }
+                                )
+                                .hidden()
+                            } else if selectedMenu == "Sights" {
+                                NavigationLink(
+                                    destination: SightsView(),
+                                    isActive: $isNavigationActive,
+                                    label: {
+                                        EmptyView()
+                                    }
+                                )
+                                .hidden()
+                            } else if selectedMenu == "Accommodation" {
+                                NavigationLink(
+                                    destination: AccommodationView(),
+                                    isActive: $isNavigationActive,
+                                    label: {
+                                        EmptyView()
+                                    }
+                                )
+                                .hidden()
                             }
-                        )
-                        .hidden()
-                    } else if selectedMenu == "Sights" {
-                        NavigationLink(
-                            destination: SightsView(),
-                            isActive: $isNavigationActive,
-                            label: {
-                                EmptyView()
+                        }
+                            .onAppear {
+                                selectedMenu = nil
                             }
-                        )
-                        .hidden()
-                    } else if selectedMenu == "Accommodation" {
-                        NavigationLink(
-                            destination: AccommodationView(),
-                            isActive: $isNavigationActive,
-                            label: {
-                                EmptyView()
-                            }
-                        )
-                        .hidden()
-                    }
-                }
-                .onAppear {
-                    selectedMenu = nil
-                }
-                .opacity(0)
-                .buttonStyle(PlainButtonStyle())
+                            .opacity(0)
+                            .buttonStyle(PlainButtonStyle())
+                    )
             }
             .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
         }
