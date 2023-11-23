@@ -1,7 +1,11 @@
 import SwiftUI
 
+// HomeView represents the main view of the application
 struct HomeView: View {
+    // Environment object for language settings
     @EnvironmentObject var languageSettings: LanguageSettings
+    
+    // State variables for UI interaction and data storage
     @State private var isSearchBarVisible = false
     @State private var searchText = ""
     @State private var selectedMenu: String? = nil
@@ -12,6 +16,7 @@ struct HomeView: View {
     var body: some View {
         NavigationView {
             VStack {
+                // Header with language toggle, app title, search bar toggle, and menu button
                 HStack {
                     // Language toggle button
                     Button(action: {
@@ -27,7 +32,6 @@ struct HomeView: View {
                     
                     Spacer()
                     
-                    // MySuomiApp title
                     Text("MySuomiApp")
                         .padding(8)
                         .font(.title)
@@ -35,7 +39,6 @@ struct HomeView: View {
                     
                     Spacer()
                     
-                    // Search bar visibility toggle
                     Button(action: {
                         self.isSearchBarVisible.toggle()
                     }) {
@@ -43,8 +46,8 @@ struct HomeView: View {
                             .padding()
                     }
                     
-                    // Menu button using Menu
                     Menu {
+                        // Menu items for different categories
                         Button(action: {
                             selectedMenu = "Eat"
                             isNavigationActive.toggle()
@@ -71,6 +74,7 @@ struct HomeView: View {
                     }
                 }
                 
+                // Search bar when visible
                 if isSearchBarVisible {
                     TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
                         .padding()
@@ -78,6 +82,7 @@ struct HomeView: View {
                         .padding()
                 }
                 
+                // Image carousel with TabView
                 VStack {
                     Image("helsinki")
                         .resizable()
@@ -130,6 +135,7 @@ struct HomeView: View {
                     .padding(.vertical, 8)
                 }
                 
+                // Navigation link to the MapView
                 NavigationLink(destination: MapView()) {
                     Text(languageSettings.isEnglish ? "Map" : "Kartta")
                         .padding()
@@ -140,6 +146,7 @@ struct HomeView: View {
                 
                 Spacer()
                 
+                // Navigation links to specific category views
                 Group {
                     if selectedMenu == "Eat" {
                         NavigationLink(
@@ -180,6 +187,7 @@ struct HomeView: View {
         }
     }
     
+    // Preview for HomeView
     struct HomeView_Previews: PreviewProvider {
         static var previews: some View {
             HomeView()
