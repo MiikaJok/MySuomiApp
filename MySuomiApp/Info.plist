@@ -2,10 +2,20 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Give us your location to make money of it :)</string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Give us your location to make money of it :)</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleTypeRole</key>
+			<string>Editor</string>
+			<key>CFBundleURLName</key>
+			<string>placesApi</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>AIzaSyDh8Fsdpg3FDH7Jbkq1RsI9BCCqQrQH9gQ</string>
+			</array>
+		</dict>
+		<dict/>
+	</array>
 	<key>MKDirectionsApplicationSupportedModes</key>
 	<array/>
 	<key>UIBackgroundModes</key>

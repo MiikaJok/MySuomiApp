@@ -1,17 +1,13 @@
 import SwiftUI
 
 struct HomeView: View {
-    
-    
-    @EnvironmentObject var languageSettings: LanguageSettings //for language tracking
-    
+    @EnvironmentObject var languageSettings: LanguageSettings
     @State private var isSearchBarVisible = false
     @State private var searchText = ""
     @State private var selectedMenu: String? = nil
-    
     @State private var cardOffset: CGFloat = 0
-    
     @State private var isNavigationActive: Bool = false
+    @State private var places: [Place] = []
     
     var body: some View {
         NavigationView {
@@ -47,7 +43,6 @@ struct HomeView: View {
                             .padding()
                     }
                     
-                    
                     // Menu button using Menu
                     Menu {
                         Button(action: {
@@ -76,8 +71,6 @@ struct HomeView: View {
                     }
                 }
                 
-                
-                // Toggled search bar style
                 if isSearchBarVisible {
                     TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
                         .padding()
@@ -85,7 +78,6 @@ struct HomeView: View {
                         .padding()
                 }
                 
-                // Image and carousel of cards
                 VStack {
                     Image("helsinki")
                         .resizable()
@@ -93,7 +85,6 @@ struct HomeView: View {
                         .frame(height: UIScreen.main.bounds.height * 0.3)
                         .clipped()
                     
-                    // Carousel of cards
                     TabView(selection: $cardOffset) {
                         ForEach(0..<5, id: \.self) { index in
                             Image("hollola")
@@ -106,12 +97,39 @@ struct HomeView: View {
                         }
                     }
                     .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
-                    .frame(height: 150) // Adjust the height as needed
+                    .frame(height: 150)
                     .offset(x: cardOffset * -(UIScreen.main.bounds.width - 30))
                 }
                 .padding()
                 
-                // Navigation to MapView.swift
+                // Button to fetch places
+                Button(action: {
+                    print("Fetching places...")
+                    fetchRandomPlaces { fetchedPlaces in
+                        if let fetchedPlaces = fetchedPlaces {
+                            DispatchQueue.main.async {
+                                places = fetchedPlaces
+                                print("Places fetched successfully: \(places)")
+                            }
+                        }
+                    }
+                }) {
+                    Text("Fetch Places")
+                        .padding()
+                        .foregroundColor(.white)
+                        .background(Color.blue)
+                        .cornerRadius(8)
+                }
+                
+                // Scrollable list of places
+                List(places, id: \.name) { place in
+                    VStack(alignment: .leading) {
+                        Text(place.name)
+                            .font(.headline)
+                    }
+                    .padding(.vertical, 8)
+                }
+                
                 NavigationLink(destination: MapView()) {
                     Text(languageSettings.isEnglish ? "Map" : "Kartta")
                         .padding()
@@ -122,43 +140,41 @@ struct HomeView: View {
                 
                 Spacer()
                 
-                    .background(
-                        Group {
-                            if selectedMenu == "Eat" {
-                                NavigationLink(
-                                    destination: EatView(),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
-                            } else if selectedMenu == "Sights" {
-                                NavigationLink(
-                                    destination: SightsView(),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
-                            } else if selectedMenu == "Accommodation" {
-                                NavigationLink(
-                                    destination: AccommodationView(),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
+                Group {
+                    if selectedMenu == "Eat" {
+                        NavigationLink(
+                            destination: EatView(),
+                            isActive: $isNavigationActive,
+                            label: {
+                                EmptyView()
                             }
-                        }
-                            .onAppear {
-                                selectedMenu = nil // Reset the selection after navigation
+                        )
+                        .hidden()
+                    } else if selectedMenu == "Sights" {
+                        NavigationLink(
+                            destination: SightsView(),
+                            isActive: $isNavigationActive,
+                            label: {
+                                EmptyView()
                             }
-                            .opacity(0)
-                            .buttonStyle(PlainButtonStyle())
-                    )
+                        )
+                        .hidden()
+                    } else if selectedMenu == "Accommodation" {
+                        NavigationLink(
+                            destination: AccommodationView(),
+                            isActive: $isNavigationActive,
+                            label: {
+                                EmptyView()
+                            }
+                        )
+                        .hidden()
+                    }
+                }
+                .onAppear {
+                    selectedMenu = nil
+                }
+                .opacity(0)
+                .buttonStyle(PlainButtonStyle())
             }
             .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
         }
@@ -168,7 +184,7 @@ struct HomeView: View {
         static var previews: some View {
             HomeView()
                 .environmentObject(LanguageSettings())
-            
         }
     }
 }
+
