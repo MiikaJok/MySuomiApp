@@ -1,6 +1,6 @@
 # Created by https://www.toptal.com/developers/gitignore/api/macos,swift
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,swift
-
+MySuomiApp/Modules/APIKeys.swift
 ### macOS ###
 # General
 .DS_Store

@@ -41,10 +41,37 @@ final class LocationManager: NSObject, ObservableObject {
         guard !query.isEmpty else {
             return // Don't perform a search if the query is empty
         }
-        
+
         currentSearchQuery = query // Save the current search query
+
+        // Check if the selected suggestion is present in the suggestions array
+        if let selectedSuggestion = suggestions.first(where: { $0.title == query }) {
+            handleSuggestionSelection(selectedSuggestion)
+        } else {
+            // If the selected suggestion is not found, perform a local search
+            let request = MKLocalSearch.Request()
+            request.naturalLanguageQuery = query
+
+            // Local search and updates the searchResults with placemarks
+            let search = MKLocalSearch(request: request)
+            search.start { [weak self] response, _ in
+                guard let self = self else { return }
+
+                if let response = response {
+                    // Clear existing search results
+                    self.searchResults.removeAll()
+                    
+                    // Add a marker for the first result, if available
+                    if let place = response.mapItems.first?.placemark {
+                        self.addMarkerForPlace(place)
+                    }
+                }
+            }
+        }
+
         completer?.queryFragment = query // Update the completer with the query
     }
+
     
     // Function to handle the selection of a suggestion
     func handleSuggestionSelection(_ selectedItem: MKLocalSearchCompletion) {
@@ -66,7 +93,6 @@ final class LocationManager: NSObject, ObservableObject {
         }
     }
     
-    
     // Function to add a marker for the selected place
     private func addMarkerForPlace(_ place: MKPlacemark) {
         DispatchQueue.main.async { [weak self] in
@@ -74,6 +100,7 @@ final class LocationManager: NSObject, ObservableObject {
             self?.animateMapToPlace(place.coordinate)
         }
     }
+    
     // Function to animate the map to the specified coordinate
     private func animateMapToPlace(_ coordinate: CLLocationCoordinate2D) {
         // Update the region to focus on the specified coordinate
@@ -168,3 +195,4 @@ extension LocationManager: MKLocalSearchCompleterDelegate {
         searchPlaces(query: currentSearchQuery)
     }
 }
+
