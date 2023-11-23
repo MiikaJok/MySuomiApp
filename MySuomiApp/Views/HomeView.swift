@@ -147,6 +147,7 @@ struct HomeView: View {
                 Spacer()
                 
                 // Navigation links to specific category views
+                    .background(
                 Group {
                     if selectedMenu == "Eat" {
                         NavigationLink(
@@ -182,6 +183,7 @@ struct HomeView: View {
                 }
                 .opacity(0)
                 .buttonStyle(PlainButtonStyle())
+                )
             }
             .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
         }
