@@ -1,6 +1,7 @@
 // EatView.swift
 
 import SwiftUI
+import CoreData
 
 struct EatView: View {
   // Sample data for demo

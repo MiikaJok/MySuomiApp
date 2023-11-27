@@ -6,14 +6,19 @@
 //
 
 import SwiftUI
+import CoreData
 
 @main
 struct MySuomiAppApp: App {
-    @StateObject private var languageSettings = LanguageSettings()
-    var body: some Scene {
-        WindowGroup {
-            HomeView()
-                .environmentObject(languageSettings)
-        }
+  
+  
+    
+  @StateObject private var languageSettings = LanguageSettings()
+  var body: some Scene {
+    WindowGroup {
+      HomeView()
+        .environmentObject(languageSettings)
     }
+  }
 }
+// controller to the beginning of app

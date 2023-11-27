@@ -22,7 +22,7 @@ struct CardView: View{
         } else {
           likes.removeAll {$0 == (title,imageName)}
           
-        }
+        } 
         print(likes)
       }) {
         Image(systemName: isFavorite ? "heart.fill" : "heart")
