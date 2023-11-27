@@ -110,7 +110,7 @@ struct HomeView: View {
                 // Button to fetch places
                 Button(action: {
                     print("Fetching places...")
-                    fetchPlaces { fetchedPlaces in
+                    fetchPlaces(for: restaurantTypes) { fetchedPlaces in
                         if let fetchedPlaces = fetchedPlaces {
                             DispatchQueue.main.async {
                                 places = fetchedPlaces
@@ -169,7 +169,7 @@ struct HomeView: View {
                                 .hidden()
                             } else if selectedMenu == "Accommodation" {
                                 NavigationLink(
-                                    destination: AccommodationView(),
+                                    destination: NatureView(),
                                     isActive: $isNavigationActive,
                                     label: {
                                         EmptyView()

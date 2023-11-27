@@ -1,4 +1,4 @@
-// EatView.swift
+
 import SwiftUI
 
 struct EatView: View {
@@ -16,7 +16,7 @@ struct EatView: View {
             }
             .onAppear {
                 // Fetch places when the view appears
-                fetchPlaces { fetchedPlaces in
+                fetchPlaces(for: restaurantTypes) { fetchedPlaces in
                     if let fetchedPlaces = fetchedPlaces {
                         // Update the state with fetched places
                         places = fetchedPlaces
@@ -36,8 +36,13 @@ struct PlaceDetailView: View {
         Form {
             Section(header: Text("Details for \(place.name)").font(.title2)) {
                 VStack(alignment: .leading, spacing: 10) {
-                    Text("Rating: \(place.rating, specifier: "%.1f")")
-                        .font(.headline)
+                    if let rating = place.rating {
+                        Text("Rating: \(rating, specifier: "%.1f")")
+                            .font(.headline)
+                    } else {
+                        Text("Rating: N/A")
+                            .font(.headline)
+                    }
                     Text("Types: \(place.types.joined(separator: ", "))")
                         .font(.headline)
                     Text("Address: \(place.vicinity)")
