@@ -15,7 +15,7 @@ struct AccommodationView: View {
     ]
 
     var body: some View {
-        NavigationView {
+        //NavigationView {
             List {
                 ForEach(accommodations, id: \.0) { accommodation, imageName in
                     NavigationLink(destination: Text("Details for \(accommodation)")) {
@@ -25,7 +25,7 @@ struct AccommodationView: View {
                 }
             }
             .navigationTitle("Accommodations")
-        }
+        //}
         .navigationViewStyle(StackNavigationViewStyle())
     }
 }

@@ -3,16 +3,14 @@ import SwiftUI
 
 struct EatView: View {
     @State private var places: [Place] = []
-    
+
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(places, id: \.place_id) { place in
-                    NavigationLink(destination: PlaceDetailView(place: place)) {
-                        Text(place.name)
-                    }
-                    .buttonStyle(PlainButtonStyle())
+        //NavigationView {
+            List(places, id: \.place_id) { place in
+                NavigationLink(destination: PlaceDetailView(place: place)) {
+                    CardView(title: place.name, imageName: "restaurant_image")
                 }
+                .buttonStyle(PlainButtonStyle())
             }
             .onAppear {
                 // Fetch places when the view appears
@@ -24,7 +22,7 @@ struct EatView: View {
                 }
             }
             .navigationTitle("Restaurants")
-        }
+        //}
         .navigationViewStyle(StackNavigationViewStyle())
     }
 }
@@ -46,5 +44,11 @@ struct PlaceDetailView: View {
             }
         }
         .navigationTitle(place.name)
+    }
+}
+
+struct EatView_Previews: PreviewProvider {
+    static var previews: some View {
+        EatView()
     }
 }

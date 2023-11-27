@@ -16,7 +16,7 @@ struct SightsView: View {
     ]
 
     var body: some View {
-        NavigationView {
+        //NavigationView {
             List {
                 ForEach(sights, id: \.0) { sight, imageName in
                     NavigationLink(destination: Text("Details for \(sight)")) {
@@ -26,7 +26,7 @@ struct SightsView: View {
                 }
             }
             .navigationTitle("Sights")
-        }
+        //}
         .navigationViewStyle(StackNavigationViewStyle())
     }
 }
