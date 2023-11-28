@@ -15,7 +15,7 @@ struct SightsView: View {
             List {
                 ForEach(places, id: \.place_id) { place in
                     NavigationLink(destination: NaturePlaceDetailView(place: place)) {
-                        Text(place.name)
+                        CardView(title: place.name, imageName: "sights_image")
                     }
                     .buttonStyle(PlainButtonStyle())
                 }

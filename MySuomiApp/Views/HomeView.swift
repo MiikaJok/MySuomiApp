@@ -188,18 +188,15 @@ struct HomeView: View {
     }
     // Function to search places
     private func searchPlaces() {
-        let selectedTypes: [PlaceType] = [] // Add the types you want to search for
-
-        // Assuming Search is a namespace with a static function fetchPlaces
-        fetchPlaces(for: selectedTypes) { fetchedPlaces in
-            if let fetchedPlaces = fetchedPlaces {
-                DispatchQueue.main.async {
-                    self.searchResults = fetchedPlaces
-                    print("Search results: \(self.searchResults)")
-                }
-            }
-        }
-    }
+               Search.searchPlaces(query: searchText) { fetchedPlaces in
+                   if let fetchedPlaces = fetchedPlaces {
+                       DispatchQueue.main.async {
+                           searchResults = fetchedPlaces
+                           print("Search results: \(searchResults)")
+                       }
+                   }
+               }
+           }
     
     // Preview for HomeView
     struct HomeView_Previews: PreviewProvider {
