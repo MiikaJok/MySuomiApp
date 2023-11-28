@@ -1,10 +1,6 @@
-
-//
-//  MapView.swift
-//  MySuomiApp
-
 import SwiftUI
 import MapKit
+import CoreData
 
 /*MapView struct that represents the SwiftUI view displaying the map and search functionality*/
 struct MapView: View {

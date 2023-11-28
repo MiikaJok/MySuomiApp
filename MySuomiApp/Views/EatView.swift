@@ -85,9 +85,11 @@ struct EatDetailView: View {
         }
         .navigationTitle(place.name)
     }
-    .navigationViewStyle(StackNavigationViewStyle())
-    //.environmentObject(languageSettings) // Pass the language settings to EatView
-    
-  }
-}
 
+}
+struct EatView_Previews: PreviewProvider {
+    static var previews: some View {
+        EatView()
+            .environmentObject(LanguageSettings())
+    }
+}

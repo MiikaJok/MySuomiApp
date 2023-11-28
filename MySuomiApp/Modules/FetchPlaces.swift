@@ -60,7 +60,7 @@ enum PlaceType: String {
 // Constants for default values
 let defaultLatitude: Double = 60.1695
 let defaultLongitude: Double = 24.9354
-let defaultRadius: Int = 300
+let defaultRadius: Int = 100
 let restaurantTypes: [PlaceType] = [.bar, .restaurant, .night_club, .bakery, .cafe]
 let sightsTypes: [PlaceType] = [.zoo, .park, .museum, .tourist_attraction, .amusement_park, .church, .library, .stadium, .aquarium, .university, .art_gallery]
 let accommodationTypes: [PlaceType] = [.lodging]
@@ -124,6 +124,8 @@ func fetchPlaces(for typeStrings: [String], completion: @escaping ([Place]?) -> 
                 }
                 
                 print("Fetched \(places.count) places.")
+                print("Received data size: \(data.count) bytes")
+
                 
                 // Call the completion handler with the mapped places
                 completion(places)

@@ -1,9 +1,9 @@
-
 import SwiftUI
 import URLImage
+import CoreData
 
 struct AccommodationView: View {
-
+    
     @State private var accommodationPlaces: [Place] = []
     @State private var hasFetchedData = false
     
@@ -82,6 +82,11 @@ struct AccommodationDetailView: View {
                                 .aspectRatio(contentMode: .fit)
                                 .frame(height: 200) // Adjust the size as needed
                         }
+                    } else {
+                        // Add a placeholder or loading indicator
+                        ProgressView()
+                            .frame(height: 200)
+                        
                     }
                 }
             }
@@ -90,5 +95,10 @@ struct AccommodationDetailView: View {
     }
     
 }
-
+struct AccommodationView_Previews: PreviewProvider {
+    static var previews: some View {
+        AccommodationView()
+            .environmentObject(LanguageSettings())
+    }
+}
 

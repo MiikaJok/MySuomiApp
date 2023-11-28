@@ -1,5 +1,6 @@
 import SwiftUI
 import URLImage
+import CoreData
 
 
 struct NatureView: View {
@@ -93,5 +94,10 @@ struct NatureDetailView: View {
         .navigationTitle(place.name)
     }
 }
-
+struct NatureView_Previews: PreviewProvider {
+    static var previews: some View {
+        NatureView()
+            .environmentObject(LanguageSettings())
+    }
+}
 

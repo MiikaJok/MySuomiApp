@@ -1,6 +1,6 @@
-
 import SwiftUI
 import URLImage
+import CoreData
 
 struct SightsView: View {
     @State private var sightsPlaces: [Place] = []
@@ -89,4 +89,9 @@ struct SightsDetailView: View {
     }
     
 }
-
+struct SightsView_Previews: PreviewProvider {
+    static var previews: some View {
+        SightsView()
+            .environmentObject(LanguageSettings())
+    }
+}
