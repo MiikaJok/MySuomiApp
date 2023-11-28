@@ -1,18 +1,17 @@
-
 import SwiftUI
 import URLImage
 
-struct AccommodationView: View {
 
-    @State private var accommodationPlaces: [Place] = []
+struct NatureView: View {
+    @State private var naturePlaces: [Place] = []
     @State private var hasFetchedData = false
     
     
     var body: some View {
         
         // Display your nature places here
-        List(accommodationPlaces, id: \.place_id) { place in
-            NavigationLink(destination: AccommodationDetailView(place: place)) {
+        List(naturePlaces, id: \.place_id) { place in
+            NavigationLink(destination: NatureDetailView(place: place)) {
                 HStack {
                     CardView(title: place.name, imageURL: imageURL(photoReference: place.photos?.first?.photo_reference ?? "", maxWidth: 100))
                 }
@@ -22,18 +21,21 @@ struct AccommodationView: View {
         .onAppear {
             // Fetch data only if it hasn't been fetched before
             if !hasFetchedData {
-                fetchAccommodationPlaces()
+                fetchNaturePlaces()
                 hasFetchedData = true
             }
         }
-        .navigationTitle("Accommodation")
+        
+        
+        .navigationTitle("Nature")
     }
-    func fetchAccommodationPlaces() {
+    
+    func fetchNaturePlaces() {
         // Create an array to store fetched places
         var combinedPlaces: [Place] = []
         
         // Iterate over each type in natureTypes and fetch places
-        for type in accommodationTypes {
+        for type in natureTypes {
             // Use the type.rawValue to fetch places for the current type
             fetchPlaces(for: [type.rawValue]) { places in
                 if let places = places {
@@ -41,7 +43,7 @@ struct AccommodationView: View {
                     combinedPlaces.append(contentsOf: places)
                     
                     // Update the state with the combined array
-                    accommodationPlaces = combinedPlaces
+                    naturePlaces = combinedPlaces
                 } else {
                     // Handle error or display an error message
                     print("Failed to fetch nature places")
@@ -50,8 +52,10 @@ struct AccommodationView: View {
         }
     }
     
+    
 }
-struct AccommodationDetailView: View {
+
+struct NatureDetailView: View {
     let place: Place
     
     var body: some View {
@@ -88,7 +92,6 @@ struct AccommodationDetailView: View {
         }
         .navigationTitle(place.name)
     }
-    
 }
 
 
