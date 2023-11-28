@@ -1,16 +1,29 @@
-//
-//  CardView.swift
-//  MySuomiApp
-//
-
 import SwiftUI
+import CoreData
 
-struct CardView: View{
+struct CardView: View {
   
   let title: String
   let imageName: String
   @Binding var likes: [(String,String)]
   @State private var isFavorite = false
+  
+  func checkLike() {
+    let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
+    request.predicate = NSPredicate(format: "name == %@ AND image == %@", title, imageName)
+    
+    do {
+      if let result = try viewContext.fetch(request) as? [NSManagedObject], !result.isEmpty {
+        print(result)
+        isFavorite = true
+      }
+    } catch {
+      print("Error: \(error)")
+    }
+  }
+  
+  // Inject the managedObjectContext
+  @Environment(\.managedObjectContext) private var viewContext
   
   var body: some View {
     HStack {
@@ -18,11 +31,12 @@ struct CardView: View{
         // Toggle the favorite state
         isFavorite.toggle()
         if isFavorite {
-          likes.append((title,imageName))
+          // Save to CoreData
+          saveLikeToCoreData()
         } else {
-          likes.removeAll {$0 == (title,imageName)}
-          
-        } 
+          // Remove from CoreData
+          removeLikeFromCoreData()
+        }
         print(likes)
       }) {
         Image(systemName: isFavorite ? "heart.fill" : "heart")
@@ -55,5 +69,38 @@ struct CardView: View{
     .shadow(radius: 5)
     .padding(.horizontal, -8)
     .padding(.vertical, 8)
+    .onAppear {
+      checkLike()
+    }
+  }
+  
+  // Function to save liked item to CoreData
+  private func saveLikeToCoreData() {
+    let newLikedItem = Like(context: viewContext)
+    newLikedItem.name = title
+    newLikedItem.image = imageName
+    
+    do {
+      try viewContext.save()
+    } catch {
+      print("Error saving liked item to CoreData: \(error)")
+    }
+  }
+  
+  // Function to remove liked item from CoreData
+  private func removeLikeFromCoreData() {
+    let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
+    request.predicate = NSPredicate(format: "name == %@ AND image == %@", title, imageName)
+    
+    do {
+      if let result = try viewContext.fetch(request) as? [NSManagedObject] {
+        for object in result {
+          viewContext.delete(object)
+        }
+        try viewContext.save()
+      }
+    } catch {
+      print("Error removing liked item from CoreData: \(error)")
+    }
   }
 }
