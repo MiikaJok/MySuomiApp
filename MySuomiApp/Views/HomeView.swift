@@ -106,7 +106,6 @@ struct HomeView: View {
                             }
                         }
                     }
-
                     // Image carousel with TabView
                     VStack {
                         Image("helsinki")
@@ -124,11 +123,15 @@ struct HomeView: View {
                                     .clipped()
                                     .padding(.horizontal, 15)
                                     .tag(index)
-
-                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
-                 
-                }
-                .padding()   
+                            }
+                        }
+                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
+                        .frame(height: 150)
+                        .offset(x: cardOffset * -(UIScreen.main.bounds.width - 30))
+                    }
+                    .padding()
+                    
+                   
                     // Navigation link to the MapView
                     NavigationLink(destination: MapView()) {
                         Text(languageSettings.isEnglish ? "Map" : "Kartta")
@@ -183,16 +186,20 @@ struct HomeView: View {
             }
         }
     }
-        private func searchPlaces() {
-            Search.searchPlaces(query: searchText) { fetchedPlaces in
-                if let fetchedPlaces = fetchedPlaces {
-                    DispatchQueue.main.async {
-                        searchResults = fetchedPlaces
-                        print("Search results: \(searchResults)")
-                    }
+    // Function to search places
+    private func searchPlaces() {
+        let selectedTypes: [PlaceType] = [] // Add the types you want to search for
+
+        // Assuming Search is a namespace with a static function fetchPlaces
+        fetchPlaces(for: selectedTypes) { fetchedPlaces in
+            if let fetchedPlaces = fetchedPlaces {
+                DispatchQueue.main.async {
+                    self.searchResults = fetchedPlaces
+                    print("Search results: \(self.searchResults)")
                 }
             }
         }
+    }
     
     // Preview for HomeView
     struct HomeView_Previews: PreviewProvider {
@@ -202,4 +209,3 @@ struct HomeView: View {
         }
     }
 }
-
