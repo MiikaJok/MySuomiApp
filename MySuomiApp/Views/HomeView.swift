@@ -106,6 +106,7 @@ struct HomeView: View {
                             }
                         }
                     }
+
                     // Image carousel with TabView
                     VStack {
                         Image("helsinki")
@@ -123,42 +124,11 @@ struct HomeView: View {
                                     .clipped()
                                     .padding(.horizontal, 15)
                                     .tag(index)
-                            }
-                        }
-                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
-                        .frame(height: 150)
-                        .offset(x: cardOffset * -(UIScreen.main.bounds.width - 30))
-                    }
-                    .padding()
-                    
-                    // Button to fetch places
-                   /* Button(action: {
-                        print("Fetching places...")
-                        fetchPlaces { fetchedPlaces in
-                            if let fetchedPlaces = fetchedPlaces {
-                                DispatchQueue.main.async {
-                                    places = fetchedPlaces
-                                    print("Places fetched successfully: \(places)")
-                                }
-                            }
-                        }
-                    }) {
-                        Text("Fetch Places")
-                            .padding()
-                            .foregroundColor(.white)
-                            .background(Color.blue)
-                            .cornerRadius(8)
-                    }
-                    
-                    // Scrollable list of places
-                    List(places, id: \.name) { place in
-                        VStack(alignment: .leading) {
-                            Text(place.name)
-                                .font(.headline)
-                        }
-                        .padding(.vertical, 8)
-                    }*/
-                    
+
+                    .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
+                 
+                }
+                .padding()   
                     // Navigation link to the MapView
                     NavigationLink(destination: MapView()) {
                         Text(languageSettings.isEnglish ? "Map" : "Kartta")

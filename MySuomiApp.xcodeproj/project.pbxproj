@@ -22,6 +22,7 @@
 		6A417AA52B052C1300B02EC7 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A417AA42B052C1300B02EC7 /* MapKit.framework */; };
 		6A48741D2B03A29E00ADD0FF /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A48741C2B03A29E00ADD0FF /* MapView.swift */; };
 		6A4874212B03A93600ADD0FF /* LanguageSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4874202B03A93600ADD0FF /* LanguageSettings.swift */; };
+		6A7C043A2B14A6DB00637CA5 /* NatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7C04392B14A6DB00637CA5 /* NatureView.swift */; };
 		6A965D002B0ECB3400DBF47A /* FetchPlaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A965CFF2B0ECB3400DBF47A /* FetchPlaces.swift */; };
 /* End PBXBuildFile section */
 
@@ -43,6 +44,7 @@
 		6A48741C2B03A29E00ADD0FF /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		6A4874202B03A93600ADD0FF /* LanguageSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LanguageSettings.swift; path = MySuomiApp/Views/LanguageSettings.swift; sourceTree = SOURCE_ROOT; };
 		6A4874242B03B48C00ADD0FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		6A7C04392B14A6DB00637CA5 /* NatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NatureView.swift; sourceTree = "<group>"; };
 		6A965CFF2B0ECB3400DBF47A /* FetchPlaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchPlaces.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -69,6 +71,7 @@
 				3FD06CA12B0BC61A001B829D /* EatView.swift */,
 				3FD06CA32B0BC70B001B829D /* SightsView.swift */,
 				3FD06CA52B0BC7B3001B829D /* AccommodationView.swift */,
+				6A7C04392B14A6DB00637CA5 /* NatureView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -206,6 +209,7 @@
 				3FD06CA82B0CCB20001B829D /* CardView.swift in Sources */,
 				3FD06CA42B0BC70B001B829D /* SightsView.swift in Sources */,
 				6A48741D2B03A29E00ADD0FF /* MapView.swift in Sources */,
+				6A7C043A2B14A6DB00637CA5 /* NatureView.swift in Sources */,
 				6A965D002B0ECB3400DBF47A /* FetchPlaces.swift in Sources */,
 				3FD06CA62B0BC7B3001B829D /* AccommodationView.swift in Sources */,
 				6A2B22372B09036E009D9EB6 /* LocationManager.swift in Sources */,
