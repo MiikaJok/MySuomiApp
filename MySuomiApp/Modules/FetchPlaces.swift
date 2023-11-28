@@ -114,7 +114,7 @@ func fetchPlaces(for types: [PlaceType], completion: @escaping ([Place]?) -> Voi
                 // Call the completion handler with the mapped places
                 completion(places)
             } catch {
-                print("Error decoding JSON: \(error)")
+                print("Error fetching or decoding JSON: \(error)")
                 completion(nil)
             }
         } catch {
