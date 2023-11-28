@@ -13,6 +13,18 @@ struct Place: Codable {
     let rating: Double?
     let types: [String]
     let vicinity: String
+    let opening_hours: OpeningHours?
+    let photos: [Photo]?
+}
+
+struct OpeningHours: Codable {
+    let open_now: Bool?
+}
+
+struct Photo: Codable {
+    let photo_reference: String
+    let width: Int
+    let height: Int
 }
 
 struct PlacesResponse: Codable {
@@ -48,11 +60,11 @@ enum PlaceType: String {
 // Constants for default values
 let defaultLatitude: Double = 60.1695
 let defaultLongitude: Double = 24.9354
-let defaultRadius: Int = 10000
+let defaultRadius: Int = 300
 let restaurantTypes: [PlaceType] = [.bar, .restaurant, .night_club, .bakery, .cafe]
 let sightsTypes: [PlaceType] = [.zoo, .park, .museum, .tourist_attraction, .amusement_park, .church, .library, .stadium, .aquarium, .university, .art_gallery]
-let accommodationTypes: [PlaceType] = [.lodging, .rv_park]
-let natureTypes: [PlaceType] = [.campground, .rv_park, .park]
+let accommodationTypes: [PlaceType] = [.lodging]
+let natureTypes: [PlaceType] = [.rv_park, .campground]
 
 // Use the pipe character "|" as the separator when joining place types
 let restaurantTypesString = restaurantTypes.map { $0.rawValue }.joined(separator: "|")
@@ -60,9 +72,8 @@ let sightsTypesString = sightsTypes.map { $0.rawValue }.joined(separator: "|")
 let accommodationTypesString = accommodationTypes.map { $0.rawValue }.joined(separator: "|")
 let natureTypesString = natureTypes.map { $0.rawValue }.joined(separator: "|")
 
-
 // Function to fetch places from the Google Places API
-func fetchPlaces(for types: [PlaceType], completion: @escaping ([Place]?) -> Void) {
+func fetchPlaces(for typeStrings: [String], completion: @escaping ([Place]?) -> Void) {
     let apiKey = APIKeys.googlePlacesAPIKey
     
     // Base URL for the Google Places API nearby search
@@ -71,16 +82,13 @@ func fetchPlaces(for types: [PlaceType], completion: @escaping ([Place]?) -> Voi
     // Base location for the search
     let baseLocation = "\(defaultLatitude),\(defaultLongitude)"
     
-    // Use the pipe character "|" as the separator when joining place types
-    let placeTypesString = types.map { $0.rawValue }.joined(separator: "|")
-    
     // Construct the complete URL for the API request
     var components = URLComponents(string: baseUrl)
     components?.queryItems = [
         URLQueryItem(name: "location", value: baseLocation),
         URLQueryItem(name: "radius", value: "\(defaultRadius)"),
         URLQueryItem(name: "key", value: apiKey),
-        URLQueryItem(name: "type", value: placeTypesString)
+        URLQueryItem(name: "type", value: typeStrings.joined(separator: "|"))
     ]
     
     // Validate and create a URL from the constructed string
@@ -89,6 +97,8 @@ func fetchPlaces(for types: [PlaceType], completion: @escaping ([Place]?) -> Voi
         completion(nil)
         return
     }
+    
+    print("Fetching places from URL: \(url)")
     
     // Use async/await to perform the API request
     Task {
@@ -107,14 +117,18 @@ func fetchPlaces(for types: [PlaceType], completion: @escaping ([Place]?) -> Voi
                         place_id: apiPlace.place_id,
                         rating: apiPlace.rating,
                         types: apiPlace.types,
-                        vicinity: apiPlace.vicinity
+                        vicinity: apiPlace.vicinity,
+                        opening_hours: apiPlace.opening_hours,
+                        photos: apiPlace.photos
                     )
                 }
+                
+                print("Fetched \(places.count) places.")
                 
                 // Call the completion handler with the mapped places
                 completion(places)
             } catch {
-                print("Error decoding JSON: \(error)")
+                print("Error fetching or decoding JSON: \(error)")
                 completion(nil)
             }
         } catch {

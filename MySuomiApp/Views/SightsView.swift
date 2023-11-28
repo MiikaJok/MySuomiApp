@@ -1,44 +1,56 @@
-//
-//  SightsView.swift
-//  MySuomiApp
-//
-//
 
 import SwiftUI
+import URLImage
 
 struct SightsView: View {
+    @State private var sightsPlaces: [Place] = []
+    @State private var hasFetchedData = false
     
-    @State private var places: [Place] = []
     
     var body: some View {
-        //NavigationView {
-            List {
-                ForEach(places, id: \.place_id) { place in
-                    NavigationLink(destination: NaturePlaceDetailView(place: place)) {
-                        Text(place.name)
-                    }
-                    .buttonStyle(PlainButtonStyle())
+        
+        // Display your nature places here
+        List(sightsPlaces, id: \.place_id) { place in
+            NavigationLink(destination: SightsDetailView(place: place)) {
+                HStack {
+                    CardView(title: place.name, imageURL: imageURL(photoReference: place.photos?.first?.photo_reference ?? "", maxWidth: 100))
                 }
             }
-            .onAppear {
-                // Fetch places when the view appears
-                fetchPlaces(for: sightsTypes) { fetchedPlaces in
-                    if let fetchedPlaces = fetchedPlaces {
-                        // Update the state with fetched places
-                        places = fetchedPlaces
-                        print("Places fetched successfully: \(places)")
-                    } else {
-                        print("Failed to fetch places.")
-                    }
-                }
+            .buttonStyle(PlainButtonStyle())
+        }
+        .onAppear {
+            // Fetch data only if it hasn't been fetched before
+            if !hasFetchedData {
+                fetchSightsPlaces()
+                hasFetchedData = true
             }
-            .navigationTitle("Sights")
-        //}
-        .navigationViewStyle(StackNavigationViewStyle())
+        }
+        .navigationTitle("Sights")
     }
+    func fetchSightsPlaces() {
+        // Create an array to store fetched places
+        var combinedPlaces: [Place] = []
+        
+        // Iterate over each type in natureTypes and fetch places
+        for type in sightsTypes {
+            // Use the type.rawValue to fetch places for the current type
+            fetchPlaces(for: [type.rawValue]) { places in
+                if let places = places {
+                    // Append the fetched places to the combined array
+                    combinedPlaces.append(contentsOf: places)
+                    
+                    // Update the state with the combined array
+                    sightsPlaces = combinedPlaces
+                } else {
+                    // Handle error or display an error message
+                    print("Failed to fetch nature places")
+                }
+            }
+        }
+    }
+    
 }
-
-struct NaturePlaceDetailView: View {
+struct SightsDetailView: View {
     let place: Place
     
     var body: some View {
@@ -52,15 +64,29 @@ struct NaturePlaceDetailView: View {
                         Text("Rating: N/A")
                             .font(.headline)
                     }
-                    
                     Text("Types: \(place.types.joined(separator: ", "))")
                         .font(.headline)
-                    Text("Address: \(place.vicinity)")
+                    Text("Vicinity: \(place.vicinity)")
                         .font(.headline)
+                    if let isOpenNow = place.opening_hours?.open_now {
+                        Text("Open Now: \(isOpenNow ? "Yes" : "No")")
+                            .font(.headline)
+                    }
+                    
+                    if let photoReference = place.photos?.first?.photo_reference {
+                        // Display the image in the detail view
+                        URLImage(imageURL(photoReference: photoReference, maxWidth: 400)) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: 200) // Adjust the size as needed
+                        }
+                    }
                 }
             }
         }
         .navigationTitle(place.name)
     }
+    
 }
 

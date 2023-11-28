@@ -24,6 +24,7 @@
 		6A4874212B03A93600ADD0FF /* LanguageSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4874202B03A93600ADD0FF /* LanguageSettings.swift */; };
 		6A7C043A2B14A6DB00637CA5 /* NatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7C04392B14A6DB00637CA5 /* NatureView.swift */; };
 		6A965D002B0ECB3400DBF47A /* FetchPlaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A965CFF2B0ECB3400DBF47A /* FetchPlaces.swift */; };
+		6ADA90C62B16005000F18C72 /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6ADA90C52B16005000F18C72 /* URLImage */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +55,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A2B22342B08F339009D9EB6 /* CoreLocation.framework in Frameworks */,
+				6ADA90C62B16005000F18C72 /* URLImage in Frameworks */,
 				6A417AA52B052C1300B02EC7 /* MapKit.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -150,6 +152,9 @@
 			dependencies = (
 			);
 			name = MySuomiApp;
+			packageProductDependencies = (
+				6ADA90C52B16005000F18C72 /* URLImage */,
+			);
 			productName = MySuomiApp;
 			productReference = 6A0A67152AFD15780028328E /* MySuomiApp.app */;
 			productType = "com.apple.product-type.application";
@@ -178,6 +183,9 @@
 				Base,
 			);
 			mainGroup = 6A0A670C2AFD15780028328E;
+			packageReferences = (
+				6ADA90C42B16005000F18C72 /* XCRemoteSwiftPackageReference "url-image" */,
+			);
 			productRefGroup = 6A0A67162AFD15780028328E /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -423,6 +431,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6ADA90C42B16005000F18C72 /* XCRemoteSwiftPackageReference "url-image" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/dmytro-anokhin/url-image.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6ADA90C52B16005000F18C72 /* URLImage */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6ADA90C42B16005000F18C72 /* XCRemoteSwiftPackageReference "url-image" */;
+			productName = URLImage;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6A0A670D2AFD15780028328E /* Project object */;
 }
