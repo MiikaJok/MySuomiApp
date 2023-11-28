@@ -4,49 +4,55 @@ import URLImage
 
 struct NatureView: View {
     @State private var naturePlaces: [Place] = []
+    @State private var hasFetchedData = false
+    
     
     var body: some View {
-        VStack {
-            // Display your nature places here
-            List(naturePlaces, id: \.place_id) { place in
-                NavigationLink(destination: NatureDetailView(place: place)) {
-                    HStack {
-                        if let photoReference = place.photos?.first?.photo_reference {
-                            // Display the image in the list view
-                            URLImage(imageURL(photoReference: photoReference, maxWidth: 100)) { image in
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(width: 50, height: 50)
-                            }                        }
-                        Text(place.name)
-                            .font(.headline)
-                            .padding(.trailing, 10)
-                        
-                    }
+        
+        // Display your nature places here
+        List(naturePlaces, id: \.place_id) { place in
+            NavigationLink(destination: NatureDetailView(place: place)) {
+                HStack {
+                    CardView(title: place.name, imageURL: imageURL(photoReference: place.photos?.first?.photo_reference ?? "", maxWidth: 100))
                 }
-                .buttonStyle(PlainButtonStyle())
             }
-            .onAppear {
-                // Fetch nature places when the view appears
+            .buttonStyle(PlainButtonStyle())
+        }
+        .onAppear {
+            // Fetch data only if it hasn't been fetched before
+            if !hasFetchedData {
                 fetchNaturePlaces()
+                hasFetchedData = true
             }
         }
+        
+        
         .navigationTitle("Nature")
     }
     
     func fetchNaturePlaces() {
-        // Use the natureTypes array to fetch nature places
-        fetchPlaces(for: natureTypes) { places in
-            if let places = places {
-                // Update the state with the fetched nature places
-                naturePlaces = places
-            } else {
-                // Handle error or display an error message
-                print("Failed to fetch nature places")
+        // Create an array to store fetched places
+        var combinedPlaces: [Place] = []
+        
+        // Iterate over each type in natureTypes and fetch places
+        for type in natureTypes {
+            // Use the type.rawValue to fetch places for the current type
+            fetchPlaces(for: [type.rawValue]) { places in
+                if let places = places {
+                    // Append the fetched places to the combined array
+                    combinedPlaces.append(contentsOf: places)
+                    
+                    // Update the state with the combined array
+                    naturePlaces = combinedPlaces
+                } else {
+                    // Handle error or display an error message
+                    print("Failed to fetch nature places")
+                }
             }
         }
     }
+    
+    
 }
 
 struct NatureDetailView: View {

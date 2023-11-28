@@ -206,8 +206,11 @@ struct HomeView: View {
     private func searchPlaces() {
         let selectedTypes: [PlaceType] = [] // Add the types you want to search for
         
+        // Convert the array of PlaceType enums to an array of strings
+        let typeStrings = selectedTypes.map { $0.rawValue }
+        
         // Assuming Search is a namespace with a static function fetchPlaces
-        fetchPlaces(for: selectedTypes) { fetchedPlaces in
+        fetchPlaces(for: typeStrings) { fetchedPlaces in
             if let fetchedPlaces = fetchedPlaces {
                 DispatchQueue.main.async {
                     self.searchResults = fetchedPlaces

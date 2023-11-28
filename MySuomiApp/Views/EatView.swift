@@ -3,41 +3,44 @@ import URLImage
 
 struct EatView: View {
     @State private var restaurantPlaces: [Place] = []
+    @State private var hasFetchedData = false
     
     var body: some View {
         List(restaurantPlaces, id: \.place_id) { place in
             NavigationLink(destination: EatDetailView(place: place)) {
                 HStack {
-                    if let photoReference = place.photos?.first?.photo_reference {
-                        // Display the image in the list view
-                        URLImage(imageURL(photoReference: photoReference, maxWidth: 100)) { image in
-                            image
-                                .resizable()
-                                .aspectRatio(contentMode: .fit)
-                                .frame(width: 50, height: 50)
-                        }
-                    }
-                    Text(place.name)
-                        .font(.headline)
-                        .padding(.trailing, 10)
+                    CardView(title: place.name, imageURL: imageURL(photoReference: place.photos?.first?.photo_reference ?? "", maxWidth: 100))
                 }
             }
             .buttonStyle(PlainButtonStyle())
         }
         .onAppear {
-            fetchRestaurantPlaces()
+            // Fetch data only if it hasn't been fetched before
+            if !hasFetchedData {
+                fetchRestaurantPlaces()
+                hasFetchedData = true
+            }
         }
         .navigationTitle("Restaurants")
     }
     func fetchRestaurantPlaces() {
-        // Use the restaurantsTypes array to fetch restaurant places
-        fetchPlaces(for: restaurantTypes) { places in
-            if let places = places {
-                // Update the state with the fetched restaurant places
-                restaurantPlaces = places
-            } else {
-                // Handle error or display an error message
-                print("Failed to fetch restaurant places")
+        // Create an array to store fetched places
+        var combinedPlaces: [Place] = []
+        
+        // Iterate over each type in natureTypes and fetch places
+        for type in restaurantTypes {
+            // Use the type.rawValue to fetch places for the current type
+            fetchPlaces(for: [type.rawValue]) { places in
+                if let places = places {
+                    // Append the fetched places to the combined array
+                    combinedPlaces.append(contentsOf: places)
+                    
+                    // Update the state with the combined array
+                    restaurantPlaces = combinedPlaces
+                } else {
+                    // Handle error or display an error message
+                    print("Failed to fetch nature places")
+                }
             }
         }
     }
@@ -83,10 +86,3 @@ struct EatDetailView: View {
     }
 }
 
-// Helper function to construct the image URL using the photo reference and maxWidth
-func imageURL(photoReference: String, maxWidth: Int) -> URL {
-    let apiKey = APIKeys.googlePlacesAPIKey
-    let baseURL = "https://maps.googleapis.com/maps/api/place/photo"
-    let url = "\(baseURL)?maxwidth=\(maxWidth)&photoreference=\(photoReference)&key=\(apiKey)"
-    return URL(string: url)!
-}
