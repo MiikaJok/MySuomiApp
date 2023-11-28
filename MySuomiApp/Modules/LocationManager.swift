@@ -41,7 +41,6 @@ final class LocationManager: NSObject, ObservableObject {
         guard !query.isEmpty else {
             return // Don't perform a search if the query is empty
         }
-
         currentSearchQuery = query // Save the current search query
 
         // Check if the selected suggestion is present in the suggestions array
@@ -71,6 +70,7 @@ final class LocationManager: NSObject, ObservableObject {
 
         completer?.queryFragment = query // Update the completer with the query
     }
+
 
     
     // Function to handle the selection of a suggestion

@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreData
 import URLImage
 
 struct EatView: View {
@@ -84,5 +85,9 @@ struct EatDetailView: View {
         }
         .navigationTitle(place.name)
     }
+    .navigationViewStyle(StackNavigationViewStyle())
+    //.environmentObject(languageSettings) // Pass the language settings to EatView
+    
+  }
 }
 

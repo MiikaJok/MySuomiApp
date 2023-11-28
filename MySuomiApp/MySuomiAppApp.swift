@@ -6,14 +6,19 @@
 //
 
 import SwiftUI
+import CoreData
 
 @main
 struct MySuomiAppApp: App {
-    @StateObject private var languageSettings = LanguageSettings()
-    var body: some Scene {
-        WindowGroup {
-            HomeView()
-                .environmentObject(languageSettings)
-        }
+  
+  let persistenceController = PersistenceController.shared
+  
+  @StateObject private var languageSettings = LanguageSettings()
+  var body: some Scene {
+    WindowGroup {
+      HomeView()
+        .environmentObject(languageSettings)
+        .environment(\.managedObjectContext, persistenceController.container.viewContext)
     }
+  }
 }

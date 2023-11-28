@@ -3,6 +3,7 @@ import SwiftUI
 import URLImage
 
 struct AccommodationView: View {
+
     @State private var accommodationPlaces: [Place] = []
     @State private var hasFetchedData = false
     
