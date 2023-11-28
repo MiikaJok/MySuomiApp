@@ -11,7 +11,7 @@ struct SightsView: View {
     @State private var places: [Place] = []
     
     var body: some View {
-        NavigationView {
+        //NavigationView {
             List {
                 ForEach(places, id: \.place_id) { place in
                     NavigationLink(destination: NaturePlaceDetailView(place: place)) {
@@ -33,7 +33,7 @@ struct SightsView: View {
                 }
             }
             .navigationTitle("Sights")
-        }
+        //}
         .navigationViewStyle(StackNavigationViewStyle())
     }
 }
