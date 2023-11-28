@@ -1,44 +1,51 @@
-//
-//  SightsView.swift
-//  MySuomiApp
-//
-//
 
 import SwiftUI
+import URLImage
 
 struct SightsView: View {
     
-    @State private var places: [Place] = []
+    @State private var sightsPlaces: [Place] = []
     
     var body: some View {
-        //NavigationView {
-            List {
-                ForEach(places, id: \.place_id) { place in
-                    NavigationLink(destination: NaturePlaceDetailView(place: place)) {
-                        Text(place.name)
+        List(sightsPlaces, id: \.place_id) { place in
+            NavigationLink(destination: EatDetailView(place: place)) {
+                HStack {
+                    if let photoReference = place.photos?.first?.photo_reference {
+                        // Display the image in the list view
+                        URLImage(imageURL(photoReference: photoReference, maxWidth: 100)) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(width: 50, height: 50)
+                        }
                     }
-                    .buttonStyle(PlainButtonStyle())
+                    Text(place.name)
+                        .font(.headline)
+                        .padding(.trailing, 10)
                 }
             }
-            .onAppear {
-                // Fetch places when the view appears
-                fetchPlaces(for: sightsTypes) { fetchedPlaces in
-                    if let fetchedPlaces = fetchedPlaces {
-                        // Update the state with fetched places
-                        places = fetchedPlaces
-                        print("Places fetched successfully: \(places)")
-                    } else {
-                        print("Failed to fetch places.")
-                    }
-                }
+            .buttonStyle(PlainButtonStyle())
+        }
+        .onAppear {
+            fetchSightsPlaces()
+        }
+        .navigationTitle("Sights")
+    }
+    func fetchSightsPlaces() {
+        // Use the sightsTypes array to fetch sights places
+        fetchPlaces(for: sightsTypes) { places in
+            if let places = places {
+                // Update the state with the fetched sights places
+                sightsPlaces = places
+            } else {
+                // Handle error or display an error message
+                print("Failed to fetch sights places")
             }
-            .navigationTitle("Sights")
-        //}
-        .navigationViewStyle(StackNavigationViewStyle())
+        }
     }
 }
 
-struct NaturePlaceDetailView: View {
+struct SightsPlaceDetailView: View {
     let place: Place
     
     var body: some View {
@@ -52,15 +59,29 @@ struct NaturePlaceDetailView: View {
                         Text("Rating: N/A")
                             .font(.headline)
                     }
-                    
                     Text("Types: \(place.types.joined(separator: ", "))")
                         .font(.headline)
-                    Text("Address: \(place.vicinity)")
+                    Text("Vicinity: \(place.vicinity)")
                         .font(.headline)
+                    if let isOpenNow = place.opening_hours?.open_now {
+                        Text("Open Now: \(isOpenNow ? "Yes" : "No")")
+                            .font(.headline)
+                    }
+                    
+                    if let photoReference = place.photos?.first?.photo_reference {
+                        // Display the image in the detail view
+                        URLImage(imageURL(photoReference: photoReference, maxWidth: 400)) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: 200) // Adjust the size as needed
+                        }
+                    }
                 }
             }
         }
         .navigationTitle(place.name)
     }
+    
 }
 

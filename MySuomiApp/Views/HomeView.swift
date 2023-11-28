@@ -1,6 +1,5 @@
 import SwiftUI
 
-// HomeView represents the main view of the application
 struct HomeView: View {
     // Environment object for language settings
     @EnvironmentObject var languageSettings: LanguageSettings
@@ -72,6 +71,13 @@ struct HomeView: View {
                             }) {
                                 Label(languageSettings.isEnglish ? "Accommodation" : "Majoitus", systemImage: "house")
                             }
+                            
+                            Button(action: {
+                                selectedMenu = "Nature"
+                                isNavigationActive.toggle()
+                            }) {
+                                Label(languageSettings.isEnglish ? "Nature" : "Luonto", systemImage: "leaf")
+                            }
                         } label: {
                             Image(systemName: "line.horizontal.3")
                                 .padding()
@@ -95,7 +101,7 @@ struct HomeView: View {
                         Section(header: Text("Search Results")) {
                             ForEach(searchResults.indices, id: \.self) { index in
                                 let place = searchResults[index]
-                                NavigationLink(destination: PlaceDetailView(place: place)) {
+                                NavigationLink(destination: EatDetailView(place: place)) {
                                     VStack(alignment: .leading) {
                                         Text(place.name)
                                             .font(.headline)
@@ -131,7 +137,7 @@ struct HomeView: View {
                     }
                     .padding()
                     
-                   
+                    
                     // Navigation link to the MapView
                     NavigationLink(destination: MapView()) {
                         Text(languageSettings.isEnglish ? "Map" : "Kartta")
@@ -173,8 +179,18 @@ struct HomeView: View {
                                         }
                                     )
                                     .hidden()
+                                }else if selectedMenu == "Nature" {
+                                    NavigationLink(
+                                        destination: NatureView(),
+                                        isActive: $isNavigationActive,
+                                        label: {
+                                            EmptyView()
+                                        }
+                                    )
+                                    .hidden()
                                 }
                             }
+                            
                                 .onAppear {
                                     selectedMenu = nil
                                 }
@@ -189,7 +205,7 @@ struct HomeView: View {
     // Function to search places
     private func searchPlaces() {
         let selectedTypes: [PlaceType] = [] // Add the types you want to search for
-
+        
         // Assuming Search is a namespace with a static function fetchPlaces
         fetchPlaces(for: selectedTypes) { fetchedPlaces in
             if let fetchedPlaces = fetchedPlaces {
