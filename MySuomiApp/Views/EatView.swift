@@ -5,7 +5,7 @@ import URLImage
 struct EatView: View {
     @State private var restaurantPlaces: [Place] = []
     @State private var hasFetchedData = false
-    
+
     var body: some View {
         List(restaurantPlaces, id: \.place_id) { place in
             NavigationLink(destination: EatDetailView(place: place)) {
@@ -24,10 +24,11 @@ struct EatView: View {
         }
         .navigationTitle("Restaurants")
     }
+
     func fetchRestaurantPlaces() {
         // Create an array to store fetched places
         var combinedPlaces: [Place] = []
-        
+
         // Iterate over each type in natureTypes and fetch places
         for type in restaurantTypes {
             // Use the type.rawValue to fetch places for the current type
@@ -35,7 +36,7 @@ struct EatView: View {
                 if let places = places {
                     // Append the fetched places to the combined array
                     combinedPlaces.append(contentsOf: places)
-                    
+
                     // Update the state with the combined array
                     restaurantPlaces = combinedPlaces
                 } else {
@@ -47,10 +48,9 @@ struct EatView: View {
     }
 }
 
-
 struct EatDetailView: View {
     let place: Place
-    
+
     var body: some View {
         Form {
             Section(header: Text("Details for \(place.name)").font(.title2)) {
@@ -70,7 +70,7 @@ struct EatDetailView: View {
                         Text("Open Now: \(isOpenNow ? "Yes" : "No")")
                             .font(.headline)
                     }
-                    
+
                     if let photoReference = place.photos?.first?.photo_reference {
                         // Display the image in the detail view
                         URLImage(imageURL(photoReference: photoReference, maxWidth: 400)) { image in
@@ -85,9 +85,4 @@ struct EatDetailView: View {
         }
         .navigationTitle(place.name)
     }
-    .navigationViewStyle(StackNavigationViewStyle())
-    //.environmentObject(languageSettings) // Pass the language settings to EatView
-    
-  }
 }
-
