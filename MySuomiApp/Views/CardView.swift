@@ -103,6 +103,11 @@ struct CardView: View {
       print("Error removing liked item from CoreData: \(error)")
     }
   }
+    
+    /*func savePlaceToCoreData() {
+        // Use the savePlaces function from the PersistenceController
+        PersistenceController.shared.savePlaces([Place(name: title, place_id: "", rating: nil, types: [], vicinity: "", opening_hours: nil, photos: [Photo(photo_reference: imageURL.absoluteString, width: 0, height: 0)])])
+    }*/
 }
 // Helper function to construct the image URL using the photo reference and maxWidth
 func imageURL(photoReference: String, maxWidth: Int) -> URL {

@@ -7,7 +7,7 @@ struct Location: Codable {
 }
 
 // Structure to represent a place
-struct Place: Codable {
+struct Place: Codable, Hashable {
     var name: String
     let place_id: String
     let rating: Double?
@@ -15,6 +15,16 @@ struct Place: Codable {
     let vicinity: String
     let opening_hours: OpeningHours?
     let photos: [Photo]?
+    
+    // Provide a hash value based on the place_id
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(place_id)
+    }
+    
+    // Implement the equality check for Hashable conformance
+    static func == (lhs: Place, rhs: Place) -> Bool {
+        return lhs.place_id == rhs.place_id
+    }
 }
 
 struct OpeningHours: Codable {
@@ -67,10 +77,10 @@ let accommodationTypes: [PlaceType] = [.lodging]
 let natureTypes: [PlaceType] = [.rv_park, .campground]
 
 // Use the pipe character "|" as the separator when joining place types
-let restaurantTypesString = restaurantTypes.map { $0.rawValue }.joined(separator: "|")
-let sightsTypesString = sightsTypes.map { $0.rawValue }.joined(separator: "|")
-let accommodationTypesString = accommodationTypes.map { $0.rawValue }.joined(separator: "|")
-let natureTypesString = natureTypes.map { $0.rawValue }.joined(separator: "|")
+//let restaurantTypesString = restaurantTypes.map { $0.rawValue }.joined(separator: "|")
+//let sightsTypesString = sightsTypes.map { $0.rawValue }.joined(separator: "|")
+//let accommodationTypesString = accommodationTypes.map { $0.rawValue }.joined(separator: "|")
+//let natureTypesString = natureTypes.map { $0.rawValue }.joined(separator: "|")
 
 // Function to fetch places from the Google Places API
 func fetchPlaces(for typeStrings: [String], completion: @escaping ([Place]?) -> Void) {

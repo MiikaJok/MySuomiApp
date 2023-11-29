@@ -24,6 +24,9 @@
 		6A4874212B03A93600ADD0FF /* LanguageSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4874202B03A93600ADD0FF /* LanguageSettings.swift */; };
 		6A7C043A2B14A6DB00637CA5 /* NatureView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A7C04392B14A6DB00637CA5 /* NatureView.swift */; };
 		6A965D002B0ECB3400DBF47A /* FetchPlaces.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A965CFF2B0ECB3400DBF47A /* FetchPlaces.swift */; };
+		6AD6BCA32B175BFB00EA0C4F /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD6BCA22B175BFB00EA0C4F /* PersistenceController.swift */; };
+		6AD6BCA72B175C4C00EA0C4F /* FavoritesModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6AD6BCA52B175C4C00EA0C4F /* FavoritesModel.xcdatamodeld */; };
+		6AD6BCA92B175D7C00EA0C4F /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AD6BCA82B175D7B00EA0C4F /* CoreData.framework */; };
 		6ADA90C62B16005000F18C72 /* URLImage in Frameworks */ = {isa = PBXBuildFile; productRef = 6ADA90C52B16005000F18C72 /* URLImage */; };
 /* End PBXBuildFile section */
 
@@ -47,6 +50,9 @@
 		6A4874242B03B48C00ADD0FF /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		6A7C04392B14A6DB00637CA5 /* NatureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NatureView.swift; sourceTree = "<group>"; };
 		6A965CFF2B0ECB3400DBF47A /* FetchPlaces.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchPlaces.swift; sourceTree = "<group>"; };
+		6AD6BCA22B175BFB00EA0C4F /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
+		6AD6BCA62B175C4C00EA0C4F /* FavoritesModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FavoritesModel.xcdatamodel; sourceTree = "<group>"; };
+		6AD6BCA82B175D7B00EA0C4F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +61,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A2B22342B08F339009D9EB6 /* CoreLocation.framework in Frameworks */,
+				6AD6BCA92B175D7C00EA0C4F /* CoreData.framework in Frameworks */,
 				6ADA90C62B16005000F18C72 /* URLImage in Frameworks */,
 				6A417AA52B052C1300B02EC7 /* MapKit.framework in Frameworks */,
 			);
@@ -98,6 +105,7 @@
 		6A0A67172AFD15780028328E /* MySuomiApp */ = {
 			isa = PBXGroup;
 			children = (
+				6AD6BCA42B175C2200EA0C4F /* Models */,
 				6A2B22352B090352009D9EB6 /* Modules */,
 				6A4874242B03B48C00ADD0FF /* Info.plist */,
 				3FCA50722B038B2400FDF254 /* Views */,
@@ -119,6 +127,7 @@
 		6A2B22352B090352009D9EB6 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
+				6AD6BCA22B175BFB00EA0C4F /* PersistenceController.swift */,
 				6A2B22362B09036E009D9EB6 /* LocationManager.swift */,
 				6A965CFF2B0ECB3400DBF47A /* FetchPlaces.swift */,
 				3F9C0B802B0F6A950012170E /* APIKeys.swift */,
@@ -130,10 +139,19 @@
 		6A417AA32B052C1200B02EC7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6AD6BCA82B175D7B00EA0C4F /* CoreData.framework */,
 				6A2B22332B08F338009D9EB6 /* CoreLocation.framework */,
 				6A417AA42B052C1300B02EC7 /* MapKit.framework */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		6AD6BCA42B175C2200EA0C4F /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				6AD6BCA52B175C4C00EA0C4F /* FavoritesModel.xcdatamodeld */,
+			);
+			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -213,9 +231,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				3F9C0B812B0F6A950012170E /* APIKeys.swift in Sources */,
+				6AD6BCA32B175BFB00EA0C4F /* PersistenceController.swift in Sources */,
 				6A0A671B2AFD15780028328E /* HomeView.swift in Sources */,
 				3FD06CA82B0CCB20001B829D /* CardView.swift in Sources */,
 				3FD06CA42B0BC70B001B829D /* SightsView.swift in Sources */,
+				6AD6BCA72B175C4C00EA0C4F /* FavoritesModel.xcdatamodeld in Sources */,
 				6A48741D2B03A29E00ADD0FF /* MapView.swift in Sources */,
 				6A7C043A2B14A6DB00637CA5 /* NatureView.swift in Sources */,
 				6A965D002B0ECB3400DBF47A /* FetchPlaces.swift in Sources */,
@@ -350,9 +370,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"MySuomiApp/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MySuomiApp/Info.plist;
@@ -364,6 +386,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -371,6 +394,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = fi.omaprojekti.MySuomiApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -382,9 +406,11 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_IDENTITY = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"MySuomiApp/Preview Content\"";
+				DEVELOPMENT_TEAM = "";
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = MySuomiApp/Info.plist;
@@ -396,6 +422,7 @@
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				IPHONEOS_DEPLOYMENT_TARGET = 16.4;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -403,6 +430,7 @@
 				MARKETING_VERSION = 1.0;
 				PRODUCT_BUNDLE_IDENTIFIER = fi.omaprojekti.MySuomiApp;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -450,6 +478,19 @@
 			productName = URLImage;
 		};
 /* End XCSwiftPackageProductDependency section */
+
+/* Begin XCVersionGroup section */
+		6AD6BCA52B175C4C00EA0C4F /* FavoritesModel.xcdatamodeld */ = {
+			isa = XCVersionGroup;
+			children = (
+				6AD6BCA62B175C4C00EA0C4F /* FavoritesModel.xcdatamodel */,
+			);
+			currentVersion = 6AD6BCA62B175C4C00EA0C4F /* FavoritesModel.xcdatamodel */;
+			path = FavoritesModel.xcdatamodeld;
+			sourceTree = "<group>";
+			versionGroupType = wrapper.xcdatamodel;
+		};
+/* End XCVersionGroup section */
 	};
 	rootObject = 6A0A670D2AFD15780028328E /* Project object */;
 }
