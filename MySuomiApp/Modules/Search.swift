@@ -12,7 +12,7 @@ struct Search {
         let apiKey = APIKeys.googlePlacesAPIKey
         let baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
         let baseLocation = "\(defaultLatitude),\(defaultLongitude)"
-
+        
         // Use async/await to perform the API requests for each type
         Task {
             var allPlaces: [Place] = []
@@ -25,13 +25,13 @@ struct Search {
                     URLQueryItem(name: "key", value: apiKey),
                     URLQueryItem(name: "type", value: type.rawValue)
                 ]
-
+                
                 guard let url = components?.url else {
                     print("Invalid URL")
                     completion(nil)
                     return
                 }
-
+                
                 do {
                     let (data, _) = try await URLSession.shared.data(from: url)
                     let decoder = JSONDecoder()
@@ -52,21 +52,30 @@ struct Search {
                     print("Error fetching or decoding JSON for type \(type.rawValue): \(error)")
                 }
             }
-
+            
             // Call the completion handler with the combined places from all types
             completion(allPlaces)
         }
     }
-
+    
     static func searchPlaces(query: String, completion: @escaping ([Place]?) -> Void) {
         fetchPlaces(for: defaultPlaceTypes) { places in
             guard let places = places else {
                 completion(nil)
                 return
             }
-
-            let filteredPlaces = places.filter { $0.name.lowercased().contains(query.lowercased()) }
-            completion(filteredPlaces)
+            
+            let filteredPlaces = places.filter { place in
+                let nameContainsQuery = place.name.lowercased().contains(query.lowercased())
+                let typesContainQuery = place.types.contains { $0.lowercased().contains(query.lowercased()) }
+                return nameContainsQuery || typesContainQuery
+            }
+            
+            print("Fetched \(filteredPlaces.count) places based on name and type.")
+            
+            // Create a set of unique places based on place_id
+            let uniquePlaces = Array(Set(filteredPlaces))
+            completion(uniquePlaces)
         }
     }
 }
