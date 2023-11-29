@@ -1,6 +1,5 @@
 import SwiftUI
 
-
 struct HomeView: View {
     // Environment object for language settings
     @EnvironmentObject var languageSettings: LanguageSettings
@@ -13,7 +12,6 @@ struct HomeView: View {
     @State private var isNavigationActive: Bool = false
     @State private var places: [Place] = []
     @State private var searchResults: [Place] = []
-    
     
     var body: some View {
         NavigationView {
@@ -44,6 +42,11 @@ struct HomeView: View {
                         
                         Button(action: {
                             self.isSearchBarVisible.toggle()
+                            // reset searchtext and results when closing the search
+                            if !isSearchBarVisible {
+                                searchResults.removeAll()
+                                searchText = ""
+                            }
                         }) {
                             Image(systemName: "magnifyingglass")
                                 .padding()
@@ -89,6 +92,7 @@ struct HomeView: View {
                         TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
                             .padding()
                             .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .disableAutocorrection(true)
                             .padding()
                             .onChange(of: searchText, perform: { newSearchText in
                                 // Call searchPlaces when text changes
@@ -97,21 +101,30 @@ struct HomeView: View {
                     }
                     
                     // Display search results
+                    
                     if !searchResults.isEmpty {
-                        Section(header: Text("Search Results")) {
-                            ForEach(searchResults.indices, id: \.self) { index in
-                                let place = searchResults[index]
-                                NavigationLink(destination: EatDetailView(place: place)) {
-                                    VStack(alignment: .leading) {
-                                        Text(place.name)
-                                            .font(.headline)
+                        ScrollView {
+                            LazyVStack {
+                                Section(header: Text("Search Results")) {
+                                    ForEach(searchResults.indices, id: \.self) { index in
+                                        let place = searchResults[index]
+                                        NavigationLink(destination: DetailView(place: place)) {
+                                            VStack(alignment: .leading) {
+                                                Text(place.name)
+                                                    .font(.headline)
+                                            }
+                                            .padding(.vertical, 8)
+                                        }
+                                        .buttonStyle(PlainButtonStyle())
                                     }
-                                    .padding(.vertical, 8)
                                 }
-                                .buttonStyle(PlainButtonStyle())
                             }
                         }
+                        .frame(maxHeight: 250) // Set the maximum height as needed
                     }
+                    
+                    
+                    
                     // Image carousel with TabView
                     VStack {
                         Image("helsinki")
@@ -136,7 +149,6 @@ struct HomeView: View {
                         .offset(x: cardOffset * -(UIScreen.main.bounds.width - 30))
                     }
                     .padding()
-                    
                     
                     // Navigation link to the MapView
                     NavigationLink(destination: MapView()) {
@@ -179,7 +191,7 @@ struct HomeView: View {
                                         }
                                     )
                                     .hidden()
-                                }else if selectedMenu == "Nature" {
+                                } else if selectedMenu == "Nature" {
                                     NavigationLink(
                                         destination: NatureView(),
                                         isActive: $isNavigationActive,
@@ -190,7 +202,6 @@ struct HomeView: View {
                                     .hidden()
                                 }
                             }
-                            
                                 .onAppear {
                                     selectedMenu = nil
                                 }
@@ -204,18 +215,18 @@ struct HomeView: View {
     }
     
     let search = Search()
-
+    
     // Function to search places
-       private func searchPlaces() {
-           Search.searchPlaces(query: searchText) { fetchedPlaces in
-               if let fetchedPlaces = fetchedPlaces {
-                   DispatchQueue.main.async {
-                       searchResults = fetchedPlaces
-                       print("Search results: \(searchResults)")
-                   }
-               }
-           }
-       }
+    private func searchPlaces() {
+        Search.searchPlaces(query: searchText) { fetchedPlaces in
+            if let fetchedPlaces = fetchedPlaces {
+                DispatchQueue.main.async {
+                    searchResults = fetchedPlaces
+                    // print("Search results: \(searchResults)")
+                }
+            }
+        }
+    }
     
     // Preview for HomeView
     struct HomeView_Previews: PreviewProvider {
@@ -225,3 +236,4 @@ struct HomeView: View {
         }
     }
 }
+
