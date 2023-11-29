@@ -4,7 +4,7 @@ struct Search {
     
     static let defaultPlaceTypes: [PlaceType] = [
         .restaurant, .bar, .lodging, .cafe, .park, .museum, .tourist_attraction, .zoo,
-        .spa, .movie_theater, .aquarium, .bakery, .campground, .night_club, .amusement_park,
+         .aquarium, .bakery, .campground, .night_club, .amusement_park,
         .church, .library, .stadium, .rv_park, .university, .art_gallery
     ]
     
