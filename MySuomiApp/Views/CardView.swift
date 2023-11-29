@@ -3,116 +3,117 @@ import CoreData
 import URLImage
 
 struct CardView: View {
-  let title: String
-  let imageURL: URL
-  @State private var isFavorite = false
-
-  // Inject the managedObjectContext
-  @Environment(\.managedObjectContext) private var viewContext
-
-  func checkLike() {
-    let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
-    request.predicate = NSPredicate(format: "name == %@ AND image == %@", title, imageURL as CVarArg)
-
-    do {
-      if let result = try viewContext.fetch(request) as? [NSManagedObject], !result.isEmpty {
-        print(result)
-        isFavorite = true
-      }
-    } catch {
-      print("Error: \(error)")
-    }
-  }
-
-  var body: some View {
-    HStack {
-      Button(action: {
-        // Toggle the favorite state
-        isFavorite.toggle()
-        if isFavorite {
-          // Save to CoreData
-          saveLikeToCoreData()
-        } else {
-          // Remove from CoreData
-          removeLikeFromCoreData()
-        }
-      }) {
-        Image(systemName: isFavorite ? "heart.fill" : "heart")
-          .foregroundColor(isFavorite ? .red : .gray)
-          .font(.system(size: 20))
-          .padding(.top, 8)
-          .padding(.leading, 8)
-      }
-
-      URLImage(imageURL) { image in
-        image
-          .resizable()
-          .aspectRatio(contentMode: .fill)
-          .frame(width: 80, height: 80)
-          .cornerRadius(10)
-          .clipped()
-      }
-
-      VStack(alignment: .leading) {
-        Text(title)
-          .font(.headline)
-          .foregroundColor(.primary)
-          .padding(.bottom, 4)
-
-        Spacer()
-      }
-      .padding(.horizontal, 8)
-
-      Spacer()
-    }
-    .cornerRadius(10)
-    .shadow(radius: 5)
-    .padding(.horizontal, -8)
-    .padding(.vertical, 8)
-    .onAppear {
-      checkLike()
-    }
-  }
-
-  // Function to save liked item to CoreData
-  private func saveLikeToCoreData() {
-    let newLikedItem = Like(context: viewContext)
-    newLikedItem.name = title
-    newLikedItem.image = imageURL.absoluteString
-
-    do {
-      try viewContext.save()
-    } catch {
-      print("Error saving liked item to CoreData: \(error)")
-    }
-  }
-
-  // Function to remove liked item from CoreData
-  private func removeLikeFromCoreData() {
-    let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
-    request.predicate = NSPredicate(format: "name == %@ AND image == %@", title, imageURL.absoluteString)
-
-    do {
-      if let result = try viewContext.fetch(request) as? [NSManagedObject] {
-        for object in result {
-          viewContext.delete(object)
-        }
-        try viewContext.save()
-      }
-    } catch {
-      print("Error removing liked item from CoreData: \(error)")
-    }
-  }
+    let title: String
+    let imageURL: URL
+    @State private var isFavorite = false
     
-    /*func savePlaceToCoreData() {
-        // Use the savePlaces function from the PersistenceController
-        PersistenceController.shared.savePlaces([Place(name: title, place_id: "", rating: nil, types: [], vicinity: "", opening_hours: nil, photos: [Photo(photo_reference: imageURL.absoluteString, width: 0, height: 0)])])
-    }*/
+    // Inject the managedObjectContext
+    @Environment(\.managedObjectContext) private var viewContext
+    
+    // Check if the current item is liked when the view appears
+    func checkLike() {
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
+        request.predicate = NSPredicate(format: "name == %@ AND image == %@", title, imageURL as CVarArg)
+        
+        do {
+            if let result = try viewContext.fetch(request) as? [NSManagedObject], !result.isEmpty {
+                // If the result is not empty, the item is liked
+                isFavorite = true
+            }
+        } catch {
+            print("Error: \(error)")
+        }
+    }
+    
+    var body: some View {
+        HStack {
+            Button(action: {
+                // Toggle the favorite state
+                isFavorite.toggle()
+                if isFavorite {
+                    // Save to CoreData when liked
+                    saveLikeToCoreData()
+                } else {
+                    // Remove from CoreData when unliked
+                    removeLikeFromCoreData()
+                }
+            }) {
+                Image(systemName: isFavorite ? "heart.fill" : "heart")
+                    .foregroundColor(isFavorite ? .red : .gray)
+                    .font(.system(size: 20))
+                    .padding(.top, 8)
+                    .padding(.leading, 8)
+            }
+            
+            URLImage(imageURL) { image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 80, height: 80)
+                    .cornerRadius(10)
+                    .clipped()
+            }
+            
+            VStack(alignment: .leading) {
+                Text(title)
+                    .font(.headline)
+                    .foregroundColor(.primary)
+                    .padding(.bottom, 4)
+                
+                Spacer()
+            }
+            .padding(.horizontal, 8)
+            
+            Spacer()
+        }
+        .cornerRadius(10)
+        .shadow(radius: 5)
+        .padding(.horizontal, -8)
+        .padding(.vertical, 8)
+        .onAppear {
+            // Check if the item is liked when the view appears
+            checkLike()
+        }
+    }
+    
+    // Function to save liked item to CoreData
+    private func saveLikeToCoreData() {
+        let newLikedItem = Like(context: viewContext)
+        newLikedItem.name = title
+        newLikedItem.image = imageURL.absoluteString
+        
+        do {
+            // Save the new liked item to CoreData
+            try viewContext.save()
+        } catch {
+            print("Error saving liked item to CoreData: \(error)")
+        }
+    }
+    
+    // Function to remove liked item from CoreData
+    private func removeLikeFromCoreData() {
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
+        request.predicate = NSPredicate(format: "name == %@ AND image == %@", title, imageURL.absoluteString)
+        
+        do {
+            if let result = try viewContext.fetch(request) as? [NSManagedObject] {
+                // Remove the liked item from CoreData
+                for object in result {
+                    viewContext.delete(object)
+                }
+                try viewContext.save()
+            }
+        } catch {
+            print("Error removing liked item from CoreData: \(error)")
+        }
+    }
 }
+
 // Helper function to construct the image URL using the photo reference and maxWidth
 func imageURL(photoReference: String, maxWidth: Int) -> URL {
-  let apiKey = APIKeys.googlePlacesAPIKey
-  let baseURL = "https://maps.googleapis.com/maps/api/place/photo"
-  let urlString = "\(baseURL)?maxwidth=\(maxWidth)&photoreference=\(photoReference)&key=\(apiKey)"
-  return URL(string: urlString)!
+    let apiKey = APIKeys.googlePlacesAPIKey
+    let baseURL = "https://maps.googleapis.com/maps/api/place/photo"
+    let urlString = "\(baseURL)?maxwidth=\(maxWidth)&photoreference=\(photoReference)&key=\(apiKey)"
+    return URL(string: urlString)!
 }
+

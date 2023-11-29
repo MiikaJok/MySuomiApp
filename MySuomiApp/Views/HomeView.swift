@@ -11,7 +11,6 @@ struct HomeView: View {
     @State private var cardOffset: CGFloat = 0
     @State private var isNavigationActive: Bool = false
     @State private var places: [Place] = []
-    
     @State private var searchResults: [Place] = []
     
     
