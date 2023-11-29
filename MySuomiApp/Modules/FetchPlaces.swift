@@ -16,6 +16,7 @@ struct Place: Codable, Hashable {
     let opening_hours: OpeningHours?
     let photos: [Photo]?
     
+    
     // Provide a hash value based on the place_id
     func hash(into hasher: inout Hasher) {
         hasher.combine(place_id)
@@ -51,8 +52,6 @@ enum PlaceType: String {
     case museum
     case tourist_attraction
     case zoo
-    case spa
-    case movie_theater
     case aquarium
     case bakery
     case campground
