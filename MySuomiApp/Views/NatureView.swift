@@ -10,7 +10,7 @@ struct NatureView: View {
     
     var body: some View {
         
-        // Display your nature places here
+        // Display your nature places
         List(naturePlaces, id: \.place_id) { place in
             NavigationLink(destination: DetailView(place: place)) {
                 HStack {
