@@ -21,6 +21,7 @@
 		6A300FC72B162AEB0070995D /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A300FC62B162AEB0070995D /* APIKeys.swift */; };
 		6A300FC92B162CFC0070995D /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A300FC82B162CFC0070995D /* PersistenceController.swift */; };
 		6A300FCE2B162DBA0070995D /* FavoriteModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6A300FCC2B162DBA0070995D /* FavoriteModel.xcdatamodeld */; };
+		6A36077E2B17A24C00CE8D12 /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A36077D2B17A24700CE8D12 /* CoreData.framework */; };
 		6A417AA52B052C1300B02EC7 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A417AA42B052C1300B02EC7 /* MapKit.framework */; };
 		6A48741D2B03A29E00ADD0FF /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A48741C2B03A29E00ADD0FF /* MapView.swift */; };
 		6A4874212B03A93600ADD0FF /* LanguageSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A4874202B03A93600ADD0FF /* LanguageSettings.swift */; };
@@ -45,6 +46,7 @@
 		6A300FC62B162AEB0070995D /* APIKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeys.swift; sourceTree = "<group>"; };
 		6A300FC82B162CFC0070995D /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PersistenceController.swift; path = "../../../../.Trash/MySuomiApp 15.59.03/MySuomiApp/Modules/PersistenceController.swift"; sourceTree = "<group>"; };
 		6A300FCD2B162DBA0070995D /* FavoriteModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FavoriteModel.xcdatamodel; sourceTree = "<group>"; };
+		6A36077D2B17A24700CE8D12 /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		6A417AA42B052C1300B02EC7 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
 		6A48741C2B03A29E00ADD0FF /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
 		6A4874202B03A93600ADD0FF /* LanguageSettings.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LanguageSettings.swift; path = MySuomiApp/Views/LanguageSettings.swift; sourceTree = SOURCE_ROOT; };
@@ -59,6 +61,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6A2B22342B08F339009D9EB6 /* CoreLocation.framework in Frameworks */,
+				6A36077E2B17A24C00CE8D12 /* CoreData.framework in Frameworks */,
 				6ADA90C62B16005000F18C72 /* URLImage in Frameworks */,
 				6A417AA52B052C1300B02EC7 /* MapKit.framework in Frameworks */,
 			);
@@ -144,6 +147,7 @@
 		6A417AA32B052C1200B02EC7 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				6A36077D2B17A24700CE8D12 /* CoreData.framework */,
 				6A2B22332B08F338009D9EB6 /* CoreLocation.framework */,
 				6A417AA42B052C1300B02EC7 /* MapKit.framework */,
 			);

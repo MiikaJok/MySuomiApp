@@ -10,17 +10,18 @@ struct CardView: View {
     // Inject the managedObjectContext
     @Environment(\.managedObjectContext) private var viewContext
     
+    // Check if the current item is liked when the view appears
     func checkLike() {
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
         request.predicate = NSPredicate(format: "name == %@ AND image == %@", title, imageURL as CVarArg)
         
         do {
             if let result = try viewContext.fetch(request) as? [NSManagedObject], !result.isEmpty {
-                print(result)
+                // If the result is not empty, the item is liked
                 isFavorite = true
             }
         } catch {
-            print("Error: (error)")
+            print("Error: \(error)")
         }
     }
     
@@ -30,10 +31,10 @@ struct CardView: View {
                 // Toggle the favorite state
                 isFavorite.toggle()
                 if isFavorite {
-                    // Save to CoreData
+                    // Save to CoreData when liked
                     saveLikeToCoreData()
                 } else {
-                    // Remove from CoreData
+                    // Remove from CoreData when unliked
                     removeLikeFromCoreData()
                 }
             }) {
@@ -70,6 +71,7 @@ struct CardView: View {
         .padding(.horizontal, -8)
         .padding(.vertical, 8)
         .onAppear {
+            // Check if the item is liked when the view appears
             checkLike()
         }
     }
@@ -81,36 +83,37 @@ struct CardView: View {
         newLikedItem.image = imageURL.absoluteString
         
         do {
+            // Save the new liked item to CoreData
             try viewContext.save()
         } catch {
-            print("Error saving liked item to CoreData: (error)")
+            print("Error saving liked item to CoreData: \(error)")
         }
     }
     
     // Function to remove liked item from CoreData
     private func removeLikeFromCoreData() {
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
-        request.predicate = NSPredicate(format: "name == %@ AND image == %@", title, imageURL as CVarArg)
+        request.predicate = NSPredicate(format: "name == %@ AND image == %@", title, imageURL.absoluteString)
         
         do {
             if let result = try viewContext.fetch(request) as? [NSManagedObject] {
+                // Remove the liked item from CoreData
                 for object in result {
                     viewContext.delete(object)
                 }
                 try viewContext.save()
             }
         } catch {
-            print("Error removing liked item from CoreData: (error)")
+            print("Error removing liked item from CoreData: \(error)")
         }
     }
-
 }
 
 // Helper function to construct the image URL using the photo reference and maxWidth
 func imageURL(photoReference: String, maxWidth: Int) -> URL {
     let apiKey = APIKeys.googlePlacesAPIKey
     let baseURL = "https://maps.googleapis.com/maps/api/place/photo"
-    let urlString = "(baseURL)?maxwidth=(maxWidth)&photoreference=(photoReference)&key=(apiKey)"
+    let urlString = "\(baseURL)?maxwidth=\(maxWidth)&photoreference=\(photoReference)&key=\(apiKey)"
     return URL(string: urlString)!
 }
 
