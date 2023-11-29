@@ -71,6 +71,7 @@ struct MapView: View {
                         VStack {
                             TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
                                 .padding()
+                                .disableAutocorrection(true)
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .padding()
                                 .onChange(of: searchText, perform: { newSearchText in
