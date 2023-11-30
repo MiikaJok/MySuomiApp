@@ -1,6 +1,5 @@
 import SwiftUI
 import CoreData
-import URLImage
 
 struct CardView: View {
     let title: String
@@ -13,7 +12,7 @@ struct CardView: View {
     // Check if the current item is liked when the view appears
     func checkLike() {
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
-        request.predicate = NSPredicate(format: "name == %@ AND image == %@", title, imageURL as CVarArg)
+        request.predicate = NSPredicate(format: "name == %@ AND image == %@", title, imageURL.absoluteString)
         
         do {
             if let result = try viewContext.fetch(request) as? [NSManagedObject], !result.isEmpty {
@@ -45,13 +44,15 @@ struct CardView: View {
                     .padding(.leading, 8)
             }
             
-            URLImage(imageURL) { image in
+            AsyncImage(url: imageURL) { image in
                 image
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 80, height: 80)
                     .cornerRadius(10)
                     .clipped()
+            } placeholder: {
+                ProgressView()
             }
             
             VStack(alignment: .leading) {

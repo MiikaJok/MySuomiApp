@@ -74,7 +74,7 @@ struct Search {
             print("Fetched \(filteredPlaces.count) places based on name and type.")
             
             // Create a set of unique places based on place_id
-            let uniquePlaces = Array(Set(filteredPlaces))
+            let uniquePlaces = Array(Set(filteredPlaces)).sorted(by: { $0.name < $1.name })
             completion(uniquePlaces)
         }
     }

@@ -35,11 +35,13 @@ struct AccommodationView: View {
         // Create a set to store unique places
         var uniquePlaces: Set<Place> = Set(existingPlaces)
         
+        // Create a dispatch queue to synchronize access to uniquePlaces
+        let queue = DispatchQueue(label: "com.yourapp.uniquePlacesQueue")
+        
         // Create a dispatch group to wait for all fetches to complete
         let dispatchGroup = DispatchGroup()
         
-        
-        // Iterate over each type in accommodationTypes and fetch places
+        // Iterate over each type in restaurantTypes and fetch places
         for type in accommodationTypes {
             dispatchGroup.enter() // Enter the group before starting a fetch
             
@@ -50,11 +52,13 @@ struct AccommodationView: View {
                 }
                 
                 if let places = places {
-                    // Add the fetched places to the set
-                    uniquePlaces.formUnion(places)
+                    // Perform updates to uniquePlaces inside the synchronized block
+                    queue.sync {
+                        uniquePlaces.formUnion(places)
+                    }
                 } else {
                     // Handle error or display an error message
-                    print("Failed to fetch accommodation places")
+                    print("Failed to fetch restaurant places")
                 }
             }
         }
@@ -62,12 +66,11 @@ struct AccommodationView: View {
         // Notify when all fetches are complete
         dispatchGroup.notify(queue: .main) {
             // Convert the set back to an array and update the state
-            accommodationPlaces = Array(uniquePlaces)
+            let sortedPlaces = Array(uniquePlaces).sorted(by: { $0.name < $1.name })
+            accommodationPlaces = sortedPlaces
             
             // Save the unique places to Core Data
-            PersistenceController.shared.savePlaces(Array(uniquePlaces))
+            PersistenceController.shared.savePlaces(sortedPlaces)
         }
     }
 }
-
-
