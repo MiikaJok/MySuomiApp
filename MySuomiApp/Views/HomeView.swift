@@ -1,8 +1,11 @@
 import SwiftUI
+import Speech
 
 struct HomeView: View {
     // Environment object for language settings
     @EnvironmentObject var languageSettings: LanguageSettings
+    // State object for speech recognition
+    @StateObject private var speechRecognition = SpeechRecognition()
     
     // State variables for UI interaction and data storage
     @State private var isSearchBarVisible = false
@@ -52,6 +55,7 @@ struct HomeView: View {
                                 .padding()
                         }
                         
+                        // Menu button
                         Menu {
                             // Menu items for different categories
                             Button(action: {
@@ -98,10 +102,33 @@ struct HomeView: View {
                                 // Call searchPlaces when text changes
                                 searchPlaces()
                             })
+                            .disabled(speechRecognition.isRecording)
+                        
+                        // Speech recognition toggle button
+                        Button(action: {
+                            // Toggle speech recognition
+                            if speechRecognition.isRecording {
+                                searchText = "" //reset textfield for clean speech recognition
+                                speechRecognition.stopRecording()
+                            } else {
+                                speechRecognition.startRecording()
+                            }
+                            searchText = speechRecognition.recognizedText
+                        }) {
+                            Image(systemName: speechRecognition.isRecording ? "mic.fill" : "mic")
+                                .font(.system(size: 25))
+                                .padding()
+                                .foregroundColor(speechRecognition.isRecording ? .red : .blue)
+                                .background(Color.white)
+                                .clipShape(Circle())
+                                .shadow(radius: 5)
+                                .accessibility(label: Text("Speech Recognition"))
+                            
+                        }
+                        
                     }
                     
                     // Display search results
-                    
                     if !searchResults.isEmpty {
                         ScrollView {
                             LazyVStack {
@@ -122,8 +149,6 @@ struct HomeView: View {
                         }
                         .frame(maxHeight: 250) // Set the maximum height as needed
                     }
-                    
-                    
                     
                     // Image carousel with TabView
                     VStack {
@@ -222,7 +247,6 @@ struct HomeView: View {
             if let fetchedPlaces = fetchedPlaces {
                 DispatchQueue.main.async {
                     searchResults = fetchedPlaces
-                    // print("Search results: \(searchResults)")
                 }
             }
         }
@@ -236,4 +260,3 @@ struct HomeView: View {
         }
     }
 }
-

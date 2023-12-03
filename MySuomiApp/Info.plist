@@ -2,6 +2,16 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>NSSiriUsageDescription</key>
+	<string>We need access to your microphone for speech recognition</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>We need access to your microphone for speech recognition</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>We need access to your microphone for speech recognition</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>Give us your location :)</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>Give us your location :)</string>
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
