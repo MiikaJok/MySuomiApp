@@ -19,6 +19,8 @@ struct FavoritesView: View {
   var body: some View {
     NavigationView {
       List {
+        let uniqueLikedPlaces = Array(fetchedLikes)
+
         ForEach(fetchedLikes, id: \.self) { like in
           if let name = like.name,
              let imageUrlString = like.image,

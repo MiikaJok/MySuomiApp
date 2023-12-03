@@ -23,7 +23,6 @@ struct CardView: View {
             } catch {
                 print("Error: \(error)")
             }
-        
     }
     
     var body: some View {
