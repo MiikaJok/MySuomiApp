@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3F8A9B0C2B1CCB56004838D6 /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8A9B0B2B1CCB56004838D6 /* FavoritesView.swift */; };
 		3F9C0B812B0F6A950012170E /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9C0B802B0F6A950012170E /* APIKeys.swift */; };
 		3F9C0B832B0FB6AF0012170E /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9C0B822B0FB6AF0012170E /* Search.swift */; };
 		3FD06CA22B0BC61A001B829D /* EatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD06CA12B0BC61A001B829D /* EatView.swift */; };
@@ -32,6 +33,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3F8A9B0B2B1CCB56004838D6 /* FavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesView.swift; sourceTree = "<group>"; };
 		3F9C0B802B0F6A950012170E /* APIKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeys.swift; sourceTree = "<group>"; };
 		3F9C0B822B0FB6AF0012170E /* Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
 		3FD06CA12B0BC61A001B829D /* EatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EatView.swift; sourceTree = "<group>"; };
@@ -84,6 +86,7 @@
 				3FD06CA52B0BC7B3001B829D /* AccommodationView.swift */,
 				6A7C04392B14A6DB00637CA5 /* NatureView.swift */,
 				6A3607922B17D2E900CE8D12 /* DetailView.swift */,
+				3F8A9B0B2B1CCB56004838D6 /* FavoritesView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -246,6 +249,7 @@
 				3FD06CA62B0BC7B3001B829D /* AccommodationView.swift in Sources */,
 				6A2B22372B09036E009D9EB6 /* LocationManager.swift in Sources */,
 				6A4874212B03A93600ADD0FF /* LanguageSettings.swift in Sources */,
+				3F8A9B0C2B1CCB56004838D6 /* FavoritesView.swift in Sources */,
 				3F9C0B832B0FB6AF0012170E /* Search.swift in Sources */,
 				6A0A67192AFD15780028328E /* MySuomiAppApp.swift in Sources */,
 				3FD06CA22B0BC61A001B829D /* EatView.swift in Sources */,

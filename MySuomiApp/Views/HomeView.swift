@@ -1,4 +1,7 @@
 import SwiftUI
+import URLImage
+
+
 
 struct HomeView: View {
     // Environment object for language settings
@@ -8,10 +11,15 @@ struct HomeView: View {
     @State private var isSearchBarVisible = false
     @State private var searchText = ""
     @State private var selectedMenu: String? = nil
-    @State private var cardOffset: CGFloat = 0
+    
     @State private var isNavigationActive: Bool = false
     @State private var places: [Place] = []
     @State private var searchResults: [Place] = []
+    
+    // carusel stuff
+    @State private var cardOffset: CGFloat = 0
+    @State private var selectedCafeIndex: Int = 0
+    
     
     var body: some View {
         NavigationView {
@@ -81,6 +89,11 @@ struct HomeView: View {
                             }) {
                                 Label(languageSettings.isEnglish ? "Nature" : "Luonto", systemImage: "leaf")
                             }
+                            Button(action: {
+                                selectedMenu = "Favorites" //
+                                isNavigationActive.toggle()
+                            }) {
+                                Label(languageSettings.isEnglish ? "Favorites" : "Suosikit", systemImage: "heart.fill")                             }
                         } label: {
                             Image(systemName: "line.horizontal.3")
                                 .padding()
@@ -133,20 +146,28 @@ struct HomeView: View {
                             .frame(height: UIScreen.main.bounds.height * 0.3)
                             .clipped()
                         
-                        TabView(selection: $cardOffset) {
-                            ForEach(0..<5, id: \.self) { index in
-                                Image("hollola")
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: UIScreen.main.bounds.width - 30, height: 150)
-                                    .clipped()
-                                    .padding(.horizontal, 15)
-                                    .tag(index)
+                        // Fetch cafes and display them in the carousel
+                        if let cafes = fetchCafes(), cafes.count >= 5 {
+                            TabView(selection: $selectedCafeIndex) {
+                                ForEach(cafes.prefix(5).indices, id: \.self) { index in
+                                    let cafe = cafes[index]
+                                    if let photoURL = cafe.photoURL {
+                                        CardView(title: cafe.name, imageURL: photoURL)
+                                            .tag(index) // Use the index as the tag for selection
+                                    } else {
+                                        // Handle the case where photoURL is nil (e.g., no photo available)
+                                        Text("No Photo Available")
+                                    }
+                                }
                             }
+                            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
+                            .frame(height: 150)
+                            .offset(x: CGFloat(selectedCafeIndex) * UIScreen.main.bounds.width) // Use the index directly
+                        } else {
+                            // Handle the case when there are no cafes or less than 5 cafes
+                            Text("No Cafes Available")
+                                .frame(height: 150)
                         }
-                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
-                        .frame(height: 150)
-                        .offset(x: cardOffset * -(UIScreen.main.bounds.width - 30))
                     }
                     .padding()
                     
@@ -200,7 +221,18 @@ struct HomeView: View {
                                         }
                                     )
                                     .hidden()
+                                } else if selectedMenu == "Favorites" {
+                                    NavigationLink(
+                                        destination: FavoritesView(),
+                                        isActive: $isNavigationActive,
+                                        label: {
+                                            EmptyView()
+                                        }
+                                    )
+                                    .hidden()
                                 }
+
+                                
                             }
                                 .onAppear {
                                     selectedMenu = nil
@@ -213,6 +245,22 @@ struct HomeView: View {
             }
         }
     }
+    
+    
+    // Function to fetch cafes
+    private func fetchCafes() -> [Place]? {
+        var cafes: [Place] = []
+        
+        // Use the fetchPlaces function to fetch cafes with photos
+        fetchPlaces(for: [PlaceType.cafe.rawValue]) { fetchedCafes in
+            if let fetchedCafes = fetchedCafes {
+                cafes = fetchedCafes
+            }
+        }
+        
+        return cafes
+    }
+    
     
     let search = Search()
     
