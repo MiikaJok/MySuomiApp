@@ -28,46 +28,62 @@ class SpeechRecognition: ObservableObject {
         guard !isRecording else { return }
         resetAudioEngine()
         
-        
-        // Configure audio session for recording
-        let audioSession = AVAudioSession.sharedInstance()
-        do {
-            try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
-            try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
-            
-            // Set up input node for audio engine
-            let inputNode = audioEngine.inputNode
-            let recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
-            self.recognitionRequest = recognitionRequest
-            
-            // Set up the recognition task to handle the result or error of speech recognition
-            recognitionTask = speechRecognizer?.recognitionTask(with: recognitionRequest) { result, error in
-                var isFinal = false
-                
-                if let result = result {
-                    // Update recognizedText with the formatted transcription result
-                    self.recognizedText = result.bestTranscription.formattedString
-                    isFinal = result.isFinal
+        // Request microphone permissions
+        SFSpeechRecognizer.requestAuthorization { authStatus in
+            if authStatus == .authorized {
+                // Configure audio session for recording
+                let audioSession = AVAudioSession.sharedInstance()
+                do {
+                    try audioSession.setCategory(.record, mode: .measurement, options: .duckOthers)
+                    try audioSession.setActive(true, options: .notifyOthersOnDeactivation)
+                    
+                    // Set up input node for audio engine
+                    let inputNode = self.audioEngine.inputNode
+                    let recognitionRequest = SFSpeechAudioBufferRecognitionRequest()
+                    self.recognitionRequest = recognitionRequest
+                    
+                    // Set up the recognition task to handle the result or error of speech recognition
+                    self.recognitionTask = self.speechRecognizer?.recognitionTask(with: recognitionRequest) { result, error in
+                        var isFinal = false
+                        
+                        if let result = result {
+                            // Update recognizedText with the formatted transcription result
+                            DispatchQueue.main.async {
+                                self.recognizedText = result.bestTranscription.formattedString
+                            }
+                            isFinal = result.isFinal
+                        }
+                        
+                        // Check for errors or if the recognition is final, then stop recording
+                        if error != nil || isFinal {
+                            self.stopRecording()
+                        }
+                    }
+                    
+                    // Set up audio processing node to capture and append audio buffers to the recognition request
+                    let recordingFormat = inputNode.outputFormat(forBus: 0)
+                    inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer, _) in
+                        self.recognitionRequest?.append(buffer)
+                    }
+                    
+                    // Start the audio engine for recording on the main thread
+                    DispatchQueue.main.async {
+                        do {
+                            try self.audioEngine.start()
+                            self.isRecording = true
+                        } catch {
+                            // Handle any errors that occur during setup
+                            print("Error starting recording: \(error.localizedDescription)")
+                        }
+                    }
+                } catch {
+                    // Handle any errors that occur during setup
+                    print("Error starting recording: \(error.localizedDescription)")
                 }
-                
-                // Check for errors or if the recognition is final, then stop recording
-                if error != nil || isFinal {
-                    self.stopRecording()
-                }
+            } else {
+                // Handle the case where the user denied microphone permissions
+                print("Microphone permissions denied")
             }
-            
-            // Set up audio processing node to capture and append audio buffers to the recognition request
-            let recordingFormat = inputNode.outputFormat(forBus: 0)
-            inputNode.installTap(onBus: 0, bufferSize: 1024, format: recordingFormat) { (buffer, _) in
-                self.recognitionRequest?.append(buffer)
-            }
-            
-            // Start the audio engine for recording
-            try audioEngine.start()
-            isRecording = true
-        } catch {
-            // Handle any errors that occur during setup
-            print("Error starting recording: \(error.localizedDescription)")
         }
     }
     
@@ -92,6 +108,5 @@ class SpeechRecognition: ObservableObject {
         recognitionTask?.cancel()
         recognitionTask = nil
     }
-    
 }
 
