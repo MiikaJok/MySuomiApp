@@ -17,8 +17,6 @@ struct HomeView: View {
     @State private var searchResults: [Place] = []
     @State private var showRecordingMessage = false
     
-    
-    
     var body: some View {
         NavigationView {
             ScrollView {
