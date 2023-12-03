@@ -108,6 +108,7 @@ struct HomeView: View {
                         Button(action: {
                             // Toggle speech recognition
                             if speechRecognition.isRecording {
+                                searchText = "" //reset textfield for clean speech recognition
                                 speechRecognition.stopRecording()
                             } else {
                                 speechRecognition.startRecording()
