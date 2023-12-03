@@ -20,7 +20,6 @@ struct HomeView: View {
     @State private var cardOffset: CGFloat = 0
     @State private var selectedCafeIndex: Int = 0
     
-    
     var body: some View {
         NavigationView {
             ScrollView {
@@ -145,32 +144,37 @@ struct HomeView: View {
                             .scaledToFill()
                             .frame(height: UIScreen.main.bounds.height * 0.3)
                             .clipped()
+                            .padding()
                         
-                        // Fetch cafes and display them in the carousel
-                        if let cafes = fetchCafes(), cafes.count >= 5 {
-                            TabView(selection: $selectedCafeIndex) {
-                                ForEach(cafes.prefix(5).indices, id: \.self) { index in
-                                    let cafe = cafes[index]
-                                    if let photoURL = cafe.photoURL {
-                                        CardView(title: cafe.name, imageURL: photoURL)
-                                            .tag(index) // Use the index as the tag for selection
-                                    } else {
-                                        // Handle the case where photoURL is nil (e.g., no photo available)
-                                        Text("No Photo Available")
+                        VStack {
+                            Text("Cafes")
+                                .font(.headline)
+                            
+                            if places.isEmpty {
+                                Text("Loading places...")
+                            } else {
+                                ScrollView(.horizontal, showsIndicators: false) {
+                                    HStack(spacing: 16) {
+                                        ForEach(places.prefix(10), id: \.self) { place in
+                                            if let imageURL = place.photoURL {
+                                                URLImage(imageURL) { image in
+                                                    image
+                                                        .resizable()
+                                                        .scaledToFill()
+                                                        .frame(width: 300, height: 200)
+                                                        .clipped()
+                                                }
+                                            }
+                                        }
                                     }
+                                    .padding()
                                 }
                             }
-                            .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
-                            .frame(height: 150)
-                            .offset(x: CGFloat(selectedCafeIndex) * UIScreen.main.bounds.width) // Use the index directly
-                        } else {
-                            // Handle the case when there are no cafes or less than 5 cafes
-                            Text("No Cafes Available")
-                                .frame(height: 150)
+                        }
+                        .onAppear {
+                            fetchCafes()
                         }
                     }
-                    .padding()
-                    
                     // Navigation link to the MapView
                     NavigationLink(destination: MapView()) {
                         Text(languageSettings.isEnglish ? "Map" : "Kartta")
@@ -231,7 +235,7 @@ struct HomeView: View {
                                     )
                                     .hidden()
                                 }
-
+                                
                                 
                             }
                                 .onAppear {
@@ -246,23 +250,19 @@ struct HomeView: View {
         }
     }
     
+    let search = Search()
     
     // Function to fetch cafes
-    private func fetchCafes() -> [Place]? {
-        var cafes: [Place] = []
+    private func fetchCafes() {
+        // Assuming restaurantTypes contains a cafe type
+        let cafeTypes = restaurantTypes.filter { $0.rawValue.lowercased() == "cafe" }
         
-        // Use the fetchPlaces function to fetch cafes with photos
-        fetchPlaces(for: [PlaceType.cafe.rawValue]) { fetchedCafes in
-            if let fetchedCafes = fetchedCafes {
-                cafes = fetchedCafes
+        fetchPlaces(for: cafeTypes.map { $0.rawValue }) { fetchedPlaces in
+            if let fetchedPlaces = fetchedPlaces {
+                places = fetchedPlaces
             }
         }
-        
-        return cafes
     }
-    
-    
-    let search = Search()
     
     // Function to search places
     private func searchPlaces() {
