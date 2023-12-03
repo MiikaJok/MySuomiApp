@@ -77,11 +77,9 @@ class SpeechRecognition: ObservableObject {
                         }
                     }
                 } catch {
-                    // Handle any errors that occur during setup
                     print("Error starting recording: \(error.localizedDescription)")
                 }
             } else {
-                // Handle the case where the user denied microphone permissions
                 print("Microphone permissions denied")
             }
         }
