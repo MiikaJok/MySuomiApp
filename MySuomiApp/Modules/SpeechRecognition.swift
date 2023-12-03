@@ -27,7 +27,7 @@ class SpeechRecognition: ObservableObject {
         // Check if recording is not already in progress
         guard !isRecording else { return }
         resetAudioEngine()
-
+        
         
         // Configure audio session for recording
         let audioSession = AVAudioSession.sharedInstance()
@@ -83,7 +83,8 @@ class SpeechRecognition: ObservableObject {
             isRecording = false
         }
     }
-    private func resetAudioEngine() {
+    //makes sure everything is reseted to be able to start a new clear speech recognition session
+    func resetAudioEngine() {
         audioEngine.stop()
         audioEngine.inputNode.removeTap(onBus: 0)
         recognitionRequest?.endAudio()
@@ -91,5 +92,6 @@ class SpeechRecognition: ObservableObject {
         recognitionTask?.cancel()
         recognitionTask = nil
     }
+    
 }
 

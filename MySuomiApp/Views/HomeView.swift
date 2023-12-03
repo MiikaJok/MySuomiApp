@@ -15,6 +15,9 @@ struct HomeView: View {
     @State private var isNavigationActive: Bool = false
     @State private var places: [Place] = []
     @State private var searchResults: [Place] = []
+    @State private var showRecordingMessage = false
+    
+    
     
     var body: some View {
         NavigationView {
@@ -93,42 +96,49 @@ struct HomeView: View {
                     
                     // Search bar when visible
                     if isSearchBarVisible {
-                        TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
-                            .padding()
-                            .textFieldStyle(RoundedBorderTextFieldStyle())
-                            .disableAutocorrection(true)
-                            .padding()
-                            .onChange(of: searchText, perform: { newSearchText in
-                                // Call searchPlaces when text changes
-                                searchPlaces()
-                            })
-                            .disabled(speechRecognition.isRecording)
-                        
-                        // Speech recognition toggle button
-                        Button(action: {
-                            // Toggle speech recognition
-                            if speechRecognition.isRecording {
-                                searchText = "" //reset textfield for clean speech recognition
-                                speechRecognition.stopRecording()
-                            } else {
-                                speechRecognition.startRecording()
-                            }
-                            searchText = speechRecognition.recognizedText
-                        }) {
-                            Image(systemName: speechRecognition.isRecording ? "mic.fill" : "mic")
-                                .font(.system(size: 25))
+                        HStack {
+                            TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
                                 .padding()
-                                .foregroundColor(speechRecognition.isRecording ? .red : .blue)
-                                .background(Color.white)
-                                .clipShape(Circle())
-                                .shadow(radius: 5)
-                                .accessibility(label: Text("Speech Recognition"))
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .disableAutocorrection(true)
+                                .padding()
+                                .onChange(of: searchText, perform: { newSearchText in
+                                    // Call searchPlaces when text changes
+                                    searchPlaces()
+                                })
+                                .disabled(speechRecognition.isRecording)
                             
+                            Button(action: {
+                                // Toggle speech recognition
+                                if speechRecognition.isRecording {
+                                    speechRecognition.stopRecording()
+                                    searchText = speechRecognition.recognizedText
+                                    showRecordingMessage = false
+                                } else {
+                                    searchText = ""
+                                    speechRecognition.startRecording()
+                                    showRecordingMessage = true
+                                }
+                            }) {
+                                Image(systemName: speechRecognition.isRecording ? "mic.fill" : "mic")
+                                    .font(.system(size: 20))
+                                    .padding()
+                                    .foregroundColor(speechRecognition.isRecording ? .red : .blue)
+                                    .background(Color.white)
+                                    .clipShape(Circle())
+                                    .shadow(radius: 5)
+                                    .accessibility(label: Text("Speech Recognition"))
+                            }
+                            Spacer(minLength: 32)
                         }
                         
-                    }
-                    
-                    // Display search results
+                        if showRecordingMessage {
+                            Text("Speech recognition is active. Press mic again after searching to see the result.")
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                                
+                        }
+                    }               // Display search results
                     if !searchResults.isEmpty {
                         ScrollView {
                             LazyVStack {
@@ -238,10 +248,8 @@ struct HomeView: View {
             }
         }
     }
-    
     let search = Search()
     
-    // Function to search places
     private func searchPlaces() {
         Search.searchPlaces(query: searchText) { fetchedPlaces in
             if let fetchedPlaces = fetchedPlaces {
@@ -251,7 +259,6 @@ struct HomeView: View {
             }
         }
     }
-    
     // Preview for HomeView
     struct HomeView_Previews: PreviewProvider {
         static var previews: some View {
