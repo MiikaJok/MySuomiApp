@@ -36,7 +36,7 @@ struct SightsView: View {
         
         // Create a dispatch group to wait for all fetches to complete
         let dispatchGroup = DispatchGroup()
-        
+
         // Iterate over each type in sightsTypes and fetch places
         for type in sightsTypes {
             dispatchGroup.enter() // Enter the group before starting a fetch

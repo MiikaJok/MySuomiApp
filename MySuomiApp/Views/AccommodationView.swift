@@ -38,6 +38,7 @@ struct AccommodationView: View {
         // Create a dispatch group to wait for all fetches to complete
         let dispatchGroup = DispatchGroup()
         
+        
         // Iterate over each type in accommodationTypes and fetch places
         for type in accommodationTypes {
             dispatchGroup.enter() // Enter the group before starting a fetch
@@ -68,3 +69,5 @@ struct AccommodationView: View {
         }
     }
 }
+
+

@@ -35,10 +35,11 @@ struct EatView: View {
         
         // Create a set to store unique places
         var uniquePlaces: Set<Place> = Set(existingPlaces)
+
         
         // Create a dispatch group to wait for all fetches to complete
         let dispatchGroup = DispatchGroup()
-        
+
         // Iterate over each type in restaurantTypes and fetch places
         for type in restaurantTypes {
             dispatchGroup.enter() // Enter the group before starting a fetch
@@ -66,6 +67,7 @@ struct EatView: View {
             
             // Save the unique places to Core Data
             PersistenceController.shared.savePlaces(Array(uniquePlaces))
+
         }
     }
 }

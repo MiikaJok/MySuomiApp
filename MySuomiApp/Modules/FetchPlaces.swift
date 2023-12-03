@@ -59,8 +59,6 @@ enum PlaceType: String {
     case museum
     case tourist_attraction
     case zoo
-    case spa
-    case movie_theater
     case aquarium
     case bakery
     case campground
@@ -155,4 +153,3 @@ func fetchPlaces(for typeStrings: [String], completion: @escaping ([Place]?) -> 
         }
     }
 }
-
