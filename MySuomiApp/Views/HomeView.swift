@@ -16,8 +16,7 @@ struct HomeView: View {
     @State private var isNavigationActive: Bool = false
     @State private var places: [Place] = []
     @State private var searchResults: [Place] = []
-    @State private var selectedImageIndex = 0
-    
+    @State private var currentTabIndex = 0
     
     var body: some View {
         NavigationView {
@@ -136,7 +135,7 @@ struct HomeView: View {
                     
                     
                     
-                    // Image carousel with TabView
+                    // Image carousel with ScrollView
                     VStack {
                         Image("helsinki")
                             .resizable()
@@ -144,168 +143,171 @@ struct HomeView: View {
                             .frame(height: UIScreen.main.bounds.height * 0.3)
                             .clipped()
                             .padding()
-
+                        
                         VStack {
                             Text("Cafes")
                                 .font(.headline)
-
+                            
                             if places.isEmpty {
                                 Text("Loading places...")
                             } else {
-                                TabView(selection: $selectedImageIndex) {
-                                    ForEach(places.indices) { index in
-                                        let placeIndex = (selectedImageIndex + index) % places.count
-                                        let place = places[placeIndex]
-
-                                        if let photoReference = place.photos?.first?.photo_reference {
-                                            let url = imageURL(photoReference: photoReference, maxWidth: 200)
-
-                                            // Use AsyncImage to handle image loading asynchronously
-                                            AsyncImage(url: url) { phase in
-                                                switch phase {
-                                                case .success(let image):
-                                                    image
-                                                        .resizable()
-                                                        .scaledToFill()
-                                                        .clipped()
-                                                        .padding()
-                                                case .failure:
-                                                    Text("Image not available")
-                                                case .empty:
-                                                    // Placeholder or loading indicator
-                                                    ProgressView()
+                                TabView(selection: $currentTabIndex) {
+                                    Spacer().tag(-1)
+                                    ForEach(0..<10, id: \.self) { index in
+                                        VStack {
+                                            if let photoReference = places[index].photos?.first?.photo_reference {
+                                                let url = imageURL(photoReference: photoReference, maxWidth: 200)
+                                                
+                                                AsyncImage(url: url) { phase in
+                                                    switch phase {
+                                                    case .success(let image):
+                                                        image
+                                                            .resizable()
+                                                            .scaledToFill()
+                                                            .clipped()
+                                                            .frame(height: UIScreen.main.bounds.height * 0.3)
+                                                    case .failure:
+                                                        Text("Image not available")
+                                                    case .empty:
+                                                        ProgressView()
+                                                    }
                                                 }
+                                            } else {
+                                                Text("Image not available")
                                             }
-                                            .tag(index)
-                                        } else {
-                                            Text("Image not available")
                                         }
+                                        .tag(index)
                                     }
+                                    Spacer().tag(places.count)
                                 }
-                                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                                .frame(height: UIScreen.main.bounds.height * 0.3)
-                                .onChange(of: selectedImageIndex) { newIndex in
-                                    // Handle the case where you want to perform some action when the index changes
+                                .tabViewStyle(.page)
+                                .indexViewStyle(.page(backgroundDisplayMode: .never))
+                                .onChange(of: currentTabIndex) { newIndex in
                                     if newIndex == places.count {
-                                        withAnimation {
-                                            selectedImageIndex = 0
-                                        }
+                                        currentTabIndex = 0
+                                    } else if newIndex == -1 {
+                                        currentTabIndex = places.count - 1
                                     }
                                 }
-                            }
-                        }
-                        .onAppear {
-                            fetchCafes()
-                        }
-                    }
-                
-                // Navigation link to the MapView
-                NavigationLink(destination: MapView()) {
-                    Text(languageSettings.isEnglish ? "Map" : "Kartta")
-                        .padding()
-                        .foregroundColor(.white)
-                        .background(Color.blue)
-                        .cornerRadius(8)
-                }
-                
-                Spacer()
-                
-                // Navigation links to specific category views
-                    .background(
-                        Group {
-                            if selectedMenu == "Eat" {
-                                NavigationLink(
-                                    destination: EatView(),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
-                            } else if selectedMenu == "Sights" {
-                                NavigationLink(
-                                    destination: SightsView(),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
-                            } else if selectedMenu == "Accommodation" {
-                                NavigationLink(
-                                    destination: AccommodationView(),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
-                            } else if selectedMenu == "Nature" {
-                                NavigationLink(
-                                    destination: NatureView(),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
-                            } else if selectedMenu == "Favorites" {
-                                NavigationLink(
-                                    destination: FavoritesView(),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
+                                
+                                .accessibilityIdentifier("CarouselView")
+                                
                             }
                             
                         }
-                            .onAppear {
-                                selectedMenu = nil
+                        .frame(height: UIScreen.main.bounds.height * 0.3)
+                        .onAppear {
+                            fetchCafes()
+                        }
+                        
+                    }
+                    // Navigation link to the MapView
+                    NavigationLink(destination: MapView()) {
+                        Text(languageSettings.isEnglish ? "Map" : "Kartta")
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(Color.blue)
+                            .cornerRadius(8)
+                    }
+                    
+                    Spacer()
+                    
+                    // Navigation links to specific category views
+                        .background(
+                            Group {
+                                if selectedMenu == "Eat" {
+                                    NavigationLink(
+                                        destination: EatView(),
+                                        isActive: $isNavigationActive,
+                                        label: {
+                                            EmptyView()
+                                        }
+                                    )
+                                    .hidden()
+                                } else if selectedMenu == "Sights" {
+                                    NavigationLink(
+                                        destination: SightsView(),
+                                        isActive: $isNavigationActive,
+                                        label: {
+                                            EmptyView()
+                                        }
+                                    )
+                                    .hidden()
+                                } else if selectedMenu == "Accommodation" {
+                                    NavigationLink(
+                                        destination: AccommodationView(),
+                                        isActive: $isNavigationActive,
+                                        label: {
+                                            EmptyView()
+                                        }
+                                    )
+                                    .hidden()
+                                } else if selectedMenu == "Nature" {
+                                    NavigationLink(
+                                        destination: NatureView(),
+                                        isActive: $isNavigationActive,
+                                        label: {
+                                            EmptyView()
+                                        }
+                                    )
+                                    .hidden()
+                                } else if selectedMenu == "Favorites" {
+                                    NavigationLink(
+                                        destination: FavoritesView(),
+                                        isActive: $isNavigationActive,
+                                        label: {
+                                            EmptyView()
+                                        }
+                                    )
+                                    .hidden()
+                                }
+                                
                             }
-                            .opacity(0)
-                            .buttonStyle(PlainButtonStyle())
-                    )
+                                .onAppear {
+                                    selectedMenu = nil
+                                }
+                                .opacity(0)
+                                .buttonStyle(PlainButtonStyle())
+                        )
+                }
+                .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
             }
-            .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
         }
     }
-}
-
-let search = Search()
-
-// Function to fetch cafes
-private func fetchCafes() {
-    // Assuming restaurantTypes contains a cafe type
-    let cafeTypes = restaurantTypes.filter { $0.rawValue.lowercased() == "cafe" }
     
-    fetchPlaces(for: cafeTypes.map { $0.rawValue }) { fetchedPlaces in
-        if let fetchedPlaces = fetchedPlaces {
-            places = fetchedPlaces
-        }
-    }
-}
-
-// Function to search places
-private func searchPlaces() {
-    Search.searchPlaces(query: searchText) { fetchedPlaces in
-        if let fetchedPlaces = fetchedPlaces {
-            DispatchQueue.main.async {
-                searchResults = fetchedPlaces
-                // print("Search results: \(searchResults)")
+    let search = Search()
+    
+    // Function to fetch cafes
+    private func fetchCafes() {
+        // Assuming restaurantTypes contains a cafe type
+        let cafeTypes = restaurantTypes.filter { $0.rawValue.lowercased() == "cafe" }
+        
+        fetchPlaces(for: cafeTypes.map { $0.rawValue }) { fetchedPlaces in
+            if let fetchedPlaces = fetchedPlaces {
+                places = fetchedPlaces
             }
         }
     }
-}
-
-// Preview for HomeView
-struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-        HomeView()
-            .environmentObject(LanguageSettings())
+    
+    // Function to search places
+    private func searchPlaces() {
+        Search.searchPlaces(query: searchText) { fetchedPlaces in
+            if let fetchedPlaces = fetchedPlaces {
+                DispatchQueue.main.async {
+                    searchResults = fetchedPlaces
+                    // print("Search results: \(searchResults)")
+                }
+            }
+        }
     }
-}
+    
+    // Preview for HomeView
+    struct HomeView_Previews: PreviewProvider {
+        static var previews: some View {
+            HomeView()
+                .environmentObject(LanguageSettings())
+        }
+    }
 }
 /*ScrollView(.horizontal, showsIndicators: false) {
  HStack(spacing: 16) {
