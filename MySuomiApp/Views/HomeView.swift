@@ -3,6 +3,7 @@ import URLImage
 
 
 
+
 struct HomeView: View {
     // Environment object for language settings
     @EnvironmentObject var languageSettings: LanguageSettings
@@ -15,10 +16,8 @@ struct HomeView: View {
     @State private var isNavigationActive: Bool = false
     @State private var places: [Place] = []
     @State private var searchResults: [Place] = []
+    @State private var selectedImageIndex = 0
     
-    // carusel stuff
-    @State private var cardOffset: CGFloat = 0
-    @State private var selectedCafeIndex: Int = 0
     
     var body: some View {
         NavigationView {
@@ -145,29 +144,53 @@ struct HomeView: View {
                             .frame(height: UIScreen.main.bounds.height * 0.3)
                             .clipped()
                             .padding()
-                        
+
                         VStack {
                             Text("Cafes")
                                 .font(.headline)
-                            
+
                             if places.isEmpty {
                                 Text("Loading places...")
                             } else {
-                                ScrollView(.horizontal, showsIndicators: false) {
-                                    HStack(spacing: 16) {
-                                        ForEach(places.prefix(10), id: \.self) { place in
-                                            if let imageURL = place.photoURL {
-                                                URLImage(imageURL) { image in
+                                TabView(selection: $selectedImageIndex) {
+                                    ForEach(places.indices) { index in
+                                        let placeIndex = (selectedImageIndex + index) % places.count
+                                        let place = places[placeIndex]
+
+                                        if let photoReference = place.photos?.first?.photo_reference {
+                                            let url = imageURL(photoReference: photoReference, maxWidth: 200)
+
+                                            // Use AsyncImage to handle image loading asynchronously
+                                            AsyncImage(url: url) { phase in
+                                                switch phase {
+                                                case .success(let image):
                                                     image
                                                         .resizable()
                                                         .scaledToFill()
-                                                        .frame(width: 300, height: 200)
                                                         .clipped()
+                                                        .padding()
+                                                case .failure:
+                                                    Text("Image not available")
+                                                case .empty:
+                                                    // Placeholder or loading indicator
+                                                    ProgressView()
                                                 }
                                             }
+                                            .tag(index)
+                                        } else {
+                                            Text("Image not available")
                                         }
                                     }
-                                    .padding()
+                                }
+                                .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
+                                .frame(height: UIScreen.main.bounds.height * 0.3)
+                                .onChange(of: selectedImageIndex) { newIndex in
+                                    // Handle the case where you want to perform some action when the index changes
+                                    if newIndex == places.count {
+                                        withAnimation {
+                                            selectedImageIndex = 0
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -175,113 +198,129 @@ struct HomeView: View {
                             fetchCafes()
                         }
                     }
-                    // Navigation link to the MapView
-                    NavigationLink(destination: MapView()) {
-                        Text(languageSettings.isEnglish ? "Map" : "Kartta")
-                            .padding()
-                            .foregroundColor(.white)
-                            .background(Color.blue)
-                            .cornerRadius(8)
-                    }
-                    
-                    Spacer()
-                    
-                    // Navigation links to specific category views
-                        .background(
-                            Group {
-                                if selectedMenu == "Eat" {
-                                    NavigationLink(
-                                        destination: EatView(),
-                                        isActive: $isNavigationActive,
-                                        label: {
-                                            EmptyView()
-                                        }
-                                    )
-                                    .hidden()
-                                } else if selectedMenu == "Sights" {
-                                    NavigationLink(
-                                        destination: SightsView(),
-                                        isActive: $isNavigationActive,
-                                        label: {
-                                            EmptyView()
-                                        }
-                                    )
-                                    .hidden()
-                                } else if selectedMenu == "Accommodation" {
-                                    NavigationLink(
-                                        destination: AccommodationView(),
-                                        isActive: $isNavigationActive,
-                                        label: {
-                                            EmptyView()
-                                        }
-                                    )
-                                    .hidden()
-                                } else if selectedMenu == "Nature" {
-                                    NavigationLink(
-                                        destination: NatureView(),
-                                        isActive: $isNavigationActive,
-                                        label: {
-                                            EmptyView()
-                                        }
-                                    )
-                                    .hidden()
-                                } else if selectedMenu == "Favorites" {
-                                    NavigationLink(
-                                        destination: FavoritesView(),
-                                        isActive: $isNavigationActive,
-                                        label: {
-                                            EmptyView()
-                                        }
-                                    )
-                                    .hidden()
-                                }
-                                
-                                
+                
+                // Navigation link to the MapView
+                NavigationLink(destination: MapView()) {
+                    Text(languageSettings.isEnglish ? "Map" : "Kartta")
+                        .padding()
+                        .foregroundColor(.white)
+                        .background(Color.blue)
+                        .cornerRadius(8)
+                }
+                
+                Spacer()
+                
+                // Navigation links to specific category views
+                    .background(
+                        Group {
+                            if selectedMenu == "Eat" {
+                                NavigationLink(
+                                    destination: EatView(),
+                                    isActive: $isNavigationActive,
+                                    label: {
+                                        EmptyView()
+                                    }
+                                )
+                                .hidden()
+                            } else if selectedMenu == "Sights" {
+                                NavigationLink(
+                                    destination: SightsView(),
+                                    isActive: $isNavigationActive,
+                                    label: {
+                                        EmptyView()
+                                    }
+                                )
+                                .hidden()
+                            } else if selectedMenu == "Accommodation" {
+                                NavigationLink(
+                                    destination: AccommodationView(),
+                                    isActive: $isNavigationActive,
+                                    label: {
+                                        EmptyView()
+                                    }
+                                )
+                                .hidden()
+                            } else if selectedMenu == "Nature" {
+                                NavigationLink(
+                                    destination: NatureView(),
+                                    isActive: $isNavigationActive,
+                                    label: {
+                                        EmptyView()
+                                    }
+                                )
+                                .hidden()
+                            } else if selectedMenu == "Favorites" {
+                                NavigationLink(
+                                    destination: FavoritesView(),
+                                    isActive: $isNavigationActive,
+                                    label: {
+                                        EmptyView()
+                                    }
+                                )
+                                .hidden()
                             }
-                                .onAppear {
-                                    selectedMenu = nil
-                                }
-                                .opacity(0)
-                                .buttonStyle(PlainButtonStyle())
-                        )
-                }
-                .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
+                            
+                        }
+                            .onAppear {
+                                selectedMenu = nil
+                            }
+                            .opacity(0)
+                            .buttonStyle(PlainButtonStyle())
+                    )
             }
-        }
-    }
-    
-    let search = Search()
-    
-    // Function to fetch cafes
-    private func fetchCafes() {
-        // Assuming restaurantTypes contains a cafe type
-        let cafeTypes = restaurantTypes.filter { $0.rawValue.lowercased() == "cafe" }
-        
-        fetchPlaces(for: cafeTypes.map { $0.rawValue }) { fetchedPlaces in
-            if let fetchedPlaces = fetchedPlaces {
-                places = fetchedPlaces
-            }
-        }
-    }
-    
-    // Function to search places
-    private func searchPlaces() {
-        Search.searchPlaces(query: searchText) { fetchedPlaces in
-            if let fetchedPlaces = fetchedPlaces {
-                DispatchQueue.main.async {
-                    searchResults = fetchedPlaces
-                    // print("Search results: \(searchResults)")
-                }
-            }
-        }
-    }
-    
-    // Preview for HomeView
-    struct HomeView_Previews: PreviewProvider {
-        static var previews: some View {
-            HomeView()
-                .environmentObject(LanguageSettings())
+            .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
         }
     }
 }
 
+let search = Search()
+
+// Function to fetch cafes
+private func fetchCafes() {
+    // Assuming restaurantTypes contains a cafe type
+    let cafeTypes = restaurantTypes.filter { $0.rawValue.lowercased() == "cafe" }
+    
+    fetchPlaces(for: cafeTypes.map { $0.rawValue }) { fetchedPlaces in
+        if let fetchedPlaces = fetchedPlaces {
+            places = fetchedPlaces
+        }
+    }
+}
+
+// Function to search places
+private func searchPlaces() {
+    Search.searchPlaces(query: searchText) { fetchedPlaces in
+        if let fetchedPlaces = fetchedPlaces {
+            DispatchQueue.main.async {
+                searchResults = fetchedPlaces
+                // print("Search results: \(searchResults)")
+            }
+        }
+    }
+}
+
+// Preview for HomeView
+struct HomeView_Previews: PreviewProvider {
+    static var previews: some View {
+        HomeView()
+            .environmentObject(LanguageSettings())
+    }
+}
+}
+/*ScrollView(.horizontal, showsIndicators: false) {
+ HStack(spacing: 16) {
+ ForEach(places.prefix(10), id: \.self) { place in
+ if let imageURL = place.photoURL {
+ URLImage(imageURL) { image in
+ image
+ .resizable()
+ .scaledToFill()
+ .frame(width: 300, height: 200)
+ .clipped()
+ }
+ }
+ }
+ }
+ .padding()
+ }
+ }*/
