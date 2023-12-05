@@ -16,6 +16,14 @@ struct Place: Codable, Hashable {
     let opening_hours: OpeningHours?
     let photos: [Photo]?
     
+    
+    var photoURL: URL? {
+           guard let photoReference = photos?.first?.photo_reference else {
+               return nil
+           }
+           return imageURL(photoReference: photoReference, maxWidth: 200) // Adjust maxWidth as needed
+       }
+    
     // Provide a hash value based on the place_id
     func hash(into hasher: inout Hasher) {
         hasher.combine(place_id)

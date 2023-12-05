@@ -11,17 +11,18 @@ struct CardView: View {
     
     // Check if the current item is liked when the view appears
     func checkLike() {
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
-        request.predicate = NSPredicate(format: "name == %@ AND image == %@", title, imageURL.absoluteString)
-        
-        do {
-            if let result = try viewContext.fetch(request) as? [NSManagedObject], !result.isEmpty {
-                // If the result is not empty, the item is liked
-                isFavorite = true
+            let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
+            request.predicate = NSPredicate(format: "name == %@ AND image == %@", title, imageURL.absoluteString)
+            
+            do {
+                if let result = try viewContext.fetch(request) as? [NSManagedObject], !result.isEmpty {
+                    // If the result is not empty, the item is liked
+                    isFavorite = true
+                }
+            } catch {
+                print("Error: \(error)")
+
             }
-        } catch {
-            print("Error: \(error)")
-        }
     }
     
     var body: some View {
@@ -42,6 +43,7 @@ struct CardView: View {
                     .font(.system(size: 20))
                     .padding(.top, 8)
                     .padding(.leading, 8)
+
             }
             
             AsyncImage(url: imageURL) { image in
@@ -56,10 +58,11 @@ struct CardView: View {
             }
             
             VStack(alignment: .leading) {
-                Text(title)
-                    .font(.headline)
-                    .foregroundColor(.primary)
-                    .padding(.bottom, 4)
+                
+                    Text(title)
+                        .font(.headline)
+                        .foregroundColor(.primary)
+                        .padding(.bottom, 4)
                 
                 Spacer()
             }
@@ -71,10 +74,6 @@ struct CardView: View {
         .shadow(radius: 5)
         .padding(.horizontal, -8)
         .padding(.vertical, 8)
-        .onAppear {
-            // Check if the item is liked when the view appears
-            checkLike()
-        }
     }
     
     // Function to save liked item to CoreData
@@ -93,20 +92,21 @@ struct CardView: View {
     
     // Function to remove liked item from CoreData
     private func removeLikeFromCoreData() {
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
-        request.predicate = NSPredicate(format: "name == %@ AND image == %@", title, imageURL.absoluteString)
-        
-        do {
-            if let result = try viewContext.fetch(request) as? [NSManagedObject] {
-                // Remove the liked item from CoreData
-                for object in result {
-                    viewContext.delete(object)
+            let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
+            request.predicate = NSPredicate(format: "name == %@ AND image == %@", title, imageURL.absoluteString)
+            
+            do {
+                if let result = try viewContext.fetch(request) as? [NSManagedObject] {
+                    // Remove the liked item from CoreData
+                    for object in result {
+                        viewContext.delete(object)
+                    }
+                    try viewContext.save()
                 }
-                try viewContext.save()
+            } catch {
+                print("Error removing liked item from CoreData: \(error)")
             }
-        } catch {
-            print("Error removing liked item from CoreData: \(error)")
-        }
+        
     }
 }
 
