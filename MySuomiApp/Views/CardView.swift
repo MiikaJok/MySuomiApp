@@ -1,6 +1,5 @@
 import SwiftUI
 import CoreData
-import URLImage
 
 struct CardView: View {
     let title: String
@@ -22,6 +21,7 @@ struct CardView: View {
                 }
             } catch {
                 print("Error: \(error)")
+
             }
     }
     
@@ -43,14 +43,18 @@ struct CardView: View {
                     .font(.system(size: 20))
                     .padding(.top, 8)
                     .padding(.leading, 8)
-                URLImage(imageURL) { image in
-                    image
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: 80, height: 80)
-                        .cornerRadius(10)
-                        .clipped()
-                }
+
+            }
+            
+            AsyncImage(url: imageURL) { image in
+                image
+                    .resizable()
+                    .aspectRatio(contentMode: .fill)
+                    .frame(width: 80, height: 80)
+                    .cornerRadius(10)
+                    .clipped()
+            } placeholder: {
+                ProgressView()
             }
             
             VStack(alignment: .leading) {

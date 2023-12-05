@@ -108,6 +108,7 @@ struct HomeView: View {
           // Display search results
           
           if !searchResults.isEmpty {
+
             ScrollView {
               LazyVStack {
                 Section(header: Text("Search Results")) {
@@ -271,6 +272,7 @@ struct HomeView: View {
               }
                 .onAppear {
                   selectedMenu = nil
+
                 }
                 .opacity(0)
                 .buttonStyle(PlainButtonStyle())
@@ -279,6 +281,7 @@ struct HomeView: View {
         .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
       }
     }
+
   }
   
   let search = Search()
@@ -302,6 +305,7 @@ struct HomeView: View {
         DispatchQueue.main.async {
           searchResults = fetchedPlaces
           // print("Search results: \(searchResults)")
+
         }
       }
     }
@@ -315,20 +319,3 @@ struct HomeView: View {
     }
   }
 }
-/*ScrollView(.horizontal, showsIndicators: false) {
- HStack(spacing: 16) {
- ForEach(places.prefix(10), id: \.self) { place in
- if let imageURL = place.photoURL {
- URLImage(imageURL) { image in
- image
- .resizable()
- .scaledToFill()
- .frame(width: 300, height: 200)
- .clipped()
- }
- }
- }
- }
- .padding()
- }
- }*/
