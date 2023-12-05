@@ -16,6 +16,8 @@ struct HomeView: View {
     @State private var places: [Place] = []
     @State private var searchResults: [Place] = []
     @State private var showRecordingMessage = false
+    @State private var currentTabIndex = 0
+
     
     var body: some View {
         NavigationView {
@@ -165,23 +167,65 @@ struct HomeView: View {
                             .scaledToFill()
                             .frame(height: UIScreen.main.bounds.height * 0.3)
                             .clipped()
+                            .padding()
                         
-                        TabView(selection: $cardOffset) {
-                            ForEach(0..<5, id: \.self) { index in
-                                Image("hollola")
-                                    .resizable()
-                                    .scaledToFill()
-                                    .frame(width: UIScreen.main.bounds.width - 30, height: 150)
-                                    .clipped()
-                                    .padding(.horizontal, 15)
-                                    .tag(index)
+                        VStack {
+                            Text("Cafes")
+                                .font(.headline)
+                            
+                            if places.isEmpty {
+                                Text("Loading places...")
+                            } else {
+                                TabView(selection: $currentTabIndex) {
+                                    Spacer().tag(-1)
+                                    ForEach(0..<10, id: \.self) { index in
+                                        VStack {
+                                            if let photoReference = places[index].photos?.first?.photo_reference {
+                                                let url = imageURL(photoReference: photoReference, maxWidth: 200)
+                                                
+                                                AsyncImage(url: url) { phase in
+                                                    switch phase {
+                                                    case .success(let image):
+                                                        image
+                                                            .resizable()
+                                                            .scaledToFill()
+                                                            .clipped()
+                                                            .frame(height: UIScreen.main.bounds.height * 0.3)
+                                                    case .failure:
+                                                        Text("Image not available")
+                                                    case .empty:
+                                                        ProgressView()
+                                                    }
+                                                }
+                                            } else {
+                                                Text("Image not available")
+                                            }
+                                        }
+                                        .tag(index)
+                                    }
+                                    Spacer().tag(places.count)
+                                }
+                                .tabViewStyle(.page)
+                                .indexViewStyle(.page(backgroundDisplayMode: .never))
+                                .onChange(of: currentTabIndex) { newIndex in
+                                    if newIndex == places.count {
+                                        currentTabIndex = 0
+                                    } else if newIndex == -1 {
+                                        currentTabIndex = places.count - 1
+                                    }
+                                }
+                                
+                                .accessibilityIdentifier("CarouselView")
+                                
                             }
+                            
                         }
-                        .tabViewStyle(PageTabViewStyle(indexDisplayMode: .automatic))
-                        .frame(height: 150)
-                        .offset(x: cardOffset * -(UIScreen.main.bounds.width - 30))
+                        .frame(height: UIScreen.main.bounds.height * 0.3)
+                        .onAppear {
+                            fetchCafes()
+                        }
+                        
                     }
-                    .padding()
                     
                     // Navigation link to the MapView
                     NavigationLink(destination: MapView()) {
@@ -246,6 +290,19 @@ struct HomeView: View {
             }
         }
     }
+    
+    // Function to fetch cafes
+    private func fetchCafes() {
+        // Assuming restaurantTypes contains a cafe type
+        let cafeTypes = restaurantTypes.filter { $0.rawValue.lowercased() == "cafe" }
+        
+        fetchPlaces(for: cafeTypes.map { $0.rawValue }) { fetchedPlaces in
+            if let fetchedPlaces = fetchedPlaces {
+                places = fetchedPlaces
+            }
+        }
+    }
+    
     let search = Search()
     
     private func searchPlaces() {

@@ -117,6 +117,12 @@ struct MapView: View {
                     let selectedCoordinate = placemark.coordinate
                     manager.region.center = selectedCoordinate
                     manager.region.span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                    // Clear existing markers
+                    manager.searchResults.removeAll()
+                    // Convert the MKLocalSearchCompletion to MKPlacemark
+                    let selectedPlacemark = MKPlacemark(coordinate: selectedCoordinate, addressDictionary: placemark.addressDictionary as? [String: Any])
+                    // Append the selected placemark to the search results
+                    manager.searchResults.append(selectedPlacemark)
                 }
             }
             Spacer()

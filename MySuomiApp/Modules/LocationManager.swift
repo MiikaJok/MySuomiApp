@@ -41,37 +41,8 @@ final class LocationManager: NSObject, ObservableObject {
         guard !query.isEmpty else {
             return // Don't perform a search if the query is empty
         }
-        currentSearchQuery = query // Save the current search query
-
-        // Check if the selected suggestion is present in the suggestions array
-        if let selectedSuggestion = suggestions.first(where: { $0.title == query }) {
-            handleSuggestionSelection(selectedSuggestion)
-        } else {
-            // If the selected suggestion is not found, perform a local search
-            let request = MKLocalSearch.Request()
-            request.naturalLanguageQuery = query
-
-            // Local search and updates the searchResults with placemarks
-            let search = MKLocalSearch(request: request)
-            search.start { [weak self] response, _ in
-                guard let self = self else { return }
-
-                if let response = response {
-                    // Clear existing search results
-                    self.searchResults.removeAll()
-                    
-                    // Add a marker for the first result, if available
-                    if let place = response.mapItems.first?.placemark {
-                        self.addMarkerForPlace(place)
-                    }
-                }
-            }
-        }
-
         completer?.queryFragment = query // Update the completer with the query
     }
-
-
     
     // Function to handle the selection of a suggestion
     func handleSuggestionSelection(_ selectedItem: MKLocalSearchCompletion) {
@@ -84,32 +55,9 @@ final class LocationManager: NSObject, ObservableObject {
             
             if let error = error {
                 self.errorMessage = "Search failed: \(error.localizedDescription)"
-            } else if let place = response?.mapItems.first?.placemark {
-                // Add a marker for the selected place
-                self.addMarkerForPlace(place)
-            } else {
-                self.errorMessage = "No results found."
             }
         }
     }
-    
-    // Function to add a marker for the selected place
-    private func addMarkerForPlace(_ place: MKPlacemark) {
-        DispatchQueue.main.async { [weak self] in
-            self?.searchResults.append(place)
-            self?.animateMapToPlace(place.coordinate)
-        }
-    }
-    
-    // Function to animate the map to the specified coordinate
-    private func animateMapToPlace(_ coordinate: CLLocationCoordinate2D) {
-        // Update the region to focus on the specified coordinate
-        region = MKCoordinateRegion(
-            center: coordinate,
-            span: .init(latitudeDelta: 0.1, longitudeDelta: 0.1)
-        )
-    }
-    
     // Setup method to check and request location permissions
     func setup() {
         switch locationManager.authorizationStatus {
@@ -120,22 +68,12 @@ final class LocationManager: NSObject, ObservableObject {
         case .notDetermined:
             locationManager.startUpdatingLocation()
             locationManager.requestWhenInUseAuthorization()
-            
             // Set an error message when location access is denied or restricted
         case .denied, .restricted:
             errorMessage = "Access denied. Authorize location settings."
         default:
             break
         }
-    }
-    
-    // Call this method when a suggestion item is selected
-    func didSelectSuggestion(selectedItem: MKLocalSearchCompletion) {
-        handleSuggestionSelection(selectedItem)
-        
-        // After selecting a suggestion, you can perform additional actions here, if needed.
-        // For now, I'm just printing a message.
-        print("Selected suggestion: \(selectedItem.title)")
     }
 }
 
@@ -164,9 +102,6 @@ extension LocationManager: CLLocationManagerDelegate {
     // Delegate method called when the location is updated
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
-        
-        // Update the region to focus on the new location
-        animateMapToPlace(location.coordinate)
     }
 }
 
