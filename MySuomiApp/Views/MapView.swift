@@ -3,25 +3,27 @@ import MapKit
 import CoreData
 import CoreLocation
 
+
 /*MapView struct that represents the SwiftUI view displaying the map and search functionality*/
 struct MapView: View {
-    //location related functionalities manager
+    // location related functionalities manager
     @StateObject var manager = LocationManager()
-    //language settings object
+    // language settings object
     @EnvironmentObject var languageSettings: LanguageSettings
-    //state variables to control,search and suggestions
+    // state variables to control, search, and suggestions
     @State private var searchText = ""
     @State private var showSuggestions = false
     @State private var selectedPlace: MKLocalSearchCompletion?
     @Binding var selectedCoordinate: CLLocationCoordinate2D?
-    @State private var coordinates: CLLocationCoordinate2D?
+    @State private var currentCoordinate: CLLocationCoordinate2D?
     @State private var selectedPlacemark: MKPlacemark?
-    
+
+        
     var body: some View {
         NavigationView {
             VStack {
                 HStack {
-                    //ENG/FIN toggle button
+                    // ENG/FIN toggle button
                     Button(action: {
                         self.languageSettings.isEnglish.toggle()
                     }) {
@@ -32,37 +34,14 @@ struct MapView: View {
                             .cornerRadius(8)
                             .padding(8)
                     }
-                    
+
                     Text("MySuomiApp")
                         .padding(8)
                         .font(.title)
                         .bold()
                     Spacer()
                 }
-               /* //Zoom in button
-                Button(action: {
-                    self.manager.region.span.latitudeDelta /= 2
-                    self.manager.region.span.longitudeDelta /= 2
-                }) {
-                    Text("Zoom In")
-                        .padding(8)
-                        .foregroundColor(.white)
-                        .background(Color.green)
-                        .cornerRadius(8)
-                        .padding(8)
-                }
-                //Zoom out button
-                Button(action: {
-                    self.manager.region.span.latitudeDelta *= 2
-                    self.manager.region.span.longitudeDelta *= 2
-                }) {
-                    Text("Zoom Out")
-                        .padding(8)
-                        .foregroundColor(.white)
-                        .background(Color.red)
-                        .cornerRadius(8)
-                        .padding(8)
-                }*/
+
                 // Search bar and suggestion list
                 VStack {
                     TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
@@ -73,7 +52,7 @@ struct MapView: View {
                         .onChange(of: searchText, perform: { newSearchText in
                             manager.searchPlaces(query: newSearchText)
                         })
-                    
+
                     // Suggestions list based on search
                     if !manager.suggestions.isEmpty {
                         List(manager.suggestions, id: \.self) { suggestion in
@@ -89,38 +68,35 @@ struct MapView: View {
                         .cornerRadius(10)
                     }
                 }
-                //map view display based on search results
+
+                // Map view display based on search results
                 Map(coordinateRegion: $manager.region, showsUserLocation: true, annotationItems: manager.searchResults) { place in
                     MapMarker(coordinate: place.coordinate, tint: .blue)
                 }
                 .onAppear {
                     // Set the initial region based on manager.region
-                    manager.region.center = coordinates ?? CLLocationCoordinate2D(latitude: 60.1695, longitude: 24.9354)
+                    currentCoordinate = selectedCoordinate ?? CLLocationCoordinate2D(latitude: 60.1695, longitude: 24.9354)
+                    manager.region.center = currentCoordinate!
                     manager.region.span = MKCoordinateSpan(latitudeDelta: 0.4, longitudeDelta: 0.4)
-                    print("MapView appeared with coordinates: \(manager.region.center.latitude), \(manager.region.center.longitude)")
-                    DispatchQueue.main.async {
-                        manager.objectWillChange.send()
-                    }
                 }
-
                 .animation(.easeIn)
             }
             .frame(width: 400, height: 700)
-            //setting locale based on language prefs
+            // Setting locale based on language prefs
             .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
-            //navigate to selected place from search
+            // Navigate to selected place from search
             .onChange(of: selectedPlace) { newPlace in
                 guard let newPlace = newPlace else { return }
-                //updates search text with selected place
+                // updates search text with selected place
                 searchText = newPlace.title
-                
+
                 // Create a new MKLocalSearch.Request with the selected place
                 let request = MKLocalSearch.Request(completion: newPlace)
                 let search = MKLocalSearch(request: request)
-                //start search to get detailed info
+                // start search to get detailed info
                 search.start { response, error in
                     guard let placemark = response?.mapItems.first?.placemark else { return }
-                    //updates region to focus on the selected place
+                    // updates region to focus on the selected place
                     let selectedCoordinate = placemark.coordinate
                     manager.region.center = selectedCoordinate
                     manager.region.span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
@@ -135,13 +111,14 @@ struct MapView: View {
             Spacer()
         }
     }
+
     // Function to fetch details for the selected place
     private func fetchDetailsForSelectedPlace() {
         guard let selectedCoordinate = selectedCoordinate else { return }
-        
+
         let location = CLLocation(latitude: selectedCoordinate.latitude, longitude: selectedCoordinate.longitude)
         let geocoder = CLGeocoder()
-        
+
         geocoder.reverseGeocodeLocation(location) { placemarks, error in
             if let placemark = placemarks?.first {
                 selectedPlacemark = MKPlacemark(placemark: placemark)
@@ -156,4 +133,3 @@ struct MapView_Previews: PreviewProvider {
             .environmentObject(LanguageSettings())
     }
 }
-

@@ -36,11 +36,6 @@ final class LocationManager: NSObject, ObservableObject {
         completer = MKLocalSearchCompleter()
         completer?.delegate = self
     }
-    deinit {
-        locationManager.stopUpdatingLocation()
-    }
-    
-    
     // Function for searching places based on user input
     func searchPlaces(query: String) {
         guard !query.isEmpty else {
@@ -65,38 +60,17 @@ final class LocationManager: NSObject, ObservableObject {
     }
     // Setup method to check and request location permissions
     func setup() {
-        // Check if location services are enabled
-        guard CLLocationManager.locationServicesEnabled() else {
-            errorMessage = "Location services are not enabled. Please enable them in Settings."
-            return
-        }
-        
         switch locationManager.authorizationStatus {
         case .authorizedWhenInUse:
             // Only request location when a suggestion is not selected
             guard searchResults.isEmpty else { return }
-            locationManager.requestLocation()
-        case .notDetermined:
-            locationManager.requestWhenInUseAuthorization()
-        case .denied, .restricted:
-            errorMessage = "Access denied. Authorize location settings."
-        default:
-            break
-        }
-    }
-}
-    
-// Extension of LocationManager to conform to CLLocationManagerDelegate
-extension LocationManager: CLLocationManagerDelegate {
-    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
-        switch manager.authorizationStatus {
-        case .authorizedWhenInUse, .authorizedAlways:
-            // Only request location when a suggestion is not selected
-            guard searchResults.isEmpty else { return }
-            locationManager.requestLocation()
+            
+            DispatchQueue.global().async {
+                self.locationManager.requestLocation()
+            }
             
         case .notDetermined:
-            // Do nothing here, wait for the user to respond to the authorization prompt
+            // Wait for the user to respond to the authorization prompt
             break
             
         case .denied, .restricted:
@@ -106,19 +80,40 @@ extension LocationManager: CLLocationManagerDelegate {
             break
         }
     }
-    
-    // Delegate method called when location manager encounters an error
-    func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        errorMessage = "Location manager did fail: \(error.localizedDescription)"
-    }
-    
-    // Delegate method called when the location is updated
-    func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        guard let location = locations.last else { return }
-        // Process the updated location as needed
-    }
 }
-
+    // Extension of LocationManager to conform to CLLocationManagerDelegate
+    extension LocationManager: CLLocationManagerDelegate {
+        func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+            switch manager.authorizationStatus {
+            case .authorizedWhenInUse, .authorizedAlways:
+                // Only request location when a suggestion is not selected
+                guard searchResults.isEmpty else { return }
+                locationManager.requestLocation()
+                
+            case .notDetermined:
+                // Do nothing here, wait for the user to respond to the authorization prompt
+                break
+                
+            case .denied, .restricted:
+                errorMessage = "Access denied. Authorize location settings."
+                
+            default:
+                break
+            }
+        }
+        
+        // Delegate method called when location manager encounters an error
+        func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+            errorMessage = "Location manager did fail: \(error.localizedDescription)"
+        }
+        
+        // Delegate method called when the location is updated
+        func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
+            guard let location = locations.last else { return }
+            // Process the updated location as needed
+        }
+    }
+    
     let searchFilterArray: [String] = [
         "Helsinki", "Vantaa", "Espoo", "Kauniainen", "Sipoo", "Porvoo"
     ]
