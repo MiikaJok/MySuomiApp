@@ -1,5 +1,6 @@
 import SwiftUI
 import Speech
+import MapKit
 
 struct HomeView: View {
     // Environment object for language settings
@@ -7,6 +8,8 @@ struct HomeView: View {
     // State object for speech recognition
     @StateObject private var speechRecognition = SpeechRecognition()
     
+    @State private var coordinates: CLLocationCoordinate2D?
+
     // State variables for UI interaction and data storage
     @State private var isSearchBarVisible = false
     @State private var searchText = ""
@@ -228,7 +231,7 @@ struct HomeView: View {
                     }
                     
                     // Navigation link to the MapView
-                    NavigationLink(destination: MapView()) {
+                    NavigationLink(destination: MapView(selectedCoordinate: $coordinates)) {
                         Text(languageSettings.isEnglish ? "Map" : "Kartta")
                             .padding()
                             .foregroundColor(.white)

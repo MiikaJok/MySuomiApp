@@ -1,6 +1,7 @@
 import SwiftUI
 import MapKit
 import CoreData
+import CoreLocation
 
 /*MapView struct that represents the SwiftUI view displaying the map and search functionality*/
 struct MapView: View {
@@ -12,6 +13,9 @@ struct MapView: View {
     @State private var searchText = ""
     @State private var showSuggestions = false
     @State private var selectedPlace: MKLocalSearchCompletion?
+    @Binding var selectedCoordinate: CLLocationCoordinate2D?
+    @State private var coordinates: CLLocationCoordinate2D?
+    @State private var selectedPlacemark: MKPlacemark?
     
     var body: some View {
         NavigationView {
@@ -35,7 +39,7 @@ struct MapView: View {
                         .bold()
                     Spacer()
                 }
-                //Zoom in button
+               /* //Zoom in button
                 Button(action: {
                     self.manager.region.span.latitudeDelta /= 2
                     self.manager.region.span.longitudeDelta /= 2
@@ -58,7 +62,7 @@ struct MapView: View {
                         .background(Color.red)
                         .cornerRadius(8)
                         .padding(8)
-                }
+                }*/
                 // Search bar and suggestion list
                 VStack {
                     TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
@@ -89,6 +93,16 @@ struct MapView: View {
                 Map(coordinateRegion: $manager.region, showsUserLocation: true, annotationItems: manager.searchResults) { place in
                     MapMarker(coordinate: place.coordinate, tint: .blue)
                 }
+                .onAppear {
+                    // Set the initial region based on manager.region
+                    manager.region.center = coordinates ?? CLLocationCoordinate2D(latitude: 60.1695, longitude: 24.9354)
+                    manager.region.span = MKCoordinateSpan(latitudeDelta: 0.4, longitudeDelta: 0.4)
+                    print("MapView appeared with coordinates: \(manager.region.center.latitude), \(manager.region.center.longitude)")
+                    DispatchQueue.main.async {
+                        manager.objectWillChange.send()
+                    }
+                }
+
                 .animation(.easeIn)
             }
             .frame(width: 400, height: 700)
@@ -121,11 +135,24 @@ struct MapView: View {
             Spacer()
         }
     }
+    // Function to fetch details for the selected place
+    private func fetchDetailsForSelectedPlace() {
+        guard let selectedCoordinate = selectedCoordinate else { return }
+        
+        let location = CLLocation(latitude: selectedCoordinate.latitude, longitude: selectedCoordinate.longitude)
+        let geocoder = CLGeocoder()
+        
+        geocoder.reverseGeocodeLocation(location) { placemarks, error in
+            if let placemark = placemarks?.first {
+                selectedPlacemark = MKPlacemark(placemark: placemark)
+            }
+        }
+    }
 }
 
 struct MapView_Previews: PreviewProvider {
     static var previews: some View {
-        MapView()
+        MapView(selectedCoordinate: .constant(nil))
             .environmentObject(LanguageSettings())
     }
 }

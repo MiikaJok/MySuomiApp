@@ -1,4 +1,5 @@
 import MapKit
+import CoreLocation
 
 /* MapKit enabling and basic functionality from
  https://medium.com/@pblanesp/how-to-display-a-map-and-track-the-users-location-in-swiftui-7d288cdb747e*/
@@ -35,6 +36,10 @@ final class LocationManager: NSObject, ObservableObject {
         completer = MKLocalSearchCompleter()
         completer?.delegate = self
     }
+    deinit {
+        locationManager.stopUpdatingLocation()
+    }
+    
     
     // Function for searching places based on user input
     func searchPlaces(query: String) {
@@ -60,15 +65,19 @@ final class LocationManager: NSObject, ObservableObject {
     }
     // Setup method to check and request location permissions
     func setup() {
+        // Check if location services are enabled
+        guard CLLocationManager.locationServicesEnabled() else {
+            errorMessage = "Location services are not enabled. Please enable them in Settings."
+            return
+        }
+        
         switch locationManager.authorizationStatus {
         case .authorizedWhenInUse:
             // Only request location when a suggestion is not selected
             guard searchResults.isEmpty else { return }
             locationManager.requestLocation()
         case .notDetermined:
-            locationManager.startUpdatingLocation()
             locationManager.requestWhenInUseAuthorization()
-            // Set an error message when location access is denied or restricted
         case .denied, .restricted:
             errorMessage = "Access denied. Authorize location settings."
         default:
@@ -76,19 +85,23 @@ final class LocationManager: NSObject, ObservableObject {
         }
     }
 }
-
+    
 // Extension of LocationManager to conform to CLLocationManagerDelegate
 extension LocationManager: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
-        case .authorizedWhenInUse:
+        case .authorizedWhenInUse, .authorizedAlways:
             // Only request location when a suggestion is not selected
             guard searchResults.isEmpty else { return }
             locationManager.requestLocation()
             
-            // Set an error message when location access is denied or restricted
+        case .notDetermined:
+            // Do nothing here, wait for the user to respond to the authorization prompt
+            break
+            
         case .denied, .restricted:
             errorMessage = "Access denied. Authorize location settings."
+            
         default:
             break
         }
@@ -102,32 +115,33 @@ extension LocationManager: CLLocationManagerDelegate {
     // Delegate method called when the location is updated
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         guard let location = locations.last else { return }
+        // Process the updated location as needed
     }
 }
 
-let searchFilterArray: [String] = [
-    "Helsinki", "Vantaa", "Espoo", "Kauniainen", "Sipoo", "Porvoo"
-]
-// Extension of LocationManager to conform to MKLocalSearchCompleterDelegate
-extension LocationManager: MKLocalSearchCompleterDelegate {
-    func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
-        // Update suggestions based on the search filter array
-        suggestions = completer.results.filter { suggestion in
-            let subtitleLowercased = suggestion.subtitle.lowercased()
-            return searchFilterArray.contains { city in
-                subtitleLowercased.contains(city.lowercased())
+    let searchFilterArray: [String] = [
+        "Helsinki", "Vantaa", "Espoo", "Kauniainen", "Sipoo", "Porvoo"
+    ]
+    // Extension of LocationManager to conform to MKLocalSearchCompleterDelegate
+    extension LocationManager: MKLocalSearchCompleterDelegate {
+        func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
+            // Update suggestions based on the search filter array
+            suggestions = completer.results.filter { suggestion in
+                let subtitleLowercased = suggestion.subtitle.lowercased()
+                return searchFilterArray.contains { city in
+                    subtitleLowercased.contains(city.lowercased())
+                }
             }
+        }
+        
+        func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
+            // Handle completer errors
+            print("Completer failed with error: \(error.localizedDescription)")
+        }
+        
+        func completerDidFinish(_ completer: MKLocalSearchCompleter) {
+            // If completer finishes, perform a search using the current query
+            searchPlaces(query: currentSearchQuery)
         }
     }
     
-    func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
-        // Handle completer errors
-        print("Completer failed with error: \(error.localizedDescription)")
-    }
-    
-    func completerDidFinish(_ completer: MKLocalSearchCompleter) {
-        // If completer finishes, perform a search using the current query
-        searchPlaces(query: currentSearchQuery)
-    }
-}
-
