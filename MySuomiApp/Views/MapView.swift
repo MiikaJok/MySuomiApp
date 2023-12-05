@@ -59,37 +59,30 @@ struct MapView: View {
                         .cornerRadius(8)
                         .padding(8)
                 }
-                //open up a popover to search from map
-                HStack {
-                    Button(action: {
-                        showSuggestions.toggle()
-                    }) {
-                        Text("Search")
-                    }
-                    .padding()
-                    .popover(isPresented: $showSuggestions, arrowEdge: .bottom) {
-                        VStack {
-                            TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
-                                .padding()
-                                .disableAutocorrection(true)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .padding()
-                                .onChange(of: searchText, perform: { newSearchText in
-                                    manager.searchPlaces(query: newSearchText)
-                                })
-                            //suggestion list based on search
-                            ScrollView {
-                                ForEach(manager.suggestions, id: \.self) { suggestion in
-                                    Button(action: {
-                                        searchText = suggestion.title
-                                        showSuggestions = false
-                                        selectedPlace = suggestion
-                                    }) {
-                                        Text("\(suggestion.title), \(suggestion.subtitle)")
-                                    }
-                                }
+                // Search bar and suggestion list
+                VStack {
+                    TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
+                        .padding()
+                        .disableAutocorrection(true)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
+                        .onChange(of: searchText, perform: { newSearchText in
+                            manager.searchPlaces(query: newSearchText)
+                        })
+                    
+                    // Suggestions list based on search
+                    if !manager.suggestions.isEmpty {
+                        List(manager.suggestions, id: \.self) { suggestion in
+                            Button(action: {
+                                searchText = suggestion.title
+                                selectedPlace = suggestion
+                            }) {
+                                Text("\(suggestion.title), \(suggestion.subtitle)")
                             }
                         }
+                        .listStyle(GroupedListStyle())
+                        .background(Color.white)
+                        .cornerRadius(10)
                     }
                 }
                 //map view display based on search results
