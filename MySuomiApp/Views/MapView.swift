@@ -35,61 +35,31 @@ struct MapView: View {
                         .bold()
                     Spacer()
                 }
-                //Zoom in button
-                Button(action: {
-                    self.manager.region.span.latitudeDelta /= 2
-                    self.manager.region.span.longitudeDelta /= 2
-                }) {
-                    Text("Zoom In")
-                        .padding(8)
-                        .foregroundColor(.white)
-                        .background(Color.green)
-                        .cornerRadius(8)
-                        .padding(8)
-                }
-                //Zoom out button
-                Button(action: {
-                    self.manager.region.span.latitudeDelta *= 2
-                    self.manager.region.span.longitudeDelta *= 2
-                }) {
-                    Text("Zoom Out")
-                        .padding(8)
-                        .foregroundColor(.white)
-                        .background(Color.red)
-                        .cornerRadius(8)
-                        .padding(8)
-                }
-                //open up a popover to search from map
-                HStack {
-                    Button(action: {
-                        showSuggestions.toggle()
-                    }) {
-                        Text("Search")
-                    }
-                    .padding()
-                    .popover(isPresented: $showSuggestions, arrowEdge: .bottom) {
-                        VStack {
-                            TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
-                                .padding()
-                                .disableAutocorrection(true)
-                                .textFieldStyle(RoundedBorderTextFieldStyle())
-                                .padding()
-                                .onChange(of: searchText, perform: { newSearchText in
-                                    manager.searchPlaces(query: newSearchText)
-                                })
-                            //suggestion list based on search
-                            ScrollView {
-                                ForEach(manager.suggestions, id: \.self) { suggestion in
-                                    Button(action: {
-                                        searchText = suggestion.title
-                                        showSuggestions = false
-                                        selectedPlace = suggestion
-                                    }) {
-                                        Text("\(suggestion.title), \(suggestion.subtitle)")
-                                    }
-                                }
+                
+                // Search bar and suggestion list
+                VStack {
+                    TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
+                        .padding()
+                        .disableAutocorrection(true)
+                        .textFieldStyle(RoundedBorderTextFieldStyle())
+                        .padding()
+                        .onChange(of: searchText, perform: { newSearchText in
+                            manager.searchPlaces(query: newSearchText)
+                        })
+                    
+                    // Suggestions list based on search
+                    if !manager.suggestions.isEmpty {
+                        List(manager.suggestions, id: \.self) { suggestion in
+                            Button(action: {
+                                searchText = suggestion.title
+                                selectedPlace = suggestion
+                            }) {
+                                Text("\(suggestion.title), \(suggestion.subtitle)")
                             }
                         }
+                        .listStyle(GroupedListStyle())
+                        .background(Color.white)
+                        .cornerRadius(10)
                     }
                 }
                 //map view display based on search results
@@ -117,6 +87,12 @@ struct MapView: View {
                     let selectedCoordinate = placemark.coordinate
                     manager.region.center = selectedCoordinate
                     manager.region.span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                    // Clear existing markers
+                    manager.searchResults.removeAll()
+                    // Convert the MKLocalSearchCompletion to MKPlacemark
+                    let selectedPlacemark = MKPlacemark(coordinate: selectedCoordinate, addressDictionary: placemark.addressDictionary as? [String: Any])
+                    // Append the selected placemark to the search results
+                    manager.searchResults.append(selectedPlacemark)
                 }
             }
             Spacer()
@@ -130,4 +106,3 @@ struct MapView_Previews: PreviewProvider {
             .environmentObject(LanguageSettings())
     }
 }
-

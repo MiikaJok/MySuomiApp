@@ -81,6 +81,7 @@ let restaurantTypes: [PlaceType] = [.bar, .restaurant, .night_club, .bakery, .ca
 let sightsTypes: [PlaceType] = [.zoo, .park, .museum, .tourist_attraction, .amusement_park, .church, .library, .stadium, .aquarium, .university, .art_gallery]
 let accommodationTypes: [PlaceType] = [.lodging]
 let natureTypes: [PlaceType] = [.rv_park, .campground]
+let museumTypes: [PlaceType] = [.museum]
 
 // Use the pipe character "|" as the separator when joining place types
 //let restaurantTypesString = restaurantTypes.map { $0.rawValue }.joined(separator: "|")
