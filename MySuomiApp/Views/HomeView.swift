@@ -1,22 +1,25 @@
 import SwiftUI
-import URLImage
-
-
-
+import Speech
+import MapKit
 
 struct HomeView: View {
-  // Environment object for language settings
-  @EnvironmentObject var languageSettings: LanguageSettings
-  
-  // State variables for UI interaction and data storage
-  @State private var isSearchBarVisible = false
-  @State private var searchText = ""
-  @State private var selectedMenu: String? = nil
-  
-  @State private var isNavigationActive: Bool = false
-  @State private var places: [Place] = []
-  @State private var searchResults: [Place] = []
-  @State private var currentTabIndex = 0
+    // Environment object for language settings
+    @EnvironmentObject var languageSettings: LanguageSettings
+    // State object for speech recognition
+    @StateObject private var speechRecognition = SpeechRecognition()
+    
+    // State variables for UI interaction and data storage
+    @State private var isSearchBarVisible = false
+    @State private var searchText = ""
+    @State private var selectedMenu: String? = nil
+    @State private var isNavigationActive: Bool = false
+    @State private var places: [Place] = []
+    @State private var searchResults: [Place] = []
+    @State private var showRecordingMessage = false
+    @State private var currentTabIndex = 0
+    @State private var coordinates: CLLocationCoordinate2D?
+
+    @Binding var region: MKCoordinateRegion
   
   var body: some View {
     NavigationView {
@@ -106,9 +109,7 @@ struct HomeView: View {
           }
           
           // Display search results
-          
           if !searchResults.isEmpty {
-
             ScrollView {
               LazyVStack {
                 Section(header: Text("Search Results")) {
@@ -145,177 +146,158 @@ struct HomeView: View {
                 .padding(8)
                 .font(.title)
                 .bold()
-                .offset(y: 20)
-                
-              
+                .offset(y: 20) 
             }
-            
-            
-            VStack {
-              Text("Cafes")
-                .font(.headline)
-              
-              if places.isEmpty {
-                Text("Loading places...")
-              } else {
-                TabView(selection: $currentTabIndex) {
-                  Spacer().tag(-1)
-                  ForEach(0..<10, id: \.self) { index in
-                    VStack {
-                      if let photoReference = places[index].photos?.first?.photo_reference {
-                        let url = imageURL(photoReference: photoReference, maxWidth: 200)
-                        
-                        AsyncImage(url: url) { phase in
-                          switch phase {
-                          case .success(let image):
-                            image
-                              .resizable()
-                              .scaledToFill()
-                              .clipped()
-                              .frame(height: UIScreen.main.bounds.height * 0.3)
-                          case .failure:
-                            Text("Image not available")
-                          case .empty:
-                            ProgressView()
-                          }
+           
+                        VStack {
+                            Text("Cafes")
+                                .font(.headline)
+                            
+                            if places.isEmpty {
+                                Text("Loading places...")
+                            } else {
+                                TabView(selection: $currentTabIndex) {
+                                    Spacer().tag(-1)
+                                    ForEach(0..<10, id: \.self) { index in
+                                        VStack {
+                                            if let photoReference = places[index].photos?.first?.photo_reference {
+                                                let url = imageURL(photoReference: photoReference, maxWidth: 200)
+                                                
+                                                AsyncImage(url: url) { phase in
+                                                    switch phase {
+                                                    case .success(let image):
+                                                        image
+                                                            .resizable()
+                                                            .scaledToFill()
+                                                            .clipped()
+                                                            .frame(height: UIScreen.main.bounds.height * 0.3)
+                                                    case .failure:
+                                                        Text("Image not available")
+                                                    case .empty:
+                                                        ProgressView()
+                                                    }
+                                                }
+                                            } 
+                                        }
+                                        .tag(index)
+                                    }
+                                    Spacer().tag(places.count)
+                                }
+                                .tabViewStyle(.page)
+                                .indexViewStyle(.page(backgroundDisplayMode: .never))
+                                .onChange(of: currentTabIndex) { newIndex in
+                                    if newIndex == places.count {
+                                        currentTabIndex = 0
+                                    } else if newIndex == -1 {
+                                        currentTabIndex = places.count - 1
+                                    }
+                                }
+                                
+                                .accessibilityIdentifier("CarouselView")
+                                
+                            }
+                            
+                        }
+                        .frame(height: UIScreen.main.bounds.height * 0.3)
+                        .onAppear {
+                            fetchCafes()
                         }
                       } else {
                         Text("Image not available")
                       }
                     }
-                    .tag(index)
-                  }
-                  Spacer().tag(places.count)
+
+                    // Navigation link to the MapView
+                    NavigationLink(destination: MapView(selectedCoordinate: $coordinates, region: $region)) {
+                        Text(languageSettings.isEnglish ? "Map" : "Kartta")
+                            .padding()
+                            .foregroundColor(.white)
+                            .background(Color.blue)
+                            .cornerRadius(8)
+                    }
+                    Spacer()
+                    // Navigation links to specific category views
+                        .background(
+                            Group {
+                                if selectedMenu == "Eat" {
+                                    NavigationLink(
+                                        destination: EatView(),
+                                        isActive: $isNavigationActive,
+                                        label: {
+                                            EmptyView()
+                                        }
+                                    )
+                                    .hidden()
+                                } else if selectedMenu == "Sights" {
+                                    NavigationLink(
+                                        destination: SightsView(),
+                                        isActive: $isNavigationActive,
+                                        label: {
+                                            EmptyView()
+                                        }
+                                    )
+                                    .hidden()
+                                } else if selectedMenu == "Accommodation" {
+                                    NavigationLink(
+                                        destination: AccommodationView(),
+                                        isActive: $isNavigationActive,
+                                        label: {
+                                            EmptyView()
+                                        }
+                                    )
+                                    .hidden()
+                                } else if selectedMenu == "Nature" {
+                                    NavigationLink(
+                                        destination: NatureView(),
+                                        isActive: $isNavigationActive,
+                                        label: {
+                                            EmptyView()
+                                        }
+                                    )
+                                    .hidden()
+                                }
+                            }
+                                .onAppear {
+                                    selectedMenu = nil
+                                }
+                                .opacity(0)
+                                .buttonStyle(PlainButtonStyle())
+                        )
+
                 }
-                .tabViewStyle(.page)
-                .indexViewStyle(.page(backgroundDisplayMode: .never))
-                .onChange(of: currentTabIndex) { newIndex in
-                  if newIndex == places.count {
-                    currentTabIndex = 0
-                  } else if newIndex == -1 {
-                    currentTabIndex = places.count - 1
-                  }
-                }
-                
-                .accessibilityIdentifier("CarouselView")
-                
+                    
               }
               
             }
-            .frame(height: UIScreen.main.bounds.height * 0.3)
-            .onAppear {
-              fetchCafes()
+
+        }
+    }
+    // Function to fetch cafes
+    private func fetchCafes() {
+        // Assuming restaurantTypes contains a cafe type
+        let cafeTypes = restaurantTypes.filter { $0.rawValue.lowercased() == "cafe" }
+        
+        fetchPlaces(for: cafeTypes.map { $0.rawValue }) { fetchedPlaces in
+            if let fetchedPlaces = fetchedPlaces {
+                places = fetchedPlaces
             }
             
           }
-          // Navigation link to the MapView
-          NavigationLink(destination: MapView()) {
-            Text(languageSettings.isEnglish ? "Map" : "Kartta")
-              .padding()
-              .foregroundColor(.white)
-              .background(Color.blue)
-              .cornerRadius(8)
-          }
-          
-          Spacer()
-          
-          // Navigation links to specific category views
-            .background(
-              Group {
-                if selectedMenu == "Eat" {
-                  NavigationLink(
-                    destination: EatView(),
-                    isActive: $isNavigationActive,
-                    label: {
-                      EmptyView()
-                    }
-                  )
-                  .hidden()
-                } else if selectedMenu == "Sights" {
-                  NavigationLink(
-                    destination: SightsView(),
-                    isActive: $isNavigationActive,
-                    label: {
-                      EmptyView()
-                    }
-                  )
-                  .hidden()
-                } else if selectedMenu == "Accommodation" {
-                  NavigationLink(
-                    destination: AccommodationView(),
-                    isActive: $isNavigationActive,
-                    label: {
-                      EmptyView()
-                    }
-                  )
-                  .hidden()
-                } else if selectedMenu == "Nature" {
-                  NavigationLink(
-                    destination: NatureView(),
-                    isActive: $isNavigationActive,
-                    label: {
-                      EmptyView()
-                    }
-                  )
-                  .hidden()
-                } else if selectedMenu == "Favorites" {
-                  NavigationLink(
-                    destination: FavoritesView(),
-                    isActive: $isNavigationActive,
-                    label: {
-                      EmptyView()
-                    }
-                  )
-                  .hidden()
-                }
-                
-              }
-                .onAppear {
-                  selectedMenu = nil
 
-                }
-                .opacity(0)
-                .buttonStyle(PlainButtonStyle())
-            )
-        }
         .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
       }
     }
-
-  }
-  
-  let search = Search()
-  
-  // Function to fetch cafes
-  private func fetchCafes() {
-    // Assuming restaurantTypes contains a cafe type
-    let cafeTypes = restaurantTypes.filter { $0.rawValue.lowercased() == "cafe" }
+    let search = Search()
     
-    fetchPlaces(for: cafeTypes.map { $0.rawValue }) { fetchedPlaces in
-      if let fetchedPlaces = fetchedPlaces {
-        places = fetchedPlaces
-      }
-    }
-  }
-  
-  // Function to search places
-  private func searchPlaces() {
-    Search.searchPlaces(query: searchText) { fetchedPlaces in
-      if let fetchedPlaces = fetchedPlaces {
-        DispatchQueue.main.async {
-          searchResults = fetchedPlaces
-          // print("Search results: \(searchResults)")
-
+    private func searchPlaces() {
+        Search.searchPlaces(query: searchText) { fetchedPlaces in
+            if let fetchedPlaces = fetchedPlaces {
+                DispatchQueue.main.async {
+                    searchResults = fetchedPlaces
+                }
+            }
         }
-      }
     }
-  }
-  
-  // Preview for HomeView
-  struct HomeView_Previews: PreviewProvider {
-    static var previews: some View {
-      HomeView()
-        .environmentObject(LanguageSettings())
-    }
-  }
+
 }
+

@@ -1,10 +1,25 @@
 import Foundation
+import MapKit
 
 // Structure to represent a location
 struct Location: Codable {
     let lat: Double
     let lng: Double
 }
+
+// Structure to represent place details for fetching coordinates
+struct PlaceDetailsResponse: Codable {
+    let result: PlaceDetails?
+}
+
+struct PlaceDetails: Codable {
+    let geometry: Geometry?
+}
+
+struct Geometry: Codable {
+    let location: Location
+}
+
 
 // Structure to represent a place
 struct Place: Codable, Hashable {
@@ -76,7 +91,7 @@ enum PlaceType: String {
 // Constants for default values
 let defaultLatitude: Double = 60.1695
 let defaultLongitude: Double = 24.9354
-let defaultRadius: Int = 2000
+let defaultRadius: Int = 50000
 let restaurantTypes: [PlaceType] = [.bar, .restaurant, .night_club, .bakery, .cafe]
 let sightsTypes: [PlaceType] = [.zoo, .park, .museum, .tourist_attraction, .amusement_park, .church, .library, .stadium, .aquarium, .university, .art_gallery]
 let accommodationTypes: [PlaceType] = [.lodging]
@@ -91,6 +106,7 @@ let natureTypes: [PlaceType] = [.rv_park, .campground]
 // Function to fetch places from the Google Places API
 func fetchPlaces(for typeStrings: [String], completion: @escaping ([Place]?) -> Void) {
     let apiKey = APIKeys.googlePlacesAPIKey
+    
     
     // Base URL for the Google Places API nearby search
     let baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
@@ -143,6 +159,7 @@ func fetchPlaces(for typeStrings: [String], completion: @escaping ([Place]?) -> 
                 
                 // Call the completion handler with the mapped places
                 completion(places)
+                
             } catch {
                 print("Error fetching or decoding JSON: \(error)")
                 completion(nil)

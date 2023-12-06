@@ -1,4 +1,5 @@
 import MapKit
+import CoreLocation
 
 /* MapKit enabling and basic functionality from
  https://medium.com/@pblanesp/how-to-display-a-map-and-track-the-users-location-in-swiftui-7d288cdb747e*/
@@ -35,7 +36,6 @@ final class LocationManager: NSObject, ObservableObject {
         completer = MKLocalSearchCompleter()
         completer?.delegate = self
     }
-    
     // Function for searching places based on user input
     func searchPlaces(query: String) {
         guard !query.isEmpty else {
@@ -64,35 +64,47 @@ final class LocationManager: NSObject, ObservableObject {
         case .authorizedWhenInUse:
             // Only request location when a suggestion is not selected
             guard searchResults.isEmpty else { return }
-            locationManager.requestLocation()
+            
+            DispatchQueue.global().async {
+                self.locationManager.requestLocation()
+            }
+            
         case .notDetermined:
-            locationManager.startUpdatingLocation()
-            locationManager.requestWhenInUseAuthorization()
-            // Set an error message when location access is denied or restricted
+            // Request location when authorization is not determined
+            locationManager.requestLocation()
+            
         case .denied, .restricted:
             errorMessage = "Access denied. Authorize location settings."
+            
         default:
             break
         }
     }
 }
-
 // Extension of LocationManager to conform to CLLocationManagerDelegate
 extension LocationManager: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch manager.authorizationStatus {
-        case .authorizedWhenInUse:
-            // Only request location when a suggestion is not selected
-            guard searchResults.isEmpty else { return }
+        case .authorizedWhenInUse, .authorizedAlways:
+            // Request location when authorization is granted or changed
             locationManager.requestLocation()
             
-            // Set an error message when location access is denied or restricted
+            // Only proceed if a suggestion is not selected
+            guard searchResults.isEmpty else { return }
+            
+            // Handle other location-related functionality
+        case .notDetermined:
+            // Wait for the user to respond to the authorization prompt
+            break
+            
         case .denied, .restricted:
             errorMessage = "Access denied. Authorize location settings."
+            
         default:
             break
         }
     }
+    
     
     // Delegate method called when location manager encounters an error
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
@@ -119,7 +131,6 @@ extension LocationManager: MKLocalSearchCompleterDelegate {
             }
         }
     }
-    
     func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
         // Handle completer errors
         print("Completer failed with error: \(error.localizedDescription)")
