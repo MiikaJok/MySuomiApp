@@ -8,18 +8,17 @@ struct HomeView: View {
     // State object for speech recognition
     @StateObject private var speechRecognition = SpeechRecognition()
     
-    @State private var coordinates: CLLocationCoordinate2D?
-
     // State variables for UI interaction and data storage
     @State private var isSearchBarVisible = false
     @State private var searchText = ""
     @State private var selectedMenu: String? = nil
-    @State private var cardOffset: CGFloat = 0
     @State private var isNavigationActive: Bool = false
     @State private var places: [Place] = []
     @State private var searchResults: [Place] = []
     @State private var showRecordingMessage = false
     @State private var currentTabIndex = 0
+    @State private var coordinates: CLLocationCoordinate2D?
+
     @Binding var region: MKCoordinateRegion
 
 
@@ -202,9 +201,7 @@ struct HomeView: View {
                                                         ProgressView()
                                                     }
                                                 }
-                                            } else {
-                                                Text("Image not available")
-                                            }
+                                            } 
                                         }
                                         .tag(index)
                                     }
@@ -231,7 +228,6 @@ struct HomeView: View {
                         }
                         
                     }
-                    
                     // Navigation link to the MapView
                     NavigationLink(destination: MapView(selectedCoordinate: $coordinates, region: $region)) {
                         Text(languageSettings.isEnglish ? "Map" : "Kartta")
@@ -240,9 +236,7 @@ struct HomeView: View {
                             .background(Color.blue)
                             .cornerRadius(8)
                     }
-                    
                     Spacer()
-                    
                     // Navigation links to specific category views
                         .background(
                             Group {
@@ -295,7 +289,6 @@ struct HomeView: View {
             }
         }
     }
-    
     // Function to fetch cafes
     private func fetchCafes() {
         // Assuming restaurantTypes contains a cafe type
@@ -307,7 +300,6 @@ struct HomeView: View {
             }
         }
     }
-    
     let search = Search()
     
     private func searchPlaces() {

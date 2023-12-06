@@ -11,11 +11,9 @@ struct MapView: View {
     @EnvironmentObject var languageSettings: LanguageSettings
     // state variables to control, search, and suggestions
     @State private var searchText = ""
-    @State private var showSuggestions = false
     @State private var selectedPlace: MKLocalSearchCompletion?
     @Binding var selectedCoordinate: CLLocationCoordinate2D?
     @State private var currentCoordinate: CLLocationCoordinate2D?
-    @State private var selectedPlacemark: MKPlacemark?
     @Binding var region: MKCoordinateRegion
     
     var body: some View {
@@ -94,29 +92,24 @@ struct MapView: View {
             // Setting locale based on language prefs
             .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
             // Navigate to selected place from search
-            
             .onChange(of: selectedPlace) { newPlace in
                 guard let newPlace = newPlace else { return }
                 // Create a new MKLocalSearch.Request with the selected place
                 let request = MKLocalSearch.Request(completion: newPlace)
                 let search = MKLocalSearch(request: request)
-                
                 // Start search to get detailed info
                 search.start { response, error in
                     guard let placemark = response?.mapItems.first?.placemark else {
                         print("Failed to get placemark from response")
                         return
                     }
-                    
                     // Update the region to focus on the selected place
                     DispatchQueue.main.async {
                         updateRegion(with: placemark.coordinate)
                         print("Map - Updated Region: \(region)")
                     }
-                    
                     // Clear existing markers
                     manager.searchResults.removeAll()
-                    
                     // Convert the MKLocalSearchCompletion to MKPlacemark
                     let selectedPlacemark = MKPlacemark(coordinate: placemark.coordinate, addressDictionary: placemark.addressDictionary as? [String: Any])
                     // Append the selected placemark to the search results

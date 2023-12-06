@@ -4,7 +4,6 @@ import URLImage
 
 struct EatView: View {
     @State private var restaurantPlaces: [Place] = []
-    @State private var likedPlaces: [Place] = [] // New state variable to store liked places
     @State private var hasFetchedData = false
     
     var body: some View {
@@ -35,7 +34,7 @@ struct EatView: View {
         var uniquePlaces: Set<Place> = Set(existingPlaces)
         
         // Create a dispatch queue to synchronize access to uniquePlaces
-        let queue = DispatchQueue(label: "com.yourapp.uniquePlacesQueue")
+        let queue = DispatchQueue(label: "MySuomiApp.uniquePlacesQueue")
         
         // Create a dispatch group to wait for all fetches to complete
         let dispatchGroup = DispatchGroup()

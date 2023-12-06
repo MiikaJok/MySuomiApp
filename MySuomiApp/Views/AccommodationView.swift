@@ -6,11 +6,9 @@ struct AccommodationView: View {
     
     @State private var accommodationPlaces: [Place] = []
     @State private var hasFetchedData = false
-    
-    
+
     var body: some View {
-        
-        // Display your nature places here
+        // Display your accommodation places here
         List(accommodationPlaces, id: \.place_id) { place in
             NavigationLink(destination: DetailView(place: place)) {
                 HStack {
@@ -36,12 +34,12 @@ struct AccommodationView: View {
         var uniquePlaces: Set<Place> = Set(existingPlaces)
         
         // Create a dispatch queue to synchronize access to uniquePlaces
-        let queue = DispatchQueue(label: "com.yourapp.uniquePlacesQueue")
+        let queue = DispatchQueue(label: "MySuomiApp.uniquePlacesQueue")
         
         // Create a dispatch group to wait for all fetches to complete
         let dispatchGroup = DispatchGroup()
         
-        // Iterate over each type in restaurantTypes and fetch places
+        // Iterate over each type in accommodationTypes and fetch places
         for type in accommodationTypes {
             dispatchGroup.enter() // Enter the group before starting a fetch
             

@@ -12,8 +12,6 @@ struct DetailView: View {
         span: MKCoordinateSpan(latitudeDelta: 0.4, longitudeDelta: 0.4)
     )
     var onCoordinateUpdate: ((CLLocationCoordinate2D?) -> Void)?
-
-    
     
     var body: some View {
         NavigationView {
@@ -88,7 +86,7 @@ struct DetailView: View {
                     print("Fetched coordinates: \(coordinates?.latitude ?? 0), \(coordinates?.longitude ?? 0)")
                     
                     // Invoke the callback to update the region in MapView
-                                onCoordinateUpdate?(coordinates)
+                    onCoordinateUpdate?(coordinates)
                 }
             } catch {
                 print("Error fetching coordinates: \(error)")
