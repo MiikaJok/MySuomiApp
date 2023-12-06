@@ -20,6 +20,8 @@ struct HomeView: View {
     @State private var searchResults: [Place] = []
     @State private var showRecordingMessage = false
     @State private var currentTabIndex = 0
+    @Binding var region: MKCoordinateRegion
+
 
     
     var body: some View {
@@ -231,7 +233,7 @@ struct HomeView: View {
                     }
                     
                     // Navigation link to the MapView
-                    NavigationLink(destination: MapView(selectedCoordinate: $coordinates)) {
+                    NavigationLink(destination: MapView(selectedCoordinate: $coordinates, region: $region)) {
                         Text(languageSettings.isEnglish ? "Map" : "Kartta")
                             .padding()
                             .foregroundColor(.white)
@@ -317,11 +319,5 @@ struct HomeView: View {
             }
         }
     }
-    // Preview for HomeView
-    struct HomeView_Previews: PreviewProvider {
-        static var previews: some View {
-            HomeView()
-                .environmentObject(LanguageSettings())
-        }
-    }
 }
+

@@ -1,19 +1,19 @@
 import SwiftUI
 import URLImage
 import MapKit
-import CoreLocation
 
 struct DetailView: View {
     
     let place: Place
     @State private var coordinates: CLLocationCoordinate2D?
-    @State private var selectedPlacemark: MKPlacemark?
     @State private var isNavigationActive = false
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 60.1695, longitude: 24.9354),
         span: MKCoordinateSpan(latitudeDelta: 0.4, longitudeDelta: 0.4)
     )
+    var onCoordinateUpdate: ((CLLocationCoordinate2D?) -> Void)?
 
+    
     
     var body: some View {
         NavigationView {
@@ -47,7 +47,6 @@ struct DetailView: View {
                         }
                     }
                 }
-                
                 // "Locate Place" button
                 Button(action: {
                     fetchCoordinates()
@@ -59,7 +58,7 @@ struct DetailView: View {
             }
             .navigationTitle(place.name)
             .background(
-                NavigationLink("", destination: MapView(selectedCoordinate: .constant(coordinates)), isActive: $isNavigationActive)
+                NavigationLink("", destination: MapView(selectedCoordinate: .constant(coordinates), region: $region), isActive: $isNavigationActive)
                     .hidden()
             )
         }
@@ -70,7 +69,6 @@ struct DetailView: View {
         let apiKey = APIKeys.googlePlacesAPIKey
         
         guard !place.place_id.isEmpty else {
-            print("Error: Place ID is empty")
             return
         }
         
@@ -79,14 +77,18 @@ struct DetailView: View {
         Task {
             do {
                 let (data, _) = try await URLSession.shared.data(from: url)
-                print("Received data from the API.")
                 
                 let decoder = JSONDecoder()
                 let detailsResponse = try decoder.decode(PlaceDetailsResponse.self, from: data)
                 
                 if let location = detailsResponse.result?.geometry?.location {
                     coordinates = CLLocationCoordinate2D(latitude: location.lat, longitude: location.lng)
+                    region.center = coordinates ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
+                    region.span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
                     print("Fetched coordinates: \(coordinates?.latitude ?? 0), \(coordinates?.longitude ?? 0)")
+                    
+                    // Invoke the callback to update the region in MapView
+                                onCoordinateUpdate?(coordinates)
                 }
             } catch {
                 print("Error fetching coordinates: \(error)")

@@ -3,7 +3,6 @@ import MapKit
 import CoreData
 import CoreLocation
 
-
 /*MapView struct that represents the SwiftUI view displaying the map and search functionality*/
 struct MapView: View {
     // location related functionalities manager
@@ -17,8 +16,8 @@ struct MapView: View {
     @Binding var selectedCoordinate: CLLocationCoordinate2D?
     @State private var currentCoordinate: CLLocationCoordinate2D?
     @State private var selectedPlacemark: MKPlacemark?
-
-        
+    @Binding var region: MKCoordinateRegion
+    
     var body: some View {
         NavigationView {
             VStack {
@@ -34,14 +33,12 @@ struct MapView: View {
                             .cornerRadius(8)
                             .padding(8)
                     }
-
                     Text("MySuomiApp")
                         .padding(8)
                         .font(.title)
                         .bold()
                     Spacer()
                 }
-
                 // Search bar and suggestion list
                 VStack {
                     TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
@@ -52,12 +49,12 @@ struct MapView: View {
                         .onChange(of: searchText, perform: { newSearchText in
                             manager.searchPlaces(query: newSearchText)
                         })
-
                     // Suggestions list based on search
                     if !manager.suggestions.isEmpty {
                         List(manager.suggestions, id: \.self) { suggestion in
                             Button(action: {
-                                searchText = suggestion.title
+                                searchText = "\(suggestion.title), \(suggestion.subtitle)"
+                                
                                 selectedPlace = suggestion
                             }) {
                                 Text("\(suggestion.title), \(suggestion.subtitle)")
@@ -68,16 +65,28 @@ struct MapView: View {
                         .cornerRadius(10)
                     }
                 }
-
                 // Map view display based on search results
-                Map(coordinateRegion: $manager.region, showsUserLocation: true, annotationItems: manager.searchResults) { place in
+                Map(coordinateRegion: $region, showsUserLocation: true, annotationItems: manager.searchResults) { place in
                     MapMarker(coordinate: place.coordinate, tint: .blue)
                 }
                 .onAppear {
+                    print("Map onAppear - Rendered Region: \(region)")
                     // Set the initial region based on manager.region
                     currentCoordinate = selectedCoordinate ?? CLLocationCoordinate2D(latitude: 60.1695, longitude: 24.9354)
                     manager.region.center = currentCoordinate!
                     manager.region.span = MKCoordinateSpan(latitudeDelta: 0.4, longitudeDelta: 0.4)
+                }
+                .onChange(of: selectedCoordinate) { newCoordinate in
+                    // Update the region whenever the selectedCoordinate changes
+                    updateRegion(with: newCoordinate)
+                    print("Map - Updated Region: \(region)")
+                    // Remove the existing selected place marker
+                    manager.searchResults.removeAll()
+                    // Add the updated marker for the selected place
+                    if let selectedCoordinate = newCoordinate {
+                        let locationPlacemark = MKPlacemark(coordinate: selectedCoordinate)
+                        manager.searchResults.append(locationPlacemark)
+                    }
                 }
                 .animation(.easeIn)
             }
@@ -85,51 +94,56 @@ struct MapView: View {
             // Setting locale based on language prefs
             .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
             // Navigate to selected place from search
+            
             .onChange(of: selectedPlace) { newPlace in
                 guard let newPlace = newPlace else { return }
-                // updates search text with selected place
-                searchText = newPlace.title
-
                 // Create a new MKLocalSearch.Request with the selected place
                 let request = MKLocalSearch.Request(completion: newPlace)
                 let search = MKLocalSearch(request: request)
-                // start search to get detailed info
+                
+                // Start search to get detailed info
                 search.start { response, error in
-                    guard let placemark = response?.mapItems.first?.placemark else { return }
-                    // updates region to focus on the selected place
-                    let selectedCoordinate = placemark.coordinate
-                    manager.region.center = selectedCoordinate
-                    manager.region.span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
+                    guard let placemark = response?.mapItems.first?.placemark else {
+                        print("Failed to get placemark from response")
+                        return
+                    }
+                    
+                    // Update the region to focus on the selected place
+                    DispatchQueue.main.async {
+                        updateRegion(with: placemark.coordinate)
+                        print("Map - Updated Region: \(region)")
+                    }
+                    
                     // Clear existing markers
                     manager.searchResults.removeAll()
+                    
                     // Convert the MKLocalSearchCompletion to MKPlacemark
-                    let selectedPlacemark = MKPlacemark(coordinate: selectedCoordinate, addressDictionary: placemark.addressDictionary as? [String: Any])
+                    let selectedPlacemark = MKPlacemark(coordinate: placemark.coordinate, addressDictionary: placemark.addressDictionary as? [String: Any])
                     // Append the selected placemark to the search results
                     manager.searchResults.append(selectedPlacemark)
                 }
             }
+            
             Spacer()
         }
+        
     }
-
-    // Function to fetch details for the selected place
-    private func fetchDetailsForSelectedPlace() {
-        guard let selectedCoordinate = selectedCoordinate else { return }
-
-        let location = CLLocation(latitude: selectedCoordinate.latitude, longitude: selectedCoordinate.longitude)
-        let geocoder = CLGeocoder()
-
-        geocoder.reverseGeocodeLocation(location) { placemarks, error in
-            if let placemark = placemarks?.first {
-                selectedPlacemark = MKPlacemark(placemark: placemark)
-            }
+    // Function to update the region based on the received coordinate
+    private func updateRegion(with coordinate: CLLocationCoordinate2D?) {
+        if let coordinate = coordinate {
+            region.center = coordinate
+            region.span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
         }
     }
 }
-
-struct MapView_Previews: PreviewProvider {
-    static var previews: some View {
-        MapView(selectedCoordinate: .constant(nil))
-            .environmentObject(LanguageSettings())
+extension CLLocationCoordinate2D: Equatable {
+    public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
+        return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
     }
 }
+/*struct MapView_Previews: PreviewProvider {¢
+ static var previews: some View {
+ MapView(selectedCoordinate: .constant(nil))
+ .environmentObject(LanguageSettings())
+ }
+ }*/
