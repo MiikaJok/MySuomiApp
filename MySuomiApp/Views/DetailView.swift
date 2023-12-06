@@ -24,6 +24,7 @@ struct DetailView: View {
                     if let isOpenNow = place.opening_hours?.open_now {
                         Text("Open Now: \(isOpenNow ? "Yes" : "No")")
                             .font(.headline)
+                            .foregroundColor(isOpenNow ? .green : .red)
                     }
                     
                     if let photoReference = place.photos?.first?.photo_reference {
@@ -32,13 +33,20 @@ struct DetailView: View {
                             image
                                 .resizable()
                                 .aspectRatio(contentMode: .fit)
-                                .frame(height: 200) // Adjust the size as needed
+                                .frame(height: 200)
+                                .cornerRadius(10) // Add corner radius for a rounded look
+                                .padding(.top, 10) // Add some space between text and image
                         }
                     }
                 }
+                .padding(.horizontal, 15) // Add horizontal padding for a cleaner look
+
             }
         }
         .navigationTitle(place.name)
+        .listStyle(InsetGroupedListStyle()) // Apply a modern inset grouped style
+        .padding()
+
     }
 }
 

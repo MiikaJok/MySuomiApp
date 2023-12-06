@@ -20,7 +20,7 @@ struct HomeView: View {
     // helsinki video
     @State private var isVideoPlaying = true // Auto-play the video
     @State private var isMuted = true
-    private let youtubeVideoID = "rcbMl0gpQ6g"
+    private let youtubeVideoID = "videon id"
     
     
     var body: some View {
@@ -243,8 +243,8 @@ struct HomeView: View {
                                             .multilineTextAlignment(.center)
                                             .padding(.bottom, 16)
                                     }
-                                    .frame(maxWidth: .infinity)
-                                    .background(Color.black.opacity(0.5))
+                                        .frame(maxWidth: .infinity)
+                                        .background(Color.black.opacity(0.5))
                                 )
                                 .clipShape(RoundedRectangle(cornerRadius: 16))
                                 .shadow(radius: 5)
@@ -252,7 +252,7 @@ struct HomeView: View {
                         .frame(width: 200)
                     }
                     .buttonStyle(PlainButtonStyle())
-
+                    
                     
                     
                     // Navigation link to the MapView
@@ -267,7 +267,7 @@ struct HomeView: View {
                                 .foregroundColor(.white)
                                 .padding(.top, 8)
                         }
-                        .frame(width: 120, height: 120) // Adjust the size of the button
+                        .frame(width: 120, height: 120) // size of the button
                         .background(Color.green)
                         .cornerRadius(16)
                         .padding()
@@ -332,15 +332,13 @@ struct HomeView: View {
                                 .opacity(0)
                                 .buttonStyle(PlainButtonStyle())
                         )
+                    
                     // Video Section
                     WebView(urlString: "https://www.youtube.com/embed/\(youtubeVideoID)", isMuted: $isMuted)
                         .frame(height: UIScreen.main.bounds.height * 0.3)
                         .onAppear {
                             // Auto-play the video when it appears on screen
                             isVideoPlaying = true
-                            
-                            
-                            
                         }
                 }
                 .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
@@ -352,7 +350,6 @@ struct HomeView: View {
     
     // Function to fetch cafes
     private func fetchCafes() {
-        // Assuming restaurantTypes contains a cafe type
         let cafeTypes = restaurantTypes.filter { $0.rawValue.lowercased() == "cafe" }
         
         fetchPlaces(for: cafeTypes.map { $0.rawValue }) { fetchedPlaces in
@@ -368,14 +365,10 @@ struct HomeView: View {
             if let fetchedPlaces = fetchedPlaces {
                 DispatchQueue.main.async {
                     searchResults = fetchedPlaces
-                    // print("Search results: \(searchResults)")
                 }
             }
         }
     }
-    
-   
-    
     
     
     struct WebView: UIViewRepresentable {
@@ -414,20 +407,4 @@ struct HomeView: View {
         }
     }
 }
-/*ScrollView(.horizontal, showsIndicators: false) {
- HStack(spacing: 16) {
- ForEach(places.prefix(10), id: \.self) { place in
- if let imageURL = place.photoURL {
- URLImage(imageURL) { image in
- image
- .resizable()
- .scaledToFill()
- .frame(width: 300, height: 200)
- .clipped()
- }
- }
- }
- }
- .padding()
- }
- }*/
+

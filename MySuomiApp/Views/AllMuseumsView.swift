@@ -19,7 +19,6 @@ struct AllMuseumsView: View {
         }
         .navigationTitle("All Museums")
         .onAppear {
-            // Call the fetchMuseums method when the view appears
             self.fetchMuseums()
         }
     }
