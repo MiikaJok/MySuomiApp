@@ -37,6 +37,7 @@ struct MapView: View {
                         .bold()
                     Spacer()
                 }
+              
                 // Search bar and suggestion list
                 VStack {
                     TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
@@ -47,13 +48,17 @@ struct MapView: View {
                         .onChange(of: searchText, perform: { newSearchText in
                             manager.searchPlaces(query: newSearchText)
                         })
+
                     // Suggestions list based on search
                     if !manager.suggestions.isEmpty {
                         List(manager.suggestions, id: \.self) { suggestion in
                             Button(action: {
-                                searchText = "\(suggestion.title), \(suggestion.subtitle)"
                                 
                                 selectedPlace = suggestion
+                              
+                                searchText = "\(suggestion.title), \(suggestion.subtitle)"
+                                
+                                
                             }) {
                                 Text("\(suggestion.title), \(suggestion.subtitle)")
                             }
@@ -134,9 +139,4 @@ extension CLLocationCoordinate2D: Equatable {
         return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
     }
 }
-/*struct MapView_Previews: PreviewProvider {¢
- static var previews: some View {
- MapView(selectedCoordinate: .constant(nil))
- .environmentObject(LanguageSettings())
- }
- }*/
+

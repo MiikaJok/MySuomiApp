@@ -29,22 +29,28 @@ struct DetailView: View {
                             .font(.headline)
                         Text("Vicinity: \(place.vicinity)")
                             .font(.headline)
-                        if let isOpenNow = place.opening_hours?.open_now {
-                            Text("Open Now: \(isOpenNow ? "Yes" : "No")")
-                                .font(.headline)
-                        }
-                        
-                        if let photoReference = place.photos?.first?.photo_reference {
-                            // Display the image in the detail view
-                            URLImage(imageURL(photoReference: photoReference, maxWidth: 400)) { image in
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(height: 200) // Adjust the size as needed
-                            }
+                            .foregroundColor(isOpenNow ? .green : .red)
+                    }
+                    
+                    if let photoReference = place.photos?.first?.photo_reference {
+                        // Display the image in the detail view
+                        URLImage(imageURL(photoReference: photoReference, maxWidth: 400)) { image in
+                            image
+                                .resizable()
+                                .aspectRatio(contentMode: .fit)
+                                .frame(height: 200)
+                                .cornerRadius(10) // Add corner radius for a rounded look
+                                .padding(.top, 10) // Add some space between text and image
                         }
                     }
                 }
+                .padding(.horizontal, 15) // Add horizontal padding for a cleaner look
+
+            }
+        }
+        .listStyle(InsetGroupedListStyle()) // Apply a modern inset grouped style
+        .padding()
+
                 // "Locate Place" button
                 Button(action: {
                     fetchCoordinates()

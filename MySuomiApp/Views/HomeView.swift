@@ -1,6 +1,9 @@
 import SwiftUI
+import URLImage
+import WebKit
 import Speech
 import MapKit
+
 
 struct HomeView: View {
     // Environment object for language settings
@@ -17,9 +20,13 @@ struct HomeView: View {
     @State private var searchResults: [Place] = []
     @State private var showRecordingMessage = false
     @State private var currentTabIndex = 0
+      // helsinki video
+    @State private var isVideoPlaying = true // Auto-play the video
+    @State private var isMuted = true
+    private let youtubeVideoID = "videon id"
     @State private var coordinates: CLLocationCoordinate2D?
-
     @Binding var region: MKCoordinateRegion
+
   
   var body: some View {
     NavigationView {
@@ -158,29 +165,53 @@ struct HomeView: View {
                             } else {
                                 TabView(selection: $currentTabIndex) {
                                     Spacer().tag(-1)
-                                    ForEach(0..<10, id: \.self) { index in
+                                    
+                                    ForEach(places.indices, id: \.self) { index in
+                                        let place = places[index]
+                                        
                                         VStack {
-                                            if let photoReference = places[index].photos?.first?.photo_reference {
-                                                let url = imageURL(photoReference: photoReference, maxWidth: 200)
+                                            if let photoReference = place.photos?.first?.photo_reference {
+                                                let url = imageURL(photoReference: photoReference, maxWidth: 800)
                                                 
-                                                AsyncImage(url: url) { phase in
-                                                    switch phase {
-                                                    case .success(let image):
-                                                        image
-                                                            .resizable()
-                                                            .scaledToFill()
-                                                            .clipped()
-                                                            .frame(height: UIScreen.main.bounds.height * 0.3)
-                                                    case .failure:
-                                                        Text("Image not available")
-                                                    case .empty:
-                                                        ProgressView()
+                                                NavigationLink(destination: DetailView(place: place)) {
+                                                    // Content of the link
+                                                    ZStack(alignment: .top) {
+                                                        
+                                                        // Load the image using AsyncImage
+                                                        AsyncImage(url: url) { phase in
+                                                            switch phase {
+                                                            case .success(let image):
+                                                                image
+                                                                    .resizable()
+                                                                    .scaledToFill()
+                                                                    .clipped()
+                                                                    .frame(height: UIScreen.main.bounds.height * 0.3)
+                                                            case .failure:
+                                                                Text("Image not available")
+                                                            case .empty:
+                                                                ProgressView()
+                                                            }
+                                                        }
+                                                        .frame(height: UIScreen.main.bounds.height * 0.3)
+                                                        
+                                                        // Display the title of the cafe on top of the image
+                                                        Text(place.name)
+                                                            .font(.caption)
+                                                            .foregroundColor(.white)
+                                                            .padding(8)
+                                                            .background(Color.black.opacity(0.5))
+                                                            .cornerRadius(8)
+                                                            .offset(y: 20)
                                                     }
                                                 }
+
+                                                .buttonStyle(PlainButtonStyle())
                                             } 
+
                                         }
                                         .tag(index)
                                     }
+                                    
                                     Spacer().tag(places.count)
                                 }
                                 .tabViewStyle(.page)
@@ -192,28 +223,68 @@ struct HomeView: View {
                                         currentTabIndex = places.count - 1
                                     }
                                 }
-                                
                                 .accessibilityIdentifier("CarouselView")
-                                
                             }
-                            
                         }
                         .frame(height: UIScreen.main.bounds.height * 0.3)
                         .onAppear {
                             fetchCafes()
                         }
-                      } else {
-                        Text("Image not available")
-                      }
-                    }
 
+                    }
+                    
+                    
+                    // Button to see all museums
+                    NavigationLink(destination: AllMuseumsView()) {
+                        ZStack {
+                            // Museum Image
+                            Image("museo")
+                                .resizable()
+                                .scaledToFill()
+                                .clipped()
+                                .frame(height: UIScreen.main.bounds.height * 0.3)
+                                .overlay(
+                                    // Text overlay on the image
+                                    VStack {
+                                        Spacer()
+                                        Text(languageSettings.isEnglish ? "Museums close to you" : "Museot lähelläsi")
+                                            .foregroundColor(.white)
+                                            .font(.headline)
+                                            .multilineTextAlignment(.center)
+                                            .padding(.bottom, 16)
+                                    }
+                                        .frame(maxWidth: .infinity)
+                                        .background(Color.black.opacity(0.5))
+                                )
+                                .clipShape(RoundedRectangle(cornerRadius: 16))
+                                .shadow(radius: 5)
+                        }
+                        .frame(width: 200)
+                    }
+                    .buttonStyle(PlainButtonStyle())
+                    
+                    
+                    
                     // Navigation link to the MapView
-                    NavigationLink(destination: MapView(selectedCoordinate: $coordinates, region: $region)) {
-                        Text(languageSettings.isEnglish ? "Map" : "Kartta")
-                            .padding()
-                            .foregroundColor(.white)
-                            .background(Color.blue)
-                            .cornerRadius(8)
+                    NavigationLink(destination: MapView()) {
+                        VStack {
+                            Image(systemName: "map.fill") //
+                                .resizable()
+                                .frame(width: 50, height: 50)
+                                .foregroundColor(.white)
+                            
+                            Text(languageSettings.isEnglish ? "Explore Map" : "Tutustu karttaan")
+                                .foregroundColor(.white)
+                                .padding(.top, 8)
+                        }
+                        .frame(width: 120, height: 120) // size of the button
+                        .background(Color.green)
+                        .cornerRadius(16)
+                        .padding()
+                        .shadow(radius: 5)
+
+                      } 
+                    }
                     }
                     Spacer()
                     // Navigation links to specific category views
@@ -264,6 +335,15 @@ struct HomeView: View {
                                 .buttonStyle(PlainButtonStyle())
                         )
 
+                    
+                    // Video Section
+                    WebView(urlString: "https://www.youtube.com/embed/\(youtubeVideoID)", isMuted: $isMuted)
+                        .frame(height: UIScreen.main.bounds.height * 0.3)
+                        .onAppear {
+                            // Auto-play the video when it appears on screen
+                            isVideoPlaying = true
+                        }
+
                 }
                     
               }
@@ -274,7 +354,6 @@ struct HomeView: View {
     }
     // Function to fetch cafes
     private func fetchCafes() {
-        // Assuming restaurantTypes contains a cafe type
         let cafeTypes = restaurantTypes.filter { $0.rawValue.lowercased() == "cafe" }
         
         fetchPlaces(for: cafeTypes.map { $0.rawValue }) { fetchedPlaces in
@@ -296,6 +375,41 @@ struct HomeView: View {
                     searchResults = fetchedPlaces
                 }
             }
+        }
+        
+    struct WebView: UIViewRepresentable {
+        let urlString: String
+        @Binding var isMuted: Bool
+        
+        func makeUIView(context: Context) -> WKWebView {
+            let webView = WKWebView()
+            webView.navigationDelegate = context.coordinator
+            if let url = URL(string: urlString) {
+                webView.load(URLRequest(url: url))
+            }
+            return webView
+        }
+        
+        func updateUIView(_ uiView: WKWebView, context: Context) {}
+        
+        func makeCoordinator() -> Coordinator {
+            Coordinator(self)
+        }
+        
+        class Coordinator: NSObject, WKNavigationDelegate {
+            var parent: WebView
+            
+            init(_ parent: WebView) {
+                self.parent = parent
+            }
+        }
+    }
+    
+    // Preview for HomeView
+    struct HomeView_Previews: PreviewProvider {
+        static var previews: some View {
+            HomeView()
+                .environmentObject(LanguageSettings())
         }
     }
 
