@@ -32,6 +32,8 @@ struct DetailView: View {
                         if let isOpenNow = place.opening_hours?.open_now {
                             Text("Open Now: \(isOpenNow ? "Yes" : "No")")
                                 .font(.headline)
+                                .foregroundColor(isOpenNow ? .green : .red)
+
                         }
                         
                         if let photoReference = place.photos?.first?.photo_reference {
@@ -55,6 +57,8 @@ struct DetailView: View {
                 }
             }
             .navigationTitle(place.name)
+            .listStyle(InsetGroupedListStyle())
+
             .background(
                 NavigationLink("", destination: MapView(selectedCoordinate: .constant(coordinates), region: $region), isActive: $isNavigationActive)
                     .hidden()
