@@ -33,7 +33,7 @@ struct DetailView: View {
                             Text("Open Now: \(isOpenNow ? "Yes" : "No")")
                                 .font(.headline)
                                 .foregroundColor(isOpenNow ? .green : .red)
-
+                            
                         }
                         
                         if let photoReference = place.photos?.first?.photo_reference {
@@ -43,10 +43,17 @@ struct DetailView: View {
                                     .resizable()
                                     .aspectRatio(contentMode: .fit)
                                     .frame(height: 200) // Adjust the size as needed
+                                    .cornerRadius(10) // Add corner radius for a rounded look
+                                    .padding(.top, 10)
                             }
                         }
+                        
                     }
+                    .padding(.horizontal, 15)
                 }
+                .listStyle(InsetGroupedListStyle()) // Apply a modern inset grouped style
+                .padding()
+                
                 // "Locate Place" button
                 Button(action: {
                     fetchCoordinates()
@@ -57,8 +64,6 @@ struct DetailView: View {
                 }
             }
             .navigationTitle(place.name)
-            .listStyle(InsetGroupedListStyle())
-
             .background(
                 NavigationLink("", destination: MapView(selectedCoordinate: .constant(coordinates), region: $region), isActive: $isNavigationActive)
                     .hidden()

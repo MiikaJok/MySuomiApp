@@ -20,9 +20,9 @@ struct HomeView: View {
     @State private var showRecordingMessage = false
     @State private var currentTabIndex = 0
     // helsinki video
-        @State private var isVideoPlaying = true // Auto-play the video
-        @State private var isMuted = true
-        private let youtubeVideoID = "videon id"
+    @State private var isVideoPlaying = true // Auto-play the video
+    @State private var isMuted = true
+    private let youtubeVideoID = "videon id"
     @State private var coordinates: CLLocationCoordinate2D?
     
     @Binding var region: MKCoordinateRegion
@@ -347,13 +347,13 @@ struct HomeView: View {
                             .buttonStyle(PlainButtonStyle())
                     )
                 // Video Section
-                                    WebView(urlString: "https://www.youtube.com/embed/\(youtubeVideoID)", isMuted: $isMuted)
-                                        .frame(height: UIScreen.main.bounds.height * 0.3)
-                                        .onAppear {
-                                            // Auto-play the video when it appears on screen
-                                            isVideoPlaying = true
-                                        }
-                                }
+                WebView(urlString: "https://www.youtube.com/embed/\(youtubeVideoID)", isMuted: $isMuted)
+                    .frame(height: UIScreen.main.bounds.height * 0.3)
+                    .onAppear {
+                        // Auto-play the video when it appears on screen
+                        isVideoPlaying = true
+                    }
+            }
             .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
         }
     }
@@ -408,4 +408,5 @@ struct HomeView: View {
         }
     }
 }
+
 
