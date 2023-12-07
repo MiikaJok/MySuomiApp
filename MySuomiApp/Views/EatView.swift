@@ -4,14 +4,12 @@ import URLImage
 
 struct EatView: View {
     @State private var restaurantPlaces: [Place] = []
-    @State private var likedPlaces: [Place] = [] // New state variable to store liked places
     @State private var hasFetchedData = false
     
     var body: some View {
         List(restaurantPlaces, id: \.place_id) { place in
             NavigationLink(destination: DetailView(place: place)) {
                 HStack {
-                    // Pass isFavorite as a binding to CardView
                     CardView(title: place.name, imageURL: imageURL(photoReference: place.photos?.first?.photo_reference ?? "", maxWidth: 100))
                 }
             }
@@ -20,7 +18,7 @@ struct EatView: View {
         .onAppear {
             // Fetch data only if it hasn't been fetched before
             if !hasFetchedData {
-                fetchAndSaveRestaurantPlaces() // Use the modified function
+                fetchAndSaveRestaurantPlaces()
                 
                 hasFetchedData = true
             }
@@ -28,18 +26,19 @@ struct EatView: View {
         .navigationTitle("Restaurants")
     }
     
-    // Modified function to fetch and save restaurant places
     func fetchAndSaveRestaurantPlaces() {
         // Fetch existing places from Core Data
         let existingPlaces = PersistenceController.shared.fetchPlaces()
         
         // Create a set to store unique places
         var uniquePlaces: Set<Place> = Set(existingPlaces)
-
+        
+        // Create a dispatch queue to synchronize access to uniquePlaces
+        let queue = DispatchQueue(label: "MySuomiApp.uniquePlacesQueue")
         
         // Create a dispatch group to wait for all fetches to complete
         let dispatchGroup = DispatchGroup()
-
+        
         // Iterate over each type in restaurantTypes and fetch places
         for type in restaurantTypes {
             dispatchGroup.enter() // Enter the group before starting a fetch
@@ -51,8 +50,10 @@ struct EatView: View {
                 }
                 
                 if let places = places {
-                    // Add the fetched places to the set
-                    uniquePlaces.formUnion(places)
+                    // Perform updates to uniquePlaces inside the synchronized block
+                    queue.sync {
+                        uniquePlaces.formUnion(places)
+                    }
                 } else {
                     // Handle error or display an error message
                     print("Failed to fetch restaurant places")
@@ -63,11 +64,11 @@ struct EatView: View {
         // Notify when all fetches are complete
         dispatchGroup.notify(queue: .main) {
             // Convert the set back to an array and update the state
-            restaurantPlaces = Array(uniquePlaces)
+            let sortedPlaces = Array(uniquePlaces).sorted(by: { $0.name < $1.name })
+            restaurantPlaces = sortedPlaces
             
             // Save the unique places to Core Data
-            PersistenceController.shared.savePlaces(Array(uniquePlaces))
-
+            PersistenceController.shared.savePlaces(sortedPlaces)
         }
     }
 }

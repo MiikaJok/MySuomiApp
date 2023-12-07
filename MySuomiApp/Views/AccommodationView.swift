@@ -6,11 +6,9 @@ struct AccommodationView: View {
     
     @State private var accommodationPlaces: [Place] = []
     @State private var hasFetchedData = false
-    
-    
+
     var body: some View {
-        
-        // Display your nature places here
+        // Display your accommodation places here
         List(accommodationPlaces, id: \.place_id) { place in
             NavigationLink(destination: DetailView(place: place)) {
                 HStack {
@@ -35,9 +33,11 @@ struct AccommodationView: View {
         // Create a set to store unique places
         var uniquePlaces: Set<Place> = Set(existingPlaces)
         
+        // Create a dispatch queue to synchronize access to uniquePlaces
+        let queue = DispatchQueue(label: "MySuomiApp.uniquePlacesQueue")
+        
         // Create a dispatch group to wait for all fetches to complete
         let dispatchGroup = DispatchGroup()
-        
         
         // Iterate over each type in accommodationTypes and fetch places
         for type in accommodationTypes {
@@ -50,11 +50,13 @@ struct AccommodationView: View {
                 }
                 
                 if let places = places {
-                    // Add the fetched places to the set
-                    uniquePlaces.formUnion(places)
+                    // Perform updates to uniquePlaces inside the synchronized block
+                    queue.sync {
+                        uniquePlaces.formUnion(places)
+                    }
                 } else {
                     // Handle error or display an error message
-                    print("Failed to fetch accommodation places")
+                    print("Failed to fetch restaurant places")
                 }
             }
         }
@@ -62,12 +64,11 @@ struct AccommodationView: View {
         // Notify when all fetches are complete
         dispatchGroup.notify(queue: .main) {
             // Convert the set back to an array and update the state
-            accommodationPlaces = Array(uniquePlaces)
+            let sortedPlaces = Array(uniquePlaces).sorted(by: { $0.name < $1.name })
+            accommodationPlaces = sortedPlaces
             
             // Save the unique places to Core Data
-            PersistenceController.shared.savePlaces(Array(uniquePlaces))
+            PersistenceController.shared.savePlaces(sortedPlaces)
         }
     }
 }
-
-

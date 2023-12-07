@@ -39,6 +39,9 @@ struct NatureView: View {
         // Create a set to store unique places
         var uniquePlaces: Set<Place> = Set(existingPlaces)
         
+        // Create a dispatch queue to synchronize access to uniquePlaces
+        let queue = DispatchQueue(label: "MySuomiApp.uniquePlacesQueue")
+        
         // Create a dispatch group to wait for all fetches to complete
         let dispatchGroup = DispatchGroup()
         
@@ -53,11 +56,13 @@ struct NatureView: View {
                 }
                 
                 if let places = places {
-                    // Add the fetched places to the set
-                    uniquePlaces.formUnion(places)
+                    // Perform updates to uniquePlaces inside the synchronized block
+                    queue.sync {
+                        uniquePlaces.formUnion(places)
+                    }
                 } else {
                     // Handle error or display an error message
-                    print("Failed to fetch nature places")
+                    print("Failed to fetch restaurant places")
                 }
             }
         }
@@ -65,10 +70,11 @@ struct NatureView: View {
         // Notify when all fetches are complete
         dispatchGroup.notify(queue: .main) {
             // Convert the set back to an array and update the state
-            naturePlaces = Array(uniquePlaces)
+            let sortedPlaces = Array(uniquePlaces).sorted(by: { $0.name < $1.name })
+            naturePlaces = sortedPlaces
             
             // Save the unique places to Core Data
-            PersistenceController.shared.savePlaces(Array(uniquePlaces))
+            PersistenceController.shared.savePlaces(sortedPlaces)
         }
     }
 }
