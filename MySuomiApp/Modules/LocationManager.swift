@@ -104,8 +104,6 @@ extension LocationManager: CLLocationManagerDelegate {
             break
         }
     }
-    
-    
     // Delegate method called when location manager encounters an error
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
         errorMessage = "Location manager did fail: \(error.localizedDescription)"

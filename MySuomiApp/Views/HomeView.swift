@@ -1,6 +1,7 @@
 import SwiftUI
 import Speech
 import MapKit
+import URLImage
 
 struct HomeView: View {
     // Environment object for language settings
@@ -18,137 +19,131 @@ struct HomeView: View {
     @State private var showRecordingMessage = false
     @State private var currentTabIndex = 0
     @State private var coordinates: CLLocationCoordinate2D?
-
+    
     @Binding var region: MKCoordinateRegion
-  
-  var body: some View {
-    NavigationView {
-      ScrollView {
-        VStack {
-          // Header with language toggle, app title, search bar toggle, and menu button
-          HStack {
-            Spacer().frame(minWidth: 0, maxWidth: 10)
-            // Language toggle button
-            Button(action: {
-              self.languageSettings.isEnglish.toggle()
-            }) {
-              Text(languageSettings.isEnglish ? "ENG" : "FIN")
-                .padding(8)
-              
-                .foregroundColor(.white)
-                .background(Color.blue)
-                .cornerRadius(8)
-                .padding(8)
-            }
-            Spacer()
-            Spacer()
-            
-            Button(action: {
-              self.isSearchBarVisible.toggle()
-              // reset searchtext and results when closing the search
-              if !isSearchBarVisible {
-                searchResults.removeAll()
-                searchText = ""
-              }
-            }) {
-              Image(systemName: "magnifyingglass")
-                .padding()
-            }
-            
-            Menu {
-              // Menu items for different categories
-              Button(action: {
-                selectedMenu = "Eat"
-                isNavigationActive.toggle()
-              }) {
-                Label(languageSettings.isEnglish ? "Eat and drink" : "Syö ja juo", systemImage: "fork.knife.circle")
-              }
-              
-              Button(action: {
-                selectedMenu = "Sights"
-                isNavigationActive.toggle()
-              }) {
-                Label(languageSettings.isEnglish ? "Sights" : "Nähtävyydet", systemImage: "eye")
-              }
-              
-              Button(action: {
-                selectedMenu = "Accommodation"
-                isNavigationActive.toggle()
-              }) {
-                Label(languageSettings.isEnglish ? "Accommodation" : "Majoitus", systemImage: "house")
-              }
-              
-              Button(action: {
-                selectedMenu = "Nature"
-                isNavigationActive.toggle()
-              }) {
-                Label(languageSettings.isEnglish ? "Nature" : "Luonto", systemImage: "leaf")
-              }
-              Button(action: {
-                selectedMenu = "Favorites" //
-                isNavigationActive.toggle()
-              }) {
-                Label(languageSettings.isEnglish ? "Favorites" : "Suosikit", systemImage: "heart.fill")                             }
-            } label: {
-              Image(systemName: "line.horizontal.3")
-                .padding()
-            }
-          }
-          
-          // Search bar when visible
-          if isSearchBarVisible {
-            TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
-              .padding()
-              .textFieldStyle(RoundedBorderTextFieldStyle())
-              .disableAutocorrection(true)
-              .padding()
-              .onChange(of: searchText, perform: { newSearchText in
-                // Call searchPlaces when text changes
-                searchPlaces()
-              })
-          }
-          
-          // Display search results
-          if !searchResults.isEmpty {
+    
+    var body: some View {
+        NavigationView {
             ScrollView {
-              LazyVStack {
-                Section(header: Text("Search Results")) {
-                  ForEach(searchResults.indices, id: \.self) { index in
-                    let place = searchResults[index]
-                    NavigationLink(destination: DetailView(place: place)) {
-                      VStack(alignment: .leading) {
-                        Text(place.name)
-                          .font(.headline)
-                      }
-                      .padding(.vertical, 8)
+                VStack {
+                    // Header with language toggle, app title, search bar toggle, and menu button
+                    HStack {
+                        Spacer().frame(minWidth: 0, maxWidth: 10)
+                        // Language toggle button
+                        Button(action: {
+                            self.languageSettings.isEnglish.toggle()
+                        }) {
+                            Text(languageSettings.isEnglish ? "ENG" : "FIN")
+                                .padding(8)
+                                .foregroundColor(.white)
+                                .background(Color.blue)
+                                .cornerRadius(8)
+                                .padding(8)
+                        }
+                        
+                        Spacer()
+                        Spacer()
+                        
+                        Button(action: {
+                            self.isSearchBarVisible.toggle()
+                            // reset searchtext and results when closing the search
+                            if !isSearchBarVisible {
+                                searchResults.removeAll()
+                                searchText = ""
+                            }
+                        }) {
+                            Image(systemName: "magnifyingglass")
+                                .padding()
+                        }
+                        Menu {
+                            // Menu items for different categories
+                            Button(action: {
+                                selectedMenu = "Eat"
+                                isNavigationActive.toggle()
+                            }) {
+                                Label(languageSettings.isEnglish ? "Eat and drink" : "Syö ja juo", systemImage: "fork.knife.circle")
+                            }
+                            
+                            Button(action: {
+                                selectedMenu = "Sights"
+                                isNavigationActive.toggle()
+                            }) {
+                                Label(languageSettings.isEnglish ? "Sights" : "Nähtävyydet", systemImage: "eye")
+                            }
+                            
+                            Button(action: {
+                                selectedMenu = "Accommodation"
+                                isNavigationActive.toggle()
+                            }) {
+                                Label(languageSettings.isEnglish ? "Accommodation" : "Majoitus", systemImage: "house")
+                            }
+        
+                            Button(action: {
+                                selectedMenu = "Nature"
+                                isNavigationActive.toggle()
+                            }) {
+                                Label(languageSettings.isEnglish ? "Nature" : "Luonto", systemImage: "leaf")
+                            }
+                            Button(action: {
+                                selectedMenu = "Favorites"
+                                isNavigationActive.toggle()
+                            }) {
+                                Label(languageSettings.isEnglish ? "Favorites" : "Suosikit", systemImage: "heart.fill")
+                            }
+                        } label: {
+                            Image(systemName: "line.horizontal.3")
+                                .padding()
+                        }
                     }
-                    .buttonStyle(PlainButtonStyle())
-                  }
-                }
-              }
-            }
-            .frame(maxHeight: 250) // Set the maximum height as needed
-          }
-          
-          
-          
-          // Image carousel with ScrollView
-          VStack {
-            ZStack(alignment: .top){
-              Image("helsinki")
-                .resizable()
-                .scaledToFill()
-                .frame(height: UIScreen.main.bounds.height * 0.3)
-                .clipped()
-                .cornerRadius(15)
-                .padding()
-              Text("MySuomiApp")
-                .padding(8)
-                .font(.title)
-                .bold()
-                .offset(y: 20) 
-            }
-           
+                    // Search bar when visible
+                    if isSearchBarVisible {
+                        TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
+                            .padding()
+                            .textFieldStyle(RoundedBorderTextFieldStyle())
+                            .disableAutocorrection(true)
+                            .padding()
+                            .onChange(of: searchText, perform: { newSearchText in
+                                // Call searchPlaces when text changes
+                                searchPlaces()
+                            })
+                    }
+                    // Display search results
+                    if !searchResults.isEmpty {
+                        ScrollView {
+                            LazyVStack {
+                                Section(header: Text("Search Results")) {
+                                    ForEach(searchResults.indices, id: \.self) { index in
+                                        let place = searchResults[index]
+                                        NavigationLink(destination: DetailView(place: place)) {
+                                            VStack(alignment: .leading) {
+                                                Text(place.name)
+                                                    .font(.headline)
+                                            }
+                                            .padding(.vertical, 8)
+                                        }
+                                        .buttonStyle(PlainButtonStyle())
+                                    }
+                                }
+                            }
+                        }
+                        .frame(maxHeight: 250) // Set the maximum height as needed
+                    }
+                    // Image carousel with ScrollView
+                    VStack {
+                        ZStack(alignment: .top) {
+                            Image("helsinki")
+                                .resizable()
+                                .scaledToFill()
+                                .frame(height: UIScreen.main.bounds.height * 0.3)
+                                .clipped()
+                                .cornerRadius(15)
+                                .padding()
+                            Text("MySuomiApp")
+                                .padding(8)
+                                .font(.title)
+                                .bold()
+                                .offset(y: 20)
+                        }
                         VStack {
                             Text("Cafes")
                                 .font(.headline)
@@ -177,7 +172,7 @@ struct HomeView: View {
                                                         ProgressView()
                                                     }
                                                 }
-                                            } 
+                                            }
                                         }
                                         .tag(index)
                                     }
@@ -192,21 +187,14 @@ struct HomeView: View {
                                         currentTabIndex = places.count - 1
                                     }
                                 }
-                                
                                 .accessibilityIdentifier("CarouselView")
-                                
                             }
-                            
                         }
                         .frame(height: UIScreen.main.bounds.height * 0.3)
                         .onAppear {
                             fetchCafes()
                         }
-                      } else {
-                        Text("Image not available")
-                      }
                     }
-
                     // Navigation link to the MapView
                     NavigationLink(destination: MapView(selectedCoordinate: $coordinates, region: $region)) {
                         Text(languageSettings.isEnglish ? "Map" : "Kartta")
@@ -263,15 +251,13 @@ struct HomeView: View {
                                 .opacity(0)
                                 .buttonStyle(PlainButtonStyle())
                         )
-
                 }
-                    
-              }
-              
+                
             }
-
+            
         }
     }
+    
     // Function to fetch cafes
     private func fetchCafes() {
         // Assuming restaurantTypes contains a cafe type
@@ -281,11 +267,7 @@ struct HomeView: View {
             if let fetchedPlaces = fetchedPlaces {
                 places = fetchedPlaces
             }
-            
-          }
-
-        .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
-      }
+        }
     }
     let search = Search()
     
@@ -298,6 +280,5 @@ struct HomeView: View {
             }
         }
     }
-
 }
 
