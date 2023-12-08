@@ -25,15 +25,20 @@ struct DetailView: View {
                             Text("Rating: N/A")
                                 .font(.headline)
                         }
-                        Text("Types: \(place.types.joined(separator: ", "))")
+                        
+                        // Filter out unwanted types
+                        let filteredTypes = place.types.filter { $0.lowercased() != "point_of_interest" && $0.lowercased() != "establishment" }
+                        
+                        Text("Types: \(filteredTypes.joined(separator: ", "))")
                             .font(.headline)
+                        
                         Text("Vicinity: \(place.vicinity)")
                             .font(.headline)
+                        
                         if let isOpenNow = place.opening_hours?.open_now {
                             Text("Open Now: \(isOpenNow ? "Yes" : "No")")
                                 .font(.headline)
                                 .foregroundColor(isOpenNow ? .green : .red)
-                            
                         }
                         
                         if let photoReference = place.photos?.first?.photo_reference {
