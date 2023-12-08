@@ -5,11 +5,12 @@ import URLImage
 struct SightsView: View {
     @State private var sightsPlaces: [Place] = []
     @State private var hasFetchedData = false
-    
+    @EnvironmentObject var languageSettings: LanguageSettings
+
     var body: some View {
         // Display your sights places here
         List(sightsPlaces, id: \.place_id) { place in
-            NavigationLink(destination: DetailView(place: place)) {
+            NavigationLink(destination: DetailView(place: place).environmentObject(languageSettings)) {
                 HStack {
                     CardView(title: place.name, imageURL: imageURL(photoReference: place.photos?.first?.photo_reference ?? "", maxWidth: 100))
                 }
@@ -23,7 +24,6 @@ struct SightsView: View {
                 hasFetchedData = true
             }
         }
-        .navigationTitle("Sights")
     }
     func fetchAndSaveSightsPlaces() {
         // Fetch existing places from Core Data
