@@ -6,11 +6,13 @@ struct AccommodationView: View {
     
     @State private var accommodationPlaces: [Place] = []
     @State private var hasFetchedData = false
+    @EnvironmentObject var languageSettings: LanguageSettings
+
 
     var body: some View {
         // Display your accommodation places here
         List(accommodationPlaces, id: \.place_id) { place in
-            NavigationLink(destination: DetailView(place: place)) {
+            NavigationLink(destination: DetailView(place: place).environmentObject(languageSettings)) {
                 HStack {
                     CardView(title: place.name, imageURL: imageURL(photoReference: place.photos?.first?.photo_reference ?? "", maxWidth: 100))
                 }
@@ -24,8 +26,9 @@ struct AccommodationView: View {
                 hasFetchedData = true
             }
         }
-        .navigationTitle("Accommodation")
     }
+    
+    
     func fetchAndSaveAccommodationPlaces() {
         // Fetch existing places from Core Data
         let existingPlaces = PersistenceController.shared.fetchPlaces()

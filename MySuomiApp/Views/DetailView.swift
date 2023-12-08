@@ -3,7 +3,8 @@ import URLImage
 import MapKit
 
 struct DetailView: View {
-    
+    @EnvironmentObject var languageSettings: LanguageSettings
+
     let place: Place
     @State private var coordinates: CLLocationCoordinate2D?
     @State private var isNavigationActive = false
@@ -16,21 +17,26 @@ struct DetailView: View {
     var body: some View {
         NavigationView {
             List {
-                Section(header: Text("Details for \(place.name)").font(.title2)) {
+                Section(header: Text(LocalizedStringKey("Details for \(place.name)")).font(.title2)) {
                     VStack(alignment: .leading, spacing: 10) {
                         if let rating = place.rating {
-                            Text("Rating: \(rating, specifier: "%.1f")")
+                            Text(LocalizedStringKey("Rating: \(rating, specifier: "%.1f")"))
                                 .font(.headline)
                         } else {
-                            Text("Rating: N/A")
+                            Text(LocalizedStringKey("Rating: N/A"))
                                 .font(.headline)
                         }
-                        Text("Types: \(place.types.joined(separator: ", "))")
+                        
+                    
+                        // Filter out unwanted types
+                        let filteredTypes = place.types.filter { $0.lowercased() != "point_of_interest" && $0.lowercased() != "establishment" }
+                        Text(LocalizedStringKey("Types: \(filteredTypes.joined(separator: ", "))"))
                             .font(.headline)
-                        Text("Vicinity: \(place.vicinity)")
+                        
+                        Text(LocalizedStringKey("Vicinity: \(place.vicinity)"))
                             .font(.headline)
                         if let isOpenNow = place.opening_hours?.open_now {
-                            Text("Open Now: \(isOpenNow ? "Yes" : "No")")
+                            Text(LocalizedStringKey("Open Now: \(isOpenNow ? "Yes" : "No")"))
                                 .font(.headline)
                                 .foregroundColor(isOpenNow ? .green : .red)
                             
@@ -59,15 +65,17 @@ struct DetailView: View {
                     fetchCoordinates()
                     isNavigationActive = true
                 }) {
-                    Text("Locate Place")
+                    Text(LocalizedStringKey("Locate Place"))
                         .foregroundColor(.blue)
                 }
             }
             .navigationTitle(place.name)
+            
             .background(
-                NavigationLink("", destination: MapView(selectedCoordinate: .constant(coordinates), region: $region), isActive: $isNavigationActive)
+                NavigationLink("", destination: MapView(selectedCoordinate: .constant(coordinates), region: $region).environmentObject(languageSettings), isActive: $isNavigationActive)
                     .hidden()
             )
+            .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
         }
     }
     
