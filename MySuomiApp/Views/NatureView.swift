@@ -13,7 +13,7 @@ struct NatureView: View {
         
         // Display your nature places
         List(naturePlaces, id: \.place_id) { place in
-            NavigationLink(destination: DetailView(place: place)) {
+            NavigationLink(destination: DetailView(place: place).environmentObject(languageSettings)) {
                 HStack {
                     CardView(title: place.name, imageURL: imageURL(photoReference: place.photos?.first?.photo_reference ?? "", maxWidth: 100))
                 }
@@ -27,9 +27,6 @@ struct NatureView: View {
                 hasFetchedData = true
             }
         }
-        
-        
-        .navigationTitle(LocalizedStringKey("Nature"))
     }
     
     // Modified function to fetch and save nature places

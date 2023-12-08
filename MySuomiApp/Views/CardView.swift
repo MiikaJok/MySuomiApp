@@ -5,8 +5,6 @@ struct CardView: View {
     let title: String
     let imageURL: URL
     @State private var isFavorite = false
-    @EnvironmentObject var languageSettings: LanguageSettings
-
     
     // Inject the managedObjectContext
     @Environment(\.managedObjectContext) private var viewContext

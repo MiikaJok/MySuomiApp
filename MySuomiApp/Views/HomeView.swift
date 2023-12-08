@@ -297,7 +297,7 @@ struct HomeView: View {
                     .buttonStyle(PlainButtonStyle())
                     
                     // Navigation link to the MapView
-                    NavigationLink(destination: MapView(selectedCoordinate: .constant(coordinates), region: $region)) {
+                    NavigationLink(destination: MapView(selectedCoordinate: .constant(coordinates), region: $region).environmentObject(languageSettings)) {
                         VStack {
                             Image(systemName: "map.fill") //
                                 .resizable()
@@ -324,7 +324,7 @@ struct HomeView: View {
                         Group {
                             if selectedMenu == "Eat" {
                                 NavigationLink(
-                                    destination: EatView(),
+                                    destination: EatView().environmentObject(languageSettings),
                                     isActive: $isNavigationActive,
                                     label: {
                                         EmptyView()
@@ -333,7 +333,7 @@ struct HomeView: View {
                                 .hidden()
                             } else if selectedMenu == "Sights" {
                                 NavigationLink(
-                                    destination: SightsView(),
+                                    destination: SightsView().environmentObject(languageSettings),
                                     isActive: $isNavigationActive,
                                     label: {
                                         EmptyView()
@@ -342,7 +342,7 @@ struct HomeView: View {
                                 .hidden()
                             } else if selectedMenu == "Accommodation" {
                                 NavigationLink(
-                                    destination: AccommodationView(),
+                                    destination: AccommodationView().environmentObject(languageSettings),
                                     isActive: $isNavigationActive,
                                     label: {
                                         EmptyView()
@@ -351,7 +351,7 @@ struct HomeView: View {
                                 .hidden()
                             } else if selectedMenu == "Nature" {
                                 NavigationLink(
-                                    destination: NatureView(),
+                                    destination: NatureView().environmentObject(languageSettings),
                                     isActive: $isNavigationActive,
                                     label: {
                                         EmptyView()
@@ -361,7 +361,7 @@ struct HomeView: View {
                                 
                             } else if selectedMenu == "Favorites" {
                                 NavigationLink(
-                                    destination: FavoritesView(),
+                                    destination: FavoritesView().environmentObject(languageSettings),
                                     isActive: $isNavigationActive,
                                     label: {
                                         EmptyView()

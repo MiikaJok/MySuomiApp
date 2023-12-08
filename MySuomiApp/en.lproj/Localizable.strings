@@ -41,12 +41,12 @@
 
 /*detail view*/
 
-"Details for %@ " = "Details for %@";
+"Details for %@" = "Details for %@";
 "Rating: %.1f" = "Rating: %.1f";
 "Rating: N/A" = "Rating: N/A";
-"Types: %@ " = "Types: %@ ";
-"Vicinity: %@ " = "Vicinity: %@ ";
-"Open Now: %@ " = "Open Now: %@ ";
+"Types: %@" = "Types: %@";
+"Vicinity: %@" = "Vicinity: %@";
+"Open Now: %@" = "Open Now: %@";
 "Locate Place" = "Locate Place";
 
 

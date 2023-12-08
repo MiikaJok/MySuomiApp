@@ -20,24 +20,13 @@ struct MapView: View {
         NavigationView {
             VStack {
                 HStack {
-                    // ENG/FIN toggle button
-                    Button(action: {
-                        self.languageSettings.isEnglish.toggle()
-                    }) {
-                        Text(languageSettings.isEnglish ? "ENG" : "FIN")
-                            .padding(8)
-                            .foregroundColor(.white)
-                            .background(Color.blue)
-                            .cornerRadius(8)
-                            .padding(8)
-                    }
                     Text("MySuomiApp")
                         .padding(8)
                         .font(.title)
                         .bold()
                     Spacer()
                 }
-              
+                
                 // Search bar and suggestion list
                 VStack {
                     TextField(LocalizedStringKey("Search"), text: $searchText)
@@ -48,14 +37,15 @@ struct MapView: View {
                         .onChange(of: searchText, perform: { newSearchText in
                             manager.searchPlaces(query: newSearchText)
                         })
-
+                        .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
+                    
                     // Suggestions list based on search
                     if !manager.suggestions.isEmpty {
                         List(manager.suggestions, id: \.self) { suggestion in
                             Button(action: {
                                 
                                 selectedPlace = suggestion
-                              
+                                
                                 searchText = "\(suggestion.title), \(suggestion.subtitle)"
                                 
                                 
@@ -94,8 +84,6 @@ struct MapView: View {
                 .animation(.easeIn)
             }
             .frame(width: 400, height: 700)
-            // Setting locale based on language prefs
-            .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
             // Navigate to selected place from search
             .onChange(of: selectedPlace) { newPlace in
                 guard let newPlace = newPlace else { return }
@@ -123,6 +111,7 @@ struct MapView: View {
             }
             
             Spacer()
+                
         }
         
     }

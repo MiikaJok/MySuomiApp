@@ -40,7 +40,6 @@ struct FavoritesView: View {
         }
 
       }
-      .navigationBarTitle(LocalizedStringKey("Favorites"))
     }
   }
 

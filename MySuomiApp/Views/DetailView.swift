@@ -72,9 +72,10 @@ struct DetailView: View {
             .navigationTitle(place.name)
             
             .background(
-                NavigationLink("", destination: MapView(selectedCoordinate: .constant(coordinates), region: $region), isActive: $isNavigationActive)
+                NavigationLink("", destination: MapView(selectedCoordinate: .constant(coordinates), region: $region).environmentObject(languageSettings), isActive: $isNavigationActive)
                     .hidden()
             )
+            .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
         }
     }
     

@@ -22,11 +22,13 @@
 /* Additional Finnish strings used in your HomeView */
 
 "Restaurants" = "Ravintolat";
-"Details for %@ " = "Tiedot kohteesta %@";
+"Details for %@" = "Tiedot kohteesta %@";
 "Rating: %.1f" = "Arvosana: %.1f";
-"Rating: N/A" = "Arvosana: Ei";
-"Types: %@ " = "Tyypit: %@ ";
+"Rating: N/A" = "Arvosana: Ei saatavilla";
+"Types: %@" = "Tyypit: %@";
+"Vicinity: %@" = "Osoite: %@";
 "Locate Place"= "Näytä kartalla";
+"Open Now: %@" = "Avoinna nyt: %@";
 "Remove from Favorites" = "Poista suosikeista";
 "Favorites" = "Suosikit";
 "All Museums" = "Kaikki museot";
