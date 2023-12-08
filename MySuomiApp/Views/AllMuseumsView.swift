@@ -4,6 +4,8 @@ import SwiftUI
 
 struct AllMuseumsView: View {
     @State private var places: [Place] = []
+    @EnvironmentObject var languageSettings: LanguageSettings
+
 
     var body: some View {
         List(places, id: \.place_id) { museum in
@@ -14,7 +16,7 @@ struct AllMuseumsView: View {
             }
             .buttonStyle(PlainButtonStyle())
         }
-        .navigationTitle("All Museums")
+        .navigationTitle(LocalizedStringKey("All Museums"))
         .onAppear {
             self.fetchMuseums()
         }

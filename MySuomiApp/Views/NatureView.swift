@@ -6,7 +6,8 @@ import CoreData
 struct NatureView: View {
     @State private var naturePlaces: [Place] = []
     @State private var hasFetchedData = false
-    
+    @EnvironmentObject var languageSettings: LanguageSettings
+
     
     var body: some View {
         
@@ -28,7 +29,7 @@ struct NatureView: View {
         }
         
         
-        .navigationTitle("Nature")
+        .navigationTitle(LocalizedStringKey("Nature"))
     }
     
     // Modified function to fetch and save nature places

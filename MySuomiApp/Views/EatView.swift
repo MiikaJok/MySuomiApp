@@ -3,6 +3,7 @@ import CoreData
 import URLImage
 
 struct EatView: View {
+    @EnvironmentObject var languageSettings: LanguageSettings
     @State private var restaurantPlaces: [Place] = []
     @State private var hasFetchedData = false
     
@@ -23,7 +24,7 @@ struct EatView: View {
                 hasFetchedData = true
             }
         }
-        .navigationTitle("Restaurants")
+        .navigationTitle(LocalizedStringKey("Restaurants"))
     }
     
     func fetchAndSaveRestaurantPlaces() {

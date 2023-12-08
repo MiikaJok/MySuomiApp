@@ -24,7 +24,7 @@ struct AccommodationView: View {
                 hasFetchedData = true
             }
         }
-        .navigationTitle("Accommodation")
+        .navigationTitle(LocalizedStringKey("Accommodation"))
     }
     func fetchAndSaveAccommodationPlaces() {
         // Fetch existing places from Core Data

@@ -40,7 +40,7 @@ struct MapView: View {
               
                 // Search bar and suggestion list
                 VStack {
-                    TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
+                    TextField(LocalizedStringKey("Search"), text: $searchText)
                         .padding()
                         .disableAutocorrection(true)
                         .textFieldStyle(RoundedBorderTextFieldStyle())

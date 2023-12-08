@@ -9,6 +9,8 @@ import CoreData
 struct FavoritesView: View {
   // Inject the managedObjectContext
   @Environment(\.managedObjectContext) private var viewContext
+    @EnvironmentObject var languageSettings: LanguageSettings
+
 
   // Fetch request to get all likes
   @FetchRequest(
@@ -30,7 +32,7 @@ struct FavoritesView: View {
                 Button(action: {
                   deleteLike(like)
                 }) {
-                  Text("Remove from Favorites")
+                    Text(LocalizedStringKey("Remove from Favorites"))
                   Image(systemName: "heart.fill")
                 }
               }
@@ -38,7 +40,7 @@ struct FavoritesView: View {
         }
 
       }
-      .navigationBarTitle("Favorites")
+      .navigationBarTitle(LocalizedStringKey("Favorites"))
     }
   }
 

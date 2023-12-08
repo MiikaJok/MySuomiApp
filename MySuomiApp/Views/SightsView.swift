@@ -5,7 +5,8 @@ import URLImage
 struct SightsView: View {
     @State private var sightsPlaces: [Place] = []
     @State private var hasFetchedData = false
-    
+    @EnvironmentObject var languageSettings: LanguageSettings
+
     var body: some View {
         // Display your sights places here
         List(sightsPlaces, id: \.place_id) { place in
@@ -23,7 +24,8 @@ struct SightsView: View {
                 hasFetchedData = true
             }
         }
-        .navigationTitle("Sights")
+        .navigationTitle(LocalizedStringKey("Sights"))
+
     }
     func fetchAndSaveSightsPlaces() {
         // Fetch existing places from Core Data
