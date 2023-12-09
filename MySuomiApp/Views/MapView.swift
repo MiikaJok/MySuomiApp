@@ -3,13 +3,17 @@ import MapKit
 import CoreData
 import CoreLocation
 
-/*MapView struct that represents the SwiftUI view displaying the map and search functionality*/
+/*
+   MapView struct that represents the SwiftUI view displaying the map and search functionality
+*/
 struct MapView: View {
-    // location related functionalities manager
+    // Location-related functionalities manager
     @StateObject var manager = LocationManager()
-    // language settings object
+    
+    // Language settings object
     @EnvironmentObject var languageSettings: LanguageSettings
-    // state variables to control, search, and suggestions
+    
+    // State variables to control search and suggestions
     @State private var searchText = ""
     @State private var selectedPlace: MKLocalSearchCompletion?
     @Binding var selectedCoordinate: CLLocationCoordinate2D?
@@ -43,12 +47,8 @@ struct MapView: View {
                     if !manager.suggestions.isEmpty {
                         List(manager.suggestions, id: \.self) { suggestion in
                             Button(action: {
-                                
                                 selectedPlace = suggestion
-                                
                                 searchText = "\(suggestion.title), \(suggestion.subtitle)"
-                                
-                                
                             }) {
                                 Text("\(suggestion.title), \(suggestion.subtitle)")
                             }
@@ -58,6 +58,7 @@ struct MapView: View {
                         .cornerRadius(10)
                     }
                 }
+                
                 // Map view display based on search results
                 Map(coordinateRegion: $region, showsUserLocation: true, annotationItems: manager.searchResults) { place in
                     MapMarker(coordinate: place.coordinate, tint: .blue)
@@ -84,7 +85,8 @@ struct MapView: View {
                 .animation(.easeIn)
             }
             .frame(width: 400, height: 700)
-            // Navigate to selected place from search
+            
+            // Navigate to selected place
             .onChange(of: selectedPlace) { newPlace in
                 guard let newPlace = newPlace else { return }
                 // Create a new MKLocalSearch.Request with the selected place
@@ -111,11 +113,12 @@ struct MapView: View {
             }
             
             Spacer()
-                
         }
-        
     }
-    // Function to update the region based on the received coordinate
+    
+    /*
+       Function to update the region based on the received coordinate
+    */
     private func updateRegion(with coordinate: CLLocationCoordinate2D?) {
         if let coordinate = coordinate {
             region.center = coordinate
@@ -123,9 +126,10 @@ struct MapView: View {
         }
     }
 }
+
+// Extension to make CLLocationCoordinate2D equatable
 extension CLLocationCoordinate2D: Equatable {
     public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
         return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
     }
 }
-
