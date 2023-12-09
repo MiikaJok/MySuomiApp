@@ -162,7 +162,11 @@ struct HomeView: View {
                     }
                     
                     // Display search results
-                    if !searchResults.isEmpty {
+                    if isSearchBarVisible && !searchText.isEmpty && searchResults.isEmpty {
+                        Text(LocalizedStringKey("No search results"))
+                            .foregroundColor(.gray)
+                            .padding(.top, 16)
+                    } else if isSearchBarVisible && !searchResults.isEmpty {
                         ScrollView {
                             LazyVStack {
                                 Section(header: Text(LocalizedStringKey("Search Results"))) {
@@ -182,6 +186,7 @@ struct HomeView: View {
                         }
                         .frame(maxHeight: 250) // Set the maximum height as needed
                     }
+
                     
                     // Image carousel with TabView
                     VStack {
