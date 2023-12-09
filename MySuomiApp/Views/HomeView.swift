@@ -321,58 +321,34 @@ struct HomeView: View {
                 Spacer()
                 // Navigation links to specific category views
                     .background(
-                        Group {
-                            if selectedMenu == "Eat" {
-                                NavigationLink(
-                                    destination: EatView().environmentObject(languageSettings),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
+                        NavigationLink(
+                            destination: {
+                                if let selectedMenu = selectedMenu {
+                                    switch selectedMenu {
+                                    case "Eat":
+                                        return AnyView(EatView().environmentObject(languageSettings))
+                                    case "Sights":
+                                        return AnyView(SightsView().environmentObject(languageSettings))
+                                    case "Accommodation":
+                                        return AnyView(AccommodationView().environmentObject(languageSettings))
+                                    case "Nature":
+                                        return AnyView(NatureView().environmentObject(languageSettings))
+                                    case "Favorites":
+                                        return AnyView(FavoritesView().environmentObject(languageSettings))
+                                    default:
+                                        return AnyView(EmptyView())
                                     }
-                                )
-                                .hidden()
-                            } else if selectedMenu == "Sights" {
-                                NavigationLink(
-                                    destination: SightsView().environmentObject(languageSettings),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
-                            } else if selectedMenu == "Accommodation" {
-                                NavigationLink(
-                                    destination: AccommodationView().environmentObject(languageSettings),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
-                            } else if selectedMenu == "Nature" {
-                                NavigationLink(
-                                    destination: NatureView().environmentObject(languageSettings),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
-                                
-                            } else if selectedMenu == "Favorites" {
-                                NavigationLink(
-                                    destination: FavoritesView().environmentObject(languageSettings),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
-                            }
+                                } else {
+                                    return AnyView(EmptyView())
+                                }
+                            }() as AnyView,
+                            isActive: $isNavigationActive,
+                            label: { EmptyView() }
+                        )
+                        .hidden()
+                        .onAppear {
+                            selectedMenu = nil
                         }
-                            .onAppear {
-                                selectedMenu = nil
-                            }
                             .opacity(0)
                             .buttonStyle(PlainButtonStyle())
                     )
