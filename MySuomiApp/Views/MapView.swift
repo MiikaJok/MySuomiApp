@@ -344,6 +344,9 @@ extension Color {
 }
 
 struct PlaceDetailSheet: View {
+    
+    // Language settings object
+    @EnvironmentObject var languageSettings: LanguageSettings
     var placemark: MKPlacemark
     
     var body: some View {
@@ -357,7 +360,7 @@ struct PlaceDetailSheet: View {
                     .lineLimit(nil)
                 
                 // Additional Address Information
-                Text("Street:")
+                Text(LocalizedStringKey("Street:"))
                     .bold()
                     .padding(.bottom, 1)
                 Text("\(placemark.thoroughfare ?? "")")
@@ -365,21 +368,21 @@ struct PlaceDetailSheet: View {
                     .lineLimit(nil)
                     .padding(.bottom, 3)
                 
-                Text("City:")
+                Text(LocalizedStringKey("City:"))
                     .bold()
                     .padding(.bottom, 1)
                 Text("\(placemark.locality ?? "")")
                     .multilineTextAlignment(.leading)
                     .lineLimit(nil)
                     .padding(.bottom, 3)
-                Text("Postalcode:")
+                Text(LocalizedStringKey("Postal Code:"))
                     .bold()
                     .padding(.bottom, 1)
                 Text("\(placemark.postalCode ?? "")")
                     .multilineTextAlignment(.leading)
                     .lineLimit(nil)
                     .padding(.bottom, 3)
-                Text("Country Code:")
+                Text(LocalizedStringKey("Country Code:"))
                     .bold()
                     .padding(.bottom, 1)
                 Text("\(placemark.isoCountryCode ?? "")")
@@ -389,5 +392,7 @@ struct PlaceDetailSheet: View {
             }
             .padding()
         }
+        .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
+
     }
 }

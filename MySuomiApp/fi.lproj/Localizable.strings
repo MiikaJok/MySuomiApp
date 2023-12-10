@@ -34,3 +34,9 @@
 "Favorites" = "Suosikit";
 "Bars" = "Baarit";
 "All Museums" = "Kaikki museot";
+
+"Street:" = "Katu:";
+"City:" = "Kaupunki:";
+"Postal Code:" = "Postinumero:";
+"Country Code:" = "Maatunnus:";
+
