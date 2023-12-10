@@ -291,8 +291,8 @@ struct MapView: View {
             .onAppear {
                 fetchBars()
             }
-            .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
         }
+        .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
     }
     //function to check if the placemark is done from MapKit search or coordinates
     private func hasAddressInformation(placemark: MKPlacemark) -> Bool {

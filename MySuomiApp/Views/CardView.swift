@@ -8,7 +8,7 @@ struct CardView: View {
     
     // Inject the managedObjectContext
     @Environment(\.managedObjectContext) var viewContext
-        
+    
     // Check if the current item is liked when the view appears
     func checkLike() {
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
@@ -42,9 +42,9 @@ struct CardView: View {
                     .font(.system(size: 20))
                     .padding(.top, 8)
                     .padding(.leading, 8)
-
+                    .imageScale(.large)
             }
-            
+                        
             AsyncImage(url: imageURL) { image in
                 image
                     .resizable()
@@ -58,10 +58,10 @@ struct CardView: View {
             
             VStack(alignment: .leading) {
                 
-                    Text(title)
-                        .font(.headline)
-                        .foregroundColor(.primary)
-                        .padding(.bottom, 4)
+                Text(title)
+                    .font(.headline)
+                    .foregroundColor(.primary)
+                    .padding(.bottom, 4)
                 
                 Spacer()
             }
@@ -90,20 +90,20 @@ struct CardView: View {
     
     // Function to remove liked item from CoreData
     private func removeLikeFromCoreData() {
-            let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
-            request.predicate = NSPredicate(format: "name == %@ AND image == %@", title, imageURL.absoluteString)
-            
-            do {
-                if let result = try viewContext.fetch(request) as? [NSManagedObject] {
-                    // Remove the liked item from CoreData
-                    for object in result {
-                        viewContext.delete(object)
-                    }
-                    try viewContext.save()
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
+        request.predicate = NSPredicate(format: "name == %@ AND image == %@", title, imageURL.absoluteString)
+        
+        do {
+            if let result = try viewContext.fetch(request) as? [NSManagedObject] {
+                // Remove the liked item from CoreData
+                for object in result {
+                    viewContext.delete(object)
                 }
-            } catch {
-                print("Error removing liked item from CoreData: \(error)")
+                try viewContext.save()
             }
+        } catch {
+            print("Error removing liked item from CoreData: \(error)")
+        }
         
     }
 }
