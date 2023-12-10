@@ -3,24 +3,15 @@ import CoreData
 struct PersistenceController {
     static let shared = PersistenceController()
     
-    static var preview: PersistenceController = {
-        let result = PersistenceController(inMemory: true)
-        let viewContext = result.container.viewContext
-        
-        do {
-            try viewContext.save()
-        } catch {
-            let nsError = error as NSError
-            fatalError("Unresolved error \(nsError), \(nsError.userInfo)")
-        }
-        return result
-    }()
-    
     let container: NSPersistentContainer
-    
+
     init(inMemory: Bool = false) {
         // Initialize the persistent container with the model name "FavoritesModel"
         container = NSPersistentContainer(name: "FavoritesModel")
+        
+        if inMemory {
+            container.persistentStoreDescriptions.first?.url = URL(string: "/dev/null")
+        }
         
         // Load persistent stores and handle errors
         container.loadPersistentStores(completionHandler: { (storeDescription, error) in
@@ -28,6 +19,17 @@ struct PersistenceController {
                 fatalError("Unresolved error \(error), \(error.userInfo)")
             }
         })
+    }
+    
+    func save() {
+        let context = container.viewContext
+        if context.hasChanges {
+            do {
+                try context.save()
+            } catch {
+                print("error: \(error)")
+            }
+        }
     }
     
     // Function to print likes from CoreData to the console
@@ -51,7 +53,6 @@ struct PersistenceController {
     // Fetch places from Core Data
     func fetchPlaces() -> [Place] {
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
-        
         do {
             // Fetch places from Core Data
             let places = try container.viewContext.fetch(request) as? [Place]

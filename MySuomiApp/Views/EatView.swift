@@ -6,7 +6,7 @@ struct EatView: View {
     @EnvironmentObject var languageSettings: LanguageSettings
     @State private var restaurantPlaces: [Place] = []
     @State private var hasFetchedData = false
-
+    
     
     var body: some View {
         List(restaurantPlaces, id: \.place_id) { place in
@@ -22,7 +22,6 @@ struct EatView: View {
             // Fetch data only if it hasn't been fetched before
             if !hasFetchedData {
                 fetchAndSaveRestaurantPlaces()
-                
                 hasFetchedData = true
             }
         }
@@ -62,15 +61,10 @@ struct EatView: View {
                 }
             }
         }
-        
-        // Notify when all fetches are complete
         dispatchGroup.notify(queue: .main) {
             // Convert the set back to an array and update the state
             let sortedPlaces = Array(uniquePlaces).sorted(by: { $0.name < $1.name })
             restaurantPlaces = sortedPlaces
-            
-            // Save the unique places to Core Data
-            PersistenceController.shared.savePlaces(sortedPlaces)
         }
     }
 }

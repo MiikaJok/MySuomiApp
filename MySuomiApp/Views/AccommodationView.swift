@@ -70,9 +70,6 @@ struct AccommodationView: View {
             // Convert the set back to an array and update the state
             let sortedPlaces = Array(uniquePlaces).sorted(by: { $0.name < $1.name })
             accommodationPlaces = sortedPlaces
-            
-            // Save the unique places to Core Data
-            PersistenceController.shared.savePlaces(sortedPlaces)
         }
     }
 }

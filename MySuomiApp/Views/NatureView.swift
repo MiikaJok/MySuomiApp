@@ -2,7 +2,6 @@ import SwiftUI
 import URLImage
 import CoreData
 
-
 struct NatureView: View {
     @State private var naturePlaces: [Place] = []
     @State private var hasFetchedData = false
@@ -71,9 +70,6 @@ struct NatureView: View {
             // Convert the set back to an array and update the state
             let sortedPlaces = Array(uniquePlaces).sorted(by: { $0.name < $1.name })
             naturePlaces = sortedPlaces
-            
-            // Save the unique places to Core Data
-            PersistenceController.shared.savePlaces(sortedPlaces)
         }
     }
 }
