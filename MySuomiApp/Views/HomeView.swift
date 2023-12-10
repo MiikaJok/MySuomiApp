@@ -302,7 +302,7 @@ struct HomeView: View {
                     .buttonStyle(PlainButtonStyle())
                     
                     // Navigation link to the MapView
-                    NavigationLink(destination: MapView(selectedCoordinate: .constant(coordinates), region: $region).environmentObject(languageSettings)) {
+                    NavigationLink(destination: MapView(region: $region, selectedCoordinate: .constant(coordinates)).environmentObject(languageSettings)) {
                         VStack {
                             Image(systemName: "map.fill") //
                                 .resizable()
@@ -313,11 +313,12 @@ struct HomeView: View {
                                 .foregroundColor(.white)
                                 .padding(.top, 8)
                         }
-                        .frame(width: 120, height: 120) // size of the button
+                        .frame(width: 120, height: 120) 
                         .background(Color.green)
                         .cornerRadius(16)
                         .padding()
                         .shadow(radius: 5)
+                        .navigationBarTitle("", displayMode: .inline)
                         
                     }
                 }
@@ -351,8 +352,10 @@ struct HomeView: View {
                             label: { EmptyView() }
                         )
                         .hidden()
+
                         .onAppear {
                             selectedMenu = nil
+                            
                         }
                             .opacity(0)
                             .buttonStyle(PlainButtonStyle())

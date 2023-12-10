@@ -13,18 +13,21 @@ struct MapView: View {
     // Language settings object
     @EnvironmentObject var languageSettings: LanguageSettings
     
-    // State variables to control search, suggestions and menu
+    // State variables to control search, suggestions, coordinates and menu
     @State private var selectedMenu: String? = nil
-    @State private var isNavigationActive: Bool = false
-    
     @State private var places: [Place] = []
     @State private var currentTabIndex = 0
-    
     @State private var searchText = ""
     @State private var selectedPlace: MKLocalSearchCompletion?
-    @Binding var selectedCoordinate: CLLocationCoordinate2D?
     @State private var currentCoordinate: CLLocationCoordinate2D?
+    @State private var selectedFromSuggestion = false
+    @State private var selectedPlacemark: MKPlacemark?
+    @State private var dismissOverlay = false
+    
+    
+    //keeping track of the region,coordinates when views are updates
     @Binding var region: MKCoordinateRegion
+    @Binding var selectedCoordinate: CLLocationCoordinate2D?
     
     var body: some View {
         ScrollView {
@@ -45,7 +48,6 @@ struct MapView: View {
                     TextField(LocalizedStringKey("Search"), text: $searchText)
                         .padding()
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                    //.background(Color(hex: "B1D4FC")) // lightblue
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
@@ -55,7 +57,14 @@ struct MapView: View {
                         .foregroundColor(.black)
                         .padding([.leading, .trailing], 16)
                         .onChange(of: searchText) { newSearchText in
-                            manager.searchPlaces(query: newSearchText)
+                            if !selectedFromSuggestion {
+                                if newSearchText.isEmpty {
+                                    manager.suggestions.removeAll()
+                                } else {
+                                    manager.searchPlaces(query: newSearchText)
+                                }
+                            }
+                            selectedFromSuggestion = false
                         }
                     
                     // Suggestions list based on search
@@ -65,6 +74,8 @@ struct MapView: View {
                                 selectedPlace = suggestion
                                 searchText = "\(suggestion.title), \(suggestion.subtitle)"
                                 manager.suggestions.removeAll()
+                                selectedFromSuggestion = true
+                                
                             }) {
                                 Text("\(suggestion.title), \(suggestion.subtitle)")
                             }
@@ -79,17 +90,93 @@ struct MapView: View {
                 // Map view display based on search results
                 Map(coordinateRegion: $region, showsUserLocation: true, annotationItems: manager.searchResults) { place in
                     MapMarker(coordinate: place.coordinate, tint: Color(hex: "EB886F"))// orange
+                    
                 }
+                .onTapGesture {
+                    // When a new place is tapped, show the overlay
+                    if let tappedPlace = manager.searchResults.first,
+                        hasAddressInformation(placemark: tappedPlace) {
+                        selectedPlacemark = tappedPlace
+                        dismissOverlay = false
+                    }
+                }
+                
+                .onChange(of: searchText) { newSearchText in
+                    // Update selectedPlacemark based on searchText
+                    if let newSelectedPlace = manager.searchResults.first(where: { $0.name == newSearchText }) {
+                        selectedPlacemark = newSelectedPlace
+                    }
+                    // Hide the overlay when searchText changes
+                    dismissOverlay = true
+                }
+                
+                .gesture(
+                    // Tap gesture to hide the overlay when tapped outside
+                    TapGesture()
+                        .onEnded { _ in
+                            withAnimation {
+                                // Update selectedPlacemark and dismissOverlay simultaneously
+                                if let tappedPlace = manager.searchResults.first {
+                                    selectedPlacemark = tappedPlace
+                                }
+                                dismissOverlay.toggle()
+                            }
+                        }
+                )
+                .overlay(
+                    ZStack {
+                        if let placemark = selectedPlacemark {
+                            // Transparent background behind the overlay
+                            Color.clear
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    withAnimation {
+                                        // Update selectedPlacemark and dismissOverlay simultaneously
+                                        if let tappedPlace = manager.searchResults.first {
+                                            selectedPlacemark = tappedPlace
+                                        }
+                                        dismissOverlay.toggle()
+                                    }
+                                }
+                            
+                            // PlaceDetailSheet overlay
+                            PlaceDetailSheet(placemark: placemark)
+                                .frame(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.height * 0.35)
+                                .background(Color(hex: "33703C")) // Green
+                                .cornerRadius(16)
+                                .offset(y: dismissOverlay ? UIScreen.main.bounds.height : -UIScreen.main.bounds.height * 0.2)
+                                .edgesIgnoringSafeArea(.bottom)
+                                .padding(.horizontal, 8)
+                                .onTapGesture {
+                                    withAnimation {
+                                        dismissOverlay = true
+                                    }
+                                }
+                        }
+                    }
+                )
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
                 .onAppear {
+                    
                     print("Map onAppear - Rendered Region: \(region)")
                     // Set the initial region based on manager.region
                     currentCoordinate = selectedCoordinate ?? CLLocationCoordinate2D(latitude: 60.1695, longitude: 24.9354)
                     manager.region.center = currentCoordinate!
                     manager.region.span = MKCoordinateSpan(latitudeDelta: 0.4, longitudeDelta: 0.4)
                     manager.setup()
-                        // Additional setup or operations can be done here
-                        print("Location authorization completed")
-                    
+                    // Additional setup or operations can be done here
+                    print("Location authorization completed")
                 }
                 .onChange(of: selectedCoordinate) { newCoordinate in
                     withAnimation(.easeIn) {
@@ -130,8 +217,10 @@ struct MapView: View {
                         let selectedPlacemark = MKPlacemark(coordinate: placemark.coordinate, addressDictionary: placemark.addressDictionary as? [String: Any])
                         // Append the selected placemark to the search results
                         manager.searchResults.append(selectedPlacemark)
+                        // Show the overlay card
                     }
                 }
+                .navigationBarTitle("", displayMode: .inline)
             
             VStack {
                 Text(LocalizedStringKey("Bars"))
@@ -205,7 +294,11 @@ struct MapView: View {
             .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
         }
     }
-    
+    //function to check if the placemark is done from MapKit search or coordinates
+    private func hasAddressInformation(placemark: MKPlacemark) -> Bool {
+        return placemark.thoroughfare != nil || placemark.locality != nil || placemark.postalCode != nil || placemark.isoCountryCode != nil
+    }
+
     //fetch bars and filter out places with type "lodging"
     private func fetchBars() {
         let barTypes = restaurantTypes.filter { $0.rawValue.lowercased() == "bar" }
@@ -232,7 +325,7 @@ extension CLLocationCoordinate2D: Equatable {
         return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
     }
 }
-
+// Extension to use our specific colors
 extension Color {
     init(hex: String) {
         var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
@@ -247,5 +340,54 @@ extension Color {
         let blue = Double(rgb & 0x0000FF) / 255.0
         
         self.init(red: red, green: green, blue: blue)
+    }
+}
+
+struct PlaceDetailSheet: View {
+    var placemark: MKPlacemark
+    
+    var body: some View {
+        ScrollView {
+            VStack(alignment: .leading) {
+                Text(placemark.name ?? "")
+                    .font(.title)
+                    .bold()
+                    .padding(.bottom, 3)
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
+                
+                // Additional Address Information
+                Text("Street:")
+                    .bold()
+                    .padding(.bottom, 1)
+                Text("\(placemark.thoroughfare ?? "")")
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
+                    .padding(.bottom, 3)
+                
+                Text("City:")
+                    .bold()
+                    .padding(.bottom, 1)
+                Text("\(placemark.locality ?? "")")
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
+                    .padding(.bottom, 3)
+                Text("Postalcode:")
+                    .bold()
+                    .padding(.bottom, 1)
+                Text("\(placemark.postalCode ?? "")")
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
+                    .padding(.bottom, 3)
+                Text("Country Code:")
+                    .bold()
+                    .padding(.bottom, 1)
+                Text("\(placemark.isoCountryCode ?? "")")
+                    .multilineTextAlignment(.leading)
+                    .lineLimit(nil)
+                    .padding(.bottom, 3)
+            }
+            .padding()
+        }
     }
 }

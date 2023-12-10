@@ -21,97 +21,100 @@ struct DetailView: View {
     var onCoordinateUpdate: ((CLLocationCoordinate2D?) -> Void)?
     
     var body: some View {
-        
-        //conditional modifier to determine when to apply NavigationView
-        if isNavigationActive {
-            // Display MapView when navigation is active
-            MapView(selectedCoordinate: .constant(coordinates), region: $region)
-                .environmentObject(languageSettings)
-                .navigationBarTitle(place.name)
-                .navigationBarBackButtonHidden(true)
-                .navigationBarItems(
-                    leading:
-                        Button(action: {
-                            isNavigationActive = false
-                        }) {
-                            Image(systemName: "arrow.backward")
+            //conditional modifier to determine when to apply NavigationView
+            if isNavigationActive {
+                // Display MapView when navigation is active
+                MapView(region: $region, selectedCoordinate: .constant(coordinates))
+                    .environmentObject(languageSettings)
+                    //.navigationBarTitle(place.name)
+                    .navigationBarBackButtonHidden(true)
+                    .navigationBarItems(
+                        leading:
+                            Button(action: {
+                                isNavigationActive = false
+                            }) {
+                                Image(systemName: "chevron.left")
+                                Text("")
+                            }
+                    )
+                    .onAppear {
+                        // Ensure the coordinate update callback is set
+                        let updateCallback: (CLLocationCoordinate2D?) -> Void = { updatedCoordinate in
+                            self.updateCoordinates(updatedCoordinate)
                         }
-                )
-                .onAppear {
-                    // Ensure the coordinate update callback is set
-                    let updateCallback: (CLLocationCoordinate2D?) -> Void = { updatedCoordinate in
-                        self.updateCoordinates(updatedCoordinate)
+                        
+                        // Invoke the callback with current coordinates
+                        updateCallback(coordinates)
                     }
-                    
-                    // Invoke the callback with current coordinates
-                    updateCallback(coordinates)
-                }
-        } else {
-            // Display details in a List when navigation is not active
-            List {
-                Section(header: Text(LocalizedStringKey("Details for \(place.name)")).font(.title2)) {
-                    VStack(alignment: .leading, spacing: 10) {
-                        // Display rating if available, otherwise show N/A
-                        if let rating = place.rating {
-                            Text(LocalizedStringKey("Rating: \(rating, specifier: "%.1f")"))
+            } else {
+                // Display details in a List when navigation is not active
+                List {
+                    Section(header: Text(LocalizedStringKey("Details for \(place.name)")).font(.title2)) {
+                        VStack(alignment: .leading, spacing: 10) {
+                            // Display rating if available, otherwise show N/A
+                            if let rating = place.rating {
+                                Text(LocalizedStringKey("Rating: \(rating, specifier: "%.1f")"))
+                                    .font(.headline)
+                            } else {
+                                Text(LocalizedStringKey("Rating: N/A"))
+                                    .font(.headline)
+                            }
+                            
+                            // Filter out unwanted types and display location types
+                            let filteredTypes = place.types.filter { $0.lowercased() != "point_of_interest" && $0.lowercased() != "establishment" }
+                            Text(LocalizedStringKey("Types: \(filteredTypes.joined(separator: ", "))"))
                                 .font(.headline)
-                        } else {
-                            Text(LocalizedStringKey("Rating: N/A"))
+                            
+                            // Display location vicinity
+                            Text(LocalizedStringKey("Vicinity: \(place.vicinity)"))
                                 .font(.headline)
-                        }
-                        
-                        // Filter out unwanted types and display location types
-                        let filteredTypes = place.types.filter { $0.lowercased() != "point_of_interest" && $0.lowercased() != "establishment" }
-                        Text(LocalizedStringKey("Types: \(filteredTypes.joined(separator: ", "))"))
-                            .font(.headline)
-                        
-                        // Display location vicinity
-                        Text(LocalizedStringKey("Vicinity: \(place.vicinity)"))
-                            .font(.headline)
-                        
-                        // Display whether the location is open now
-                        if let isOpenNow = place.opening_hours?.open_now {
-                            Text(LocalizedStringKey("Open Now: \(isOpenNow ? "Yes" : "No")"))
-                                .font(.headline)
-                                .foregroundColor(isOpenNow ? .green : .red)
-                        }
-                        
-                        // Display location image if available
-                        if let photoReference = place.photos?.first?.photo_reference {
-                            URLImage(imageURL(photoReference: photoReference, maxWidth: 400)) { image in
-                                image
-                                    .resizable()
-                                    .aspectRatio(contentMode: .fit)
-                                    .frame(height: 200)
-                                    .cornerRadius(10)
-                                    .padding(.top, 10)
+                            
+                            // Display whether the location is open now
+                            if let isOpenNow = place.opening_hours?.open_now {
+                                Text(LocalizedStringKey("Open Now: \(isOpenNow ? "Yes" : "No")"))
+                                    .font(.headline)
+                                    .foregroundColor(isOpenNow ? .green : .red)
+                            }
+                            
+                            // Display location image if available
+                            if let photoReference = place.photos?.first?.photo_reference {
+                                URLImage(imageURL(photoReference: photoReference, maxWidth: 400)) { image in
+                                    image
+                                        .resizable()
+                                        .aspectRatio(contentMode: .fit)
+                                        .frame(height: 200)
+                                        .cornerRadius(10)
+                                        .padding(.top, 10)
+                                }
                             }
                         }
+                        .padding(.horizontal, 15)
                     }
-                    .padding(.horizontal, 15)
+                    .listStyle(InsetGroupedListStyle()) // Apply a modern inset grouped style
+                    .padding()
+                    
+                    // "Locate Place" button to activate navigation
+                    Button(action: {
+                        fetchCoordinates()
+                        isNavigationActive = true
+                        
+                        
+                    }) {
+                        Text(LocalizedStringKey("Locate Place"))
+                            .foregroundColor(.blue)
+                    }
                 }
-                .listStyle(InsetGroupedListStyle()) // Apply a modern inset grouped style
-                .padding()
-                
-                // "Locate Place" button to activate navigation
-                Button(action: {
-                    fetchCoordinates()
-                    isNavigationActive = true
-                }) {
-                    Text(LocalizedStringKey("Locate Place"))
-                        .foregroundColor(.blue)
-                }
+                .navigationTitle(place.name)
+                .navigationBarBackButtonHidden(false)
+                .background(
+                    //NavigationLink to trigger navigation
+                    NavigationLink("", destination: EmptyView(), isActive: $isNavigationActive)
+                )
+                .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
             }
-            .navigationTitle(place.name)
-            .navigationBarBackButtonHidden(false)
-            .background(
-                //NavigationLink to trigger navigation
-                NavigationLink("", destination: EmptyView(), isActive: $isNavigationActive)
-                    .hidden()
-            )
-            .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
         }
-    }
+
+    
     
     // Function to fetch coordinates for a place
     func fetchCoordinates() {

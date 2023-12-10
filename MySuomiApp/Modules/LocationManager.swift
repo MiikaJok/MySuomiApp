@@ -97,10 +97,11 @@ extension LocationManager: CLLocationManagerDelegate {
             // Handle other location-related functionality
         case .notDetermined:
             // Wait for the user to respond to the authorization prompt
-            break
-            
+            locationManager.requestLocation()
+
         case .denied, .restricted:
             errorMessage = "Access denied. Authorize location settings."
+            locationManager.requestLocation()
             
         default:
             break
@@ -117,28 +118,32 @@ extension LocationManager: CLLocationManagerDelegate {
     }
 }
 
-let searchFilterArray: [String] = [
+//set to filter specific cities(metropolitan are) in search suggestions
+let searchFilterSet: Set<String> = [
     "Helsinki", "Vantaa", "Espoo", "Kauniainen", "Sipoo", "Porvoo"
 ]
+
 // Extension of LocationManager to conform to MKLocalSearchCompleterDelegate
 extension LocationManager: MKLocalSearchCompleterDelegate {
     func completerDidUpdateResults(_ completer: MKLocalSearchCompleter) {
-        // Update suggestions based on the search filter array
+        // Update suggestions based on the search filter set
         suggestions = completer.results.filter { suggestion in
             let subtitleLowercased = suggestion.subtitle.lowercased()
-            return searchFilterArray.contains { city in
+            return searchFilterSet.contains { city in
                 subtitleLowercased.contains(city.lowercased())
             }
         }
     }
+
     func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
         // Handle completer errors
         print("Completer failed with error: \(error.localizedDescription)")
     }
-    
+
     func completerDidFinish(_ completer: MKLocalSearchCompleter) {
         // If completer finishes, perform a search using the current query
         searchPlaces(query: currentSearchQuery)
     }
 }
+
 
