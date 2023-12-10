@@ -278,7 +278,7 @@ struct MapView: View {
             }
             .frame(height: UIScreen.main.bounds.height * 0.3)
             .onAppear {
-                fetchBars()
+                fetchBars(within: 1000)
             }
         }
         .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
@@ -289,13 +289,13 @@ struct MapView: View {
     }
 
     //fetch bars and filter out places with type "lodging"
-    private func fetchBars() {
+    private func fetchBars(within radius: Int) {
         let barTypes = restaurantTypes.filter { $0.rawValue.lowercased() == "bar" }
         
-        fetchPlaces(for: barTypes.map { $0.rawValue }) { fetchedPlaces in
+        fetchPlaces(for: barTypes.map { $0.rawValue }, radius: radius) { fetchedPlaces in
             if let fetchedPlaces = fetchedPlaces {
                 // Filter out places with type "lodging"
-                places = fetchedPlaces.filter { $0.types.contains("lodging") == false }
+                self.places = fetchedPlaces.filter { $0.types.contains("lodging") == false }
             }
         }
     }

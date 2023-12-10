@@ -214,7 +214,7 @@ struct HomeView: View {
                             } else {
                                 TabView(selection: $currentTabIndex) {
                                     Spacer().tag(-1)
-                                    ForEach(0..<10, id: \.self) { index in
+                                    ForEach(0..<15, id: \.self) { index in
                                         VStack {
                                             if let photoReference = places[index].photos?.first?.photo_reference {
                                                 let url = imageURL(photoReference: photoReference, maxWidth: 800)
@@ -267,7 +267,7 @@ struct HomeView: View {
                         }
                         .frame(height: UIScreen.main.bounds.height * 0.3)
                         .onAppear {
-                            fetchCafes()
+                            fetchCafes(within: 1000)
                         }
                         
                     }
@@ -373,13 +373,14 @@ struct HomeView: View {
     }
     
     // Function to fetch cafes
-    private func fetchCafes() {
+    private func fetchCafes(within radius: Int) {
         // Assuming restaurantTypes contains a cafe type
         let cafeTypes = restaurantTypes.filter { $0.rawValue.lowercased() == "cafe" }
         
-        fetchPlaces(for: cafeTypes.map { $0.rawValue }) { fetchedPlaces in
+        fetchPlaces(for: cafeTypes.map { $0.rawValue }, radius: radius) { fetchedPlaces in
             if let fetchedPlaces = fetchedPlaces {
-                places = fetchedPlaces
+                // Filter out places with type "lodging"
+                self.places = fetchedPlaces.filter { $0.types.contains("lodging") == false }
             }
         }
     }

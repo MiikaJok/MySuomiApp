@@ -48,7 +48,7 @@ struct NatureView: View {
             dispatchGroup.enter() // Enter the group before starting a fetch
             
             // Use the type.rawValue to fetch places for the current type
-            fetchPlaces(for: [type.rawValue]) { places in
+            fetchPlaces(for: [type.rawValue], radius: 30000) { places in
                 defer {
                     dispatchGroup.leave() // Leave the group when the fetch is complete
                 }

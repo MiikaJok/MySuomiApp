@@ -91,21 +91,15 @@ enum PlaceType: String {
 // Constants for default values
 let defaultLatitude: Double = 60.1695
 let defaultLongitude: Double = 24.9354
-let defaultRadius: Int = 50000
+let defaultRadius: Int = 5000
 let restaurantTypes: [PlaceType] = [.bar, .restaurant, .night_club, .bakery, .cafe]
 let sightsTypes: [PlaceType] = [.zoo, .park, .museum, .tourist_attraction, .amusement_park, .church, .library, .stadium, .aquarium, .university, .art_gallery]
 let accommodationTypes: [PlaceType] = [.lodging]
 let natureTypes: [PlaceType] = [.rv_park, .campground]
 let museumTypes: [PlaceType] = [.museum]
 
-// Use the pipe character "|" as the separator when joining place types
-//let restaurantTypesString = restaurantTypes.map { $0.rawValue }.joined(separator: "|")
-//let sightsTypesString = sightsTypes.map { $0.rawValue }.joined(separator: "|")
-//let accommodationTypesString = accommodationTypes.map { $0.rawValue }.joined(separator: "|")
-//let natureTypesString = natureTypes.map { $0.rawValue }.joined(separator: "|")
-
 // Function to fetch places from the Google Places API
-func fetchPlaces(for typeStrings: [String], completion: @escaping ([Place]?) -> Void) {
+func fetchPlaces(for typeStrings: [String], radius: Int = defaultRadius, completion: @escaping ([Place]?) -> Void) {
     let apiKey = APIKeys.googlePlacesAPIKey
     
     
@@ -119,7 +113,7 @@ func fetchPlaces(for typeStrings: [String], completion: @escaping ([Place]?) -> 
     var components = URLComponents(string: baseUrl)
     components?.queryItems = [
         URLQueryItem(name: "location", value: baseLocation),
-        URLQueryItem(name: "radius", value: "\(defaultRadius)"),
+        URLQueryItem(name: "radius", value: "\(radius)"),
         URLQueryItem(name: "key", value: apiKey),
         URLQueryItem(name: "type", value: typeStrings.joined(separator: "|"))
     ]

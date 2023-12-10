@@ -40,9 +40,9 @@ struct AllMuseumsView: View {
         // Create a dispatch group to wait for the fetch to complete
         let dispatchGroup = DispatchGroup()
 
-        // Fetch places of type .museum
+        // Fetch places of type museum
         dispatchGroup.enter() // Enter the group before starting the fetch
-        fetchPlaces(for: ["museum"]) { places in
+        fetchPlaces(for: ["museum"], radius: 1000) { places in
             defer {
                 dispatchGroup.leave() // Leave the group when the fetch is complete
             }
