@@ -1,0 +1,65 @@
+/* 
+  Localizable.strings
+  MySuomiApp
+
+  
+*/
+/* English */
+
+/* HomeView */
+
+"Search" = "Search";
+
+"Search Results" = "Search Results";
+
+"Eat and drink" = "Eat and drink";
+
+"Sights" = "Sights";
+
+"Accommodation" = "Accommodation";
+
+"Nature" = "Nature";
+
+"Cafes" = "Cafes";
+
+"Loading places..." = "Loading places...";
+
+"Museums close to you" = "Museums close to you";
+
+"Explore Map" = "Explore Map";
+
+"Speech recognition is active. Press mic again after searching to see the result." = "Speech recognition is active. Press mic again after searching to see the result.";
+
+"Image not available" = "Image not available";
+
+/* HomeView */
+
+
+
+"Restaurants" = "Restaurants";
+
+
+
+/*detail view*/
+
+"Details for %@" = "Details for %@";
+"Rating: %.1f" = "Rating: %.1f";
+"Rating: N/A" = "Rating: N/A";
+"Types: %@" = "Types: %@";
+"Vicinity: %@" = "Vicinity: %@";
+"Open Now: %@" = "Open Now: %@";
+"Locate Place" = "Locate Place";
+
+
+/*detail view*/
+"No search results" = "No search results";
+"Remove from Favorites" = "Remove from Favorites";
+"Favorites" = "Favorites";
+"Bars" = "Bars";
+"All Museums" = "All Museums";
+
+"Street:" = "Street:";
+"City:" = "City:";
+"Postal Code:" = "Postal Code:";
+"Country Code:" = "Country Code:";
+

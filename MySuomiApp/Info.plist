@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
-<dict>
-	<key>CFBundleIdentifier</key>
-	<string></string>
-	<key>NSLocationWhenInUseUsageDescription</key>
-	<string>Give us your location :)</string>
-	<key>NSSiriUsageDescription</key>
-	<string>We need access to your microphone for speech recognition</string>
-	<key>NSSpeechRecognitionUsageDescription</key>
-	<string>We need access to your microphone for speech recognition</string>
-	<key>NSMicrophoneUsageDescription</key>
-	<string>We need access to your microphone for speech recognition</string>
-	<key>NSLocationAlwaysUsageDescription</key>
-	<string>Give us your location :)</string>
-	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
-	<string>Give us your location :)</string>
-	<key>CFBundleURLTypes</key>
-	<array>
-		<dict>
-			<key>CFBundleTypeRole</key>
-			<string>Editor</string>
-			<key>CFBundleURLName</key>
-			<string>placesApi</string>
-			<key>CFBundleURLSchemes</key>
-			<array>
-				<string>AIzaSyDh8Fsdpg3FDH7Jbkq1RsI9BCCqQrQH9gQ</string>
-			</array>
-		</dict>
-		<dict/>
-	</array>
-	<key>MKDirectionsApplicationSupportedModes</key>
-	<array/>
-	<key>UIBackgroundModes</key>
-	<array>
-		<string>location</string>
-	</array>
-</dict>
+    <dict>
+        <key>CFBundleIdentifier</key>
+        <string></string>
+        <key>NSLocationWhenInUseUsageDescription</key>
+        <string>Give us your location :)</string>
+        <key>NSSiriUsageDescription</key>
+        <string>We need access to your microphone for speech recognition</string>
+        <key>NSSpeechRecognitionUsageDescription</key>
+        <string>We need access to your microphone for speech recognition</string>
+        <key>NSMicrophoneUsageDescription</key>
+        <string>We need access to your microphone for speech recognition</string>
+        <key>NSLocationAlwaysUsageDescription</key>
+        <string>Give us your location :)</string>
+        <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+        <string>Give us your location :)</string>
+        <key>CFBundleURLTypes</key>
+        <array>
+            <dict>
+                <key>CFBundleTypeRole</key>
+                <string>Editor</string>
+                <key>CFBundleURLName</key>
+                <string>placesApi</string>
+                <key>CFBundleURLSchemes</key>
+                <array>
+                    <string>AIzaSyDh8Fsdpg3FDH7Jbkq1RsI9BCCqQrQH9gQ</string>
+                </array>
+            </dict>
+            <dict/>
+        </array>
+        <key>MKDirectionsApplicationSupportedModes</key>
+        <array/>
+        <key>UIBackgroundModes</key>
+        <array>
+            <string>location</string>
+        </array>
+    </dict>
 </plist>

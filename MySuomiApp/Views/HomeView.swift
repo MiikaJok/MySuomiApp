@@ -67,28 +67,48 @@ struct HomeView: View {
                                 selectedMenu = "Eat"
                                 isNavigationActive.toggle()
                             }) {
-                                Label(languageSettings.isEnglish ? "Eat and drink" : "Syö ja juo", systemImage: "fork.knife.circle")
+                                Label(
+                                    title: { Text(LocalizedStringKey("Eat and drink")) },
+                                    icon: { Image(systemName: "fork.knife.circle") }
+                                )
                             }
                             
                             Button(action: {
                                 selectedMenu = "Sights"
                                 isNavigationActive.toggle()
                             }) {
-                                Label(languageSettings.isEnglish ? "Sights" : "Nähtävyydet", systemImage: "eye")
+                                Label(
+                                    title: { Text(LocalizedStringKey("Sights")) },
+                                    icon: { Image(systemName: "eye") }
+                                )
                             }
                             
                             Button(action: {
                                 selectedMenu = "Accommodation"
                                 isNavigationActive.toggle()
                             }) {
-                                Label(languageSettings.isEnglish ? "Accommodation" : "Majoitus", systemImage: "house")
-                            }
+                                Label(
+                                    title: { Text(LocalizedStringKey("Accommodation")) },
+                                    icon: { Image(systemName: "house") }
+                                )                            }
                             
                             Button(action: {
                                 selectedMenu = "Nature"
                                 isNavigationActive.toggle()
                             }) {
-                                Label(languageSettings.isEnglish ? "Nature" : "Luonto", systemImage: "leaf")
+                                Label(
+                                    title: { Text(LocalizedStringKey("Nature")) },
+                                    icon: { Image(systemName: "leaf") }
+                                )                            }
+                            
+                            Button(action: {
+                                selectedMenu = "Favorites"
+                                isNavigationActive.toggle()
+                            }) {
+                                Label(
+                                    title: { Text(LocalizedStringKey("Favorites")) },
+                                    icon: { Image(systemName: "heart.fill") }
+                                )
                             }
                         } label: {
                             Image(systemName: "line.horizontal.3")
@@ -99,7 +119,7 @@ struct HomeView: View {
                     // Search bar when visible
                     if isSearchBarVisible {
                         HStack {
-                            TextField(languageSettings.isEnglish ? "Search" : "Haku", text: $searchText)
+                            TextField(LocalizedStringKey("Search"), text: $searchText)
                                 .padding()
                                 .textFieldStyle(RoundedBorderTextFieldStyle())
                                 .disableAutocorrection(true)
@@ -129,23 +149,27 @@ struct HomeView: View {
                                     .background(Color.white)
                                     .clipShape(Circle())
                                     .shadow(radius: 5)
-                                    .accessibility(label: Text("Speech Recognition"))
+                                    .accessibility(label: Text(LocalizedStringKey("Speech Recognition")))
                             }
                             Spacer(minLength: 32)
                         }
                         
                         if showRecordingMessage {
-                            Text("Speech recognition is active. Press mic again after searching to see the result.")
+                            Text(LocalizedStringKey("Speech recognition is active. Press mic again after searching to see the result."))
                                 .font(.caption)
                                 .foregroundColor(.gray)
                         }
                     }
                     
                     // Display search results
-                    if !searchResults.isEmpty {
+                    if isSearchBarVisible && !searchText.isEmpty && searchResults.isEmpty {
+                        Text(LocalizedStringKey("No search results"))
+                            .foregroundColor(.gray)
+                            .padding(.top, 16)
+                    } else if isSearchBarVisible && !searchResults.isEmpty {
                         ScrollView {
                             LazyVStack {
-                                Section(header: Text("Search Results")) {
+                                Section(header: Text(LocalizedStringKey("Search Results"))) {
                                     ForEach(searchResults.indices, id: \.self) { index in
                                         let place = searchResults[index]
                                         NavigationLink(destination: DetailView(place: place)) {
@@ -162,6 +186,7 @@ struct HomeView: View {
                         }
                         .frame(maxHeight: 250) // Set the maximum height as needed
                     }
+
                     
                     // Image carousel with TabView
                     VStack {
@@ -181,18 +206,18 @@ struct HomeView: View {
                         }
                         
                         VStack {
-                            Text("Cafes")
+                            Text(LocalizedStringKey("Cafes"))
                                 .font(.headline)
                             
                             if places.isEmpty {
-                                Text("Loading places...")
+                                Text(LocalizedStringKey("Loading places..."))
                             } else {
                                 TabView(selection: $currentTabIndex) {
                                     Spacer().tag(-1)
                                     ForEach(0..<10, id: \.self) { index in
                                         VStack {
                                             if let photoReference = places[index].photos?.first?.photo_reference {
-                                                let url = imageURL(photoReference: photoReference, maxWidth: 200)
+                                                let url = imageURL(photoReference: photoReference, maxWidth: 800)
                                                 let place = places[index]
                                                 NavigationLink(destination: DetailView(place: place)) {
                                                     ZStack(alignment: .top) {
@@ -205,7 +230,7 @@ struct HomeView: View {
                                                                     .clipped()
                                                                     .frame(height: UIScreen.main.bounds.height * 0.3)
                                                             case .failure:
-                                                                Text("Image not available")
+                                                                Text(LocalizedStringKey("Image not available"))
                                                             case .empty:
                                                                 ProgressView()
                                                             }
@@ -260,7 +285,7 @@ struct HomeView: View {
                                     // Text overlay on the image
                                     VStack {
                                         Spacer()
-                                        Text(languageSettings.isEnglish ? "Museums close to you" : "Museot lähelläsi")
+                                        Text(LocalizedStringKey("Museums close to you"))
                                             .foregroundColor(.white)
                                             .font(.headline)
                                             .multilineTextAlignment(.center)
@@ -277,22 +302,23 @@ struct HomeView: View {
                     .buttonStyle(PlainButtonStyle())
                     
                     // Navigation link to the MapView
-                    NavigationLink(destination: MapView(selectedCoordinate: .constant(coordinates), region: $region)) {
+                    NavigationLink(destination: MapView(region: $region, selectedCoordinate: .constant(coordinates)).environmentObject(languageSettings)) {
                         VStack {
                             Image(systemName: "map.fill") //
                                 .resizable()
                                 .frame(width: 50, height: 50)
                                 .foregroundColor(.white)
                             
-                            Text(languageSettings.isEnglish ? "Explore Map" : "Tutustu karttaan")
+                            Text(LocalizedStringKey("Explore Map"))
                                 .foregroundColor(.white)
                                 .padding(.top, 8)
                         }
-                        .frame(width: 120, height: 120) // size of the button
+                        .frame(width: 120, height: 120) 
                         .background(Color.green)
                         .cornerRadius(16)
                         .padding()
                         .shadow(radius: 5)
+                        .navigationBarTitle("", displayMode: .inline)
                         
                     }
                 }
@@ -301,48 +327,36 @@ struct HomeView: View {
                 Spacer()
                 // Navigation links to specific category views
                     .background(
-                        Group {
-                            if selectedMenu == "Eat" {
-                                NavigationLink(
-                                    destination: EatView(),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
+                        NavigationLink(
+                            destination: {
+                                if let selectedMenu = selectedMenu {
+                                    switch selectedMenu {
+                                    case "Eat":
+                                        return AnyView(EatView().environmentObject(languageSettings))
+                                    case "Sights":
+                                        return AnyView(SightsView().environmentObject(languageSettings))
+                                    case "Accommodation":
+                                        return AnyView(AccommodationView().environmentObject(languageSettings))
+                                    case "Nature":
+                                        return AnyView(NatureView().environmentObject(languageSettings))
+                                    case "Favorites":
+                                        return AnyView(FavoritesView().environmentObject(languageSettings))
+                                    default:
+                                        return AnyView(EmptyView())
                                     }
-                                )
-                                .hidden()
-                            } else if selectedMenu == "Sights" {
-                                NavigationLink(
-                                    destination: SightsView(),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
-                            } else if selectedMenu == "Accommodation" {
-                                NavigationLink(
-                                    destination: AccommodationView(),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
-                            } else if selectedMenu == "Nature" {
-                                NavigationLink(
-                                    destination: NatureView(),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
-                            }
+                                } else {
+                                    return AnyView(EmptyView())
+                                }
+                            }() as AnyView,
+                            isActive: $isNavigationActive,
+                            label: { EmptyView() }
+                        )
+                        .hidden()
+
+                        .onAppear {
+                            selectedMenu = nil
+                            
                         }
-                            .onAppear {
-                                selectedMenu = nil
-                            }
                             .opacity(0)
                             .buttonStyle(PlainButtonStyle())
                     )

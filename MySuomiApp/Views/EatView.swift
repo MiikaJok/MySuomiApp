@@ -3,18 +3,21 @@ import CoreData
 import URLImage
 
 struct EatView: View {
+    @EnvironmentObject var languageSettings: LanguageSettings
     @State private var restaurantPlaces: [Place] = []
     @State private var hasFetchedData = false
+
     
     var body: some View {
         List(restaurantPlaces, id: \.place_id) { place in
-            NavigationLink(destination: DetailView(place: place)) {
+            NavigationLink(destination: DetailView(place: place).environmentObject(languageSettings)) {
                 HStack {
                     CardView(title: place.name, imageURL: imageURL(photoReference: place.photos?.first?.photo_reference ?? "", maxWidth: 100))
                 }
             }
             .buttonStyle(PlainButtonStyle())
         }
+        .navigationBarTitle("", displayMode: .inline)
         .onAppear {
             // Fetch data only if it hasn't been fetched before
             if !hasFetchedData {
@@ -23,7 +26,6 @@ struct EatView: View {
                 hasFetchedData = true
             }
         }
-        .navigationTitle("Restaurants")
     }
     
     func fetchAndSaveRestaurantPlaces() {

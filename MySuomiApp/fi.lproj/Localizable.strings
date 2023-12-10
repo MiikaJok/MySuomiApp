@@ -1,0 +1,42 @@
+/*
+  Localizable.strings
+  MySuomiApp
+*/
+
+/* Finnish */
+
+"Search" = "Haku";
+"Search Results" = "Hakutulokset";
+"Eat and drink" = "Syö ja juo";
+"Sights" = "Nähtävyydet";
+"Accommodation" = "Majoitus";
+"Nature" = "Luonto";
+"Cafes" = "Kahvilat";
+"Loading places..." = "Ladataan paikkoja...";
+"Museums close to you" = "Museot lähelläsi";
+"Explore Map" = "Tutustu karttaan";
+"Speech recognition is active. Press mic again after searching to see the result." = "Puheentunnistus on aktiivinen. Paina mikrofonia uudelleen haun jälkeen nähdäksesi tuloksen.";
+"Speech Recognition" = "Puheentunnistus";
+"Image not available" = "Kuva ei ole saatavilla";
+
+/* Additional Finnish strings used in your HomeView */
+
+"No search results" = "Ei hakutuloksia";
+"Restaurants" = "Ravintolat";
+"Details for %@" = "Tiedot kohteesta %@";
+"Rating: %.1f" = "Arvosana: %.1f";
+"Rating: N/A" = "Arvosana: Ei saatavilla";
+"Types: %@" = "Tyypit: %@";
+"Vicinity: %@" = "Osoite: %@";
+"Locate Place"= "Näytä kartalla";
+"Open Now: %@" = "Avoinna nyt: %@";
+"Remove from Favorites" = "Poista suosikeista";
+"Favorites" = "Suosikit";
+"Bars" = "Baarit";
+"All Museums" = "Kaikki museot";
+
+"Street:" = "Katu:";
+"City:" = "Kaupunki:";
+"Postal Code:" = "Postinumero:";
+"Country Code:" = "Maatunnus:";
+
