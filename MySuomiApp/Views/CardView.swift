@@ -7,22 +7,21 @@ struct CardView: View {
     @State private var isFavorite = false
     
     // Inject the managedObjectContext
-    @Environment(\.managedObjectContext) private var viewContext
-    
+    @Environment(\.managedObjectContext) var viewContext
+        
     // Check if the current item is liked when the view appears
     func checkLike() {
-            let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
-            request.predicate = NSPredicate(format: "name == %@ AND image == %@", title, imageURL.absoluteString)
-            
-            do {
-                if let result = try viewContext.fetch(request) as? [NSManagedObject], !result.isEmpty {
-                    // If the result is not empty, the item is liked
-                    isFavorite = true
-                }
-            } catch {
-                print("Error: \(error)")
-
+        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
+        request.predicate = NSPredicate(format: "name == %@ AND image == %@", title, imageURL.absoluteString)
+        
+        do {
+            if let result = try viewContext.fetch(request) as? [NSManagedObject], !result.isEmpty {
+                // If the result is not empty, the item is liked
+                isFavorite = true
             }
+        } catch {
+            print("Error: \(error)")
+        }
     }
     
     var body: some View {
@@ -74,6 +73,9 @@ struct CardView: View {
         .shadow(radius: 5)
         .padding(.horizontal, -8)
         .padding(.vertical, 8)
+        .onAppear {
+            checkLike()
+        }
     }
     
     // Function to save liked item to CoreData
@@ -82,12 +84,8 @@ struct CardView: View {
         newLikedItem.name = title
         newLikedItem.image = imageURL.absoluteString
         
-        do {
-            // Save the new liked item to CoreData
-            try viewContext.save()
-        } catch {
-            print("Error saving liked item to CoreData: \(error)")
-        }
+        // Save the new liked item to CoreData
+        PersistenceController.shared.save()
     }
     
     // Function to remove liked item from CoreData
