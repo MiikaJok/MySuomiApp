@@ -45,7 +45,7 @@ struct MapView: View {
                     TextField(LocalizedStringKey("Search"), text: $searchText)
                         .padding()
                         .textFieldStyle(RoundedBorderTextFieldStyle())
-                        //.background(Color(hex: "B1D4FC")) // lightblue
+                    //.background(Color(hex: "B1D4FC")) // lightblue
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
@@ -69,7 +69,7 @@ struct MapView: View {
                                 Text("\(suggestion.title), \(suggestion.subtitle)")
                             }
                             .listRowBackground(Color(hex: "B1D4FC")) // Light blue
-
+                            
                         }
                         .listStyle(GroupedListStyle())
                         .padding([.leading, .trailing], 16)
@@ -86,6 +86,10 @@ struct MapView: View {
                     currentCoordinate = selectedCoordinate ?? CLLocationCoordinate2D(latitude: 60.1695, longitude: 24.9354)
                     manager.region.center = currentCoordinate!
                     manager.region.span = MKCoordinateSpan(latitudeDelta: 0.4, longitudeDelta: 0.4)
+                    manager.setup()
+                        // Additional setup or operations can be done here
+                        print("Location authorization completed")
+                    
                 }
                 .onChange(of: selectedCoordinate) { newCoordinate in
                     withAnimation(.easeIn) {

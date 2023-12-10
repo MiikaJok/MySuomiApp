@@ -71,6 +71,8 @@ final class LocationManager: NSObject, ObservableObject {
             
         case .notDetermined:
             // Request location when authorization is not determined
+            locationManager.delegate = self // Add this line to ensure the delegate is set
+            locationManager.requestWhenInUseAuthorization()
             locationManager.requestLocation()
             
         case .denied, .restricted:
