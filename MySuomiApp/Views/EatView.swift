@@ -6,6 +6,7 @@ struct EatView: View {
     @EnvironmentObject var languageSettings: LanguageSettings
     @State private var restaurantPlaces: [Place] = []
     @State private var hasFetchedData = false
+
     
     var body: some View {
         List(restaurantPlaces, id: \.place_id) { place in
@@ -16,6 +17,7 @@ struct EatView: View {
             }
             .buttonStyle(PlainButtonStyle())
         }
+        .navigationBarTitle("", displayMode: .inline)
         .onAppear {
             // Fetch data only if it hasn't been fetched before
             if !hasFetchedData {

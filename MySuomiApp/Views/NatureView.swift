@@ -20,6 +20,7 @@ struct NatureView: View {
             }
             .buttonStyle(PlainButtonStyle())
         }
+        .navigationBarTitle("", displayMode: .inline)
         .onAppear {
             // Fetch data only if it hasn't been fetched before
             if !hasFetchedData {

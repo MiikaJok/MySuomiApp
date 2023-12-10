@@ -16,6 +16,7 @@ struct AllMuseumsView: View {
             }
             .buttonStyle(PlainButtonStyle())
         }
+        .navigationBarTitle("", displayMode: .inline)
         .onAppear {
             self.fetchMuseums()
         }

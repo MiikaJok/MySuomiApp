@@ -21,6 +21,7 @@
 
 /* Additional Finnish strings used in your HomeView */
 
+"No search results" = "Ei hakutuloksia";
 "Restaurants" = "Ravintolat";
 "Details for %@" = "Tiedot kohteesta %@";
 "Rating: %.1f" = "Arvosana: %.1f";
@@ -31,4 +32,5 @@
 "Open Now: %@" = "Avoinna nyt: %@";
 "Remove from Favorites" = "Poista suosikeista";
 "Favorites" = "Suosikit";
+"Bars" = "Baarit";
 "All Museums" = "Kaikki museot";

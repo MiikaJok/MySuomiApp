@@ -162,7 +162,11 @@ struct HomeView: View {
                     }
                     
                     // Display search results
-                    if !searchResults.isEmpty {
+                    if isSearchBarVisible && !searchText.isEmpty && searchResults.isEmpty {
+                        Text(LocalizedStringKey("No search results"))
+                            .foregroundColor(.gray)
+                            .padding(.top, 16)
+                    } else if isSearchBarVisible && !searchResults.isEmpty {
                         ScrollView {
                             LazyVStack {
                                 Section(header: Text(LocalizedStringKey("Search Results"))) {
@@ -182,6 +186,7 @@ struct HomeView: View {
                         }
                         .frame(maxHeight: 250) // Set the maximum height as needed
                     }
+
                     
                     // Image carousel with TabView
                     VStack {
@@ -297,7 +302,7 @@ struct HomeView: View {
                     .buttonStyle(PlainButtonStyle())
                     
                     // Navigation link to the MapView
-                    NavigationLink(destination: MapView(selectedCoordinate: .constant(coordinates), region: $region).environmentObject(languageSettings)) {
+                    NavigationLink(destination: MapView(region: $region, selectedCoordinate: .constant(coordinates)).environmentObject(languageSettings)) {
                         VStack {
                             Image(systemName: "map.fill") //
                                 .resizable()
@@ -308,11 +313,12 @@ struct HomeView: View {
                                 .foregroundColor(.white)
                                 .padding(.top, 8)
                         }
-                        .frame(width: 120, height: 120) // size of the button
+                        .frame(width: 120, height: 120) 
                         .background(Color.green)
                         .cornerRadius(16)
                         .padding()
                         .shadow(radius: 5)
+                        .navigationBarTitle("", displayMode: .inline)
                         
                     }
                 }
@@ -321,58 +327,36 @@ struct HomeView: View {
                 Spacer()
                 // Navigation links to specific category views
                     .background(
-                        Group {
-                            if selectedMenu == "Eat" {
-                                NavigationLink(
-                                    destination: EatView().environmentObject(languageSettings),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
+                        NavigationLink(
+                            destination: {
+                                if let selectedMenu = selectedMenu {
+                                    switch selectedMenu {
+                                    case "Eat":
+                                        return AnyView(EatView().environmentObject(languageSettings))
+                                    case "Sights":
+                                        return AnyView(SightsView().environmentObject(languageSettings))
+                                    case "Accommodation":
+                                        return AnyView(AccommodationView().environmentObject(languageSettings))
+                                    case "Nature":
+                                        return AnyView(NatureView().environmentObject(languageSettings))
+                                    case "Favorites":
+                                        return AnyView(FavoritesView().environmentObject(languageSettings))
+                                    default:
+                                        return AnyView(EmptyView())
                                     }
-                                )
-                                .hidden()
-                            } else if selectedMenu == "Sights" {
-                                NavigationLink(
-                                    destination: SightsView().environmentObject(languageSettings),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
-                            } else if selectedMenu == "Accommodation" {
-                                NavigationLink(
-                                    destination: AccommodationView().environmentObject(languageSettings),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
-                            } else if selectedMenu == "Nature" {
-                                NavigationLink(
-                                    destination: NatureView().environmentObject(languageSettings),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
-                                
-                            } else if selectedMenu == "Favorites" {
-                                NavigationLink(
-                                    destination: FavoritesView().environmentObject(languageSettings),
-                                    isActive: $isNavigationActive,
-                                    label: {
-                                        EmptyView()
-                                    }
-                                )
-                                .hidden()
-                            }
+                                } else {
+                                    return AnyView(EmptyView())
+                                }
+                            }() as AnyView,
+                            isActive: $isNavigationActive,
+                            label: { EmptyView() }
+                        )
+                        .hidden()
+
+                        .onAppear {
+                            selectedMenu = nil
+                            
                         }
-                            .onAppear {
-                                selectedMenu = nil
-                            }
                             .opacity(0)
                             .buttonStyle(PlainButtonStyle())
                     )
