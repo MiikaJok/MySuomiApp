@@ -36,7 +36,7 @@ struct MapView: View {
                     Text("MySuomiApp")
                         .padding(8)
                         .font(.title)
-                        .foregroundColor(Color(hex: "EB886F"))//orange
+                        .foregroundColor(Color(hex: "33703C"))//green
                         .background(Color.white)
                         .cornerRadius(8)
                         .padding([.leading, .trailing], 16)
@@ -89,7 +89,7 @@ struct MapView: View {
                 
                 // Map view display based on search results
                 Map(coordinateRegion: $region, showsUserLocation: true, annotationItems: manager.searchResults) { place in
-                    MapMarker(coordinate: place.coordinate, tint: Color(hex: "EB886F"))// orange
+                    MapMarker(coordinate: place.coordinate, tint: Color(hex: "33703C"))// green
                     
                 }
                 .onTapGesture {
@@ -142,7 +142,7 @@ struct MapView: View {
                             // PlaceDetailSheet overlay
                             PlaceDetailSheet(placemark: placemark)
                                 .frame(width: UIScreen.main.bounds.width * 0.7, height: UIScreen.main.bounds.height * 0.35)
-                                .background(Color(hex: "33703C")) // Green
+                                .background(Color(hex: "B1D4FC")) // light blue
                                 .cornerRadius(16)
                                 .offset(y: dismissOverlay ? UIScreen.main.bounds.height : -UIScreen.main.bounds.height * 0.2)
                                 .edgesIgnoringSafeArea(.bottom)
@@ -155,17 +155,6 @@ struct MapView: View {
                         }
                     }
                 )
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
                 
                 .onAppear {
                     
@@ -225,11 +214,11 @@ struct MapView: View {
             VStack {
                 Text(LocalizedStringKey("Bars"))
                     .font(.headline)
-                    .foregroundColor(Color(hex: "EB886F")) // Orange
+                    .foregroundColor(Color(hex: "33703C")) // green
                 
                 if places.isEmpty {
                     Text(LocalizedStringKey("Loading places..."))
-                        .foregroundColor(Color(hex: "EB886F")) // Orange
+                        .foregroundColor(Color(hex: "33703C")) // green
                     
                 } else {
                     // CarouselView to display places
@@ -323,23 +312,6 @@ struct MapView: View {
 extension CLLocationCoordinate2D: Equatable {
     public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
         return lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
-    }
-}
-// Extension to use our specific colors
-extension Color {
-    init(hex: String) {
-        var hexSanitized = hex.trimmingCharacters(in: .whitespacesAndNewlines)
-        hexSanitized = hexSanitized.replacingOccurrences(of: "#", with: "")
-        
-        var rgb: UInt64 = 0
-        
-        Scanner(string: hexSanitized).scanHexInt64(&rgb)
-        
-        let red = Double((rgb & 0xFF0000) >> 16) / 255.0
-        let green = Double((rgb & 0x00FF00) >> 8) / 255.0
-        let blue = Double(rgb & 0x0000FF) / 255.0
-        
-        self.init(red: red, green: green, blue: blue)
     }
 }
 
