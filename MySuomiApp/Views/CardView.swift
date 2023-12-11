@@ -117,4 +117,3 @@ func imageURL(photoReference: String, maxWidth: Int) -> URL {
     let urlString = "\(baseURL)?maxwidth=\(maxWidth)&photoreference=\(photoReference)&key=\(apiKey)"
     return URL(string: urlString)!
 }
-

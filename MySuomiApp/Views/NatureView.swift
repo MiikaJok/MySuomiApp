@@ -2,10 +2,11 @@ import SwiftUI
 import URLImage
 import CoreData
 
+// NatureView struct representing the view for displaying nature places
 struct NatureView: View {
     @State private var naturePlaces: [Place] = []
     @State private var hasFetchedData = false
-    @EnvironmentObject var languageSettings: LanguageSettings
+    @EnvironmentObject var languageSettings: LanguageSettings // EnvironmentObject for language settings
 
     
     var body: some View {
@@ -14,6 +15,7 @@ struct NatureView: View {
         List(naturePlaces, id: \.place_id) { place in
             NavigationLink(destination: DetailView(place: place).environmentObject(languageSettings)) {
                 HStack {
+                    // Display each nature place as a card
                     CardView(title: place.name, imageURL: imageURL(photoReference: place.photos?.first?.photo_reference ?? "", maxWidth: 100))
                 }
             }

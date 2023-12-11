@@ -4,6 +4,7 @@ import WebKit
 import MapKit
 import URLImage
 
+// The main view of the app
 struct HomeView: View {
   // Environment object for language settings
   @EnvironmentObject var languageSettings: LanguageSettings
@@ -179,6 +180,7 @@ struct HomeView: View {
                       }
                       .padding(.vertical, 8)
                     }
+<<<<<<< HEAD
                     .buttonStyle(PlainButtonStyle())
                   }
                 }
@@ -215,6 +217,83 @@ struct HomeView: View {
                 TabView(selection: $currentTabIndex) {
                   Spacer().tag(-1)
                   ForEach(0..<15, id: \.self) { index in
+=======
+                    
+                    // Search bar when visible
+                    if isSearchBarVisible {
+                        HStack {
+                            TextField(LocalizedStringKey("Search"), text: $searchText)
+                                .padding()
+                                .textFieldStyle(RoundedBorderTextFieldStyle())
+                                .disableAutocorrection(true)
+                                .padding()
+                                .onChange(of: searchText, perform: { newSearchText in
+                                    // Call searchPlaces when text changes
+                                    searchPlaces()
+                                })
+                                .disabled(speechRecognition.isRecording)
+                            
+                            Button(action: {
+                                // Toggle speech recognition
+                                if speechRecognition.isRecording {
+                                    speechRecognition.stopRecording()
+                                    searchText = speechRecognition.recognizedText
+                                    showRecordingMessage = false
+                                } else {
+                                    searchText = ""
+                                    speechRecognition.startRecording()
+                                    showRecordingMessage = true
+                                }
+                            }) {
+                                Image(systemName: speechRecognition.isRecording ? "mic.fill" : "mic")
+                                    .font(.system(size: 20))
+                                    .padding()
+                                    .foregroundColor(speechRecognition.isRecording ? .red : .blue)
+                                    .background(Color.white)
+                                    .clipShape(Circle())
+                                    .shadow(radius: 5)
+                                    .accessibility(label: Text(LocalizedStringKey("Speech Recognition")))
+                            }
+                            Spacer(minLength: 32)
+                        }
+                        
+                        // Show recording message if speech recognition is active
+                        if showRecordingMessage {
+                            Text(LocalizedStringKey("Speech recognition is active. Press mic again after searching to see the result."))
+                                .font(.caption)
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    
+                    // Display search results
+                    if isSearchBarVisible && !searchText.isEmpty && searchResults.isEmpty {
+                        Text(LocalizedStringKey("No search results"))
+                            .foregroundColor(.gray)
+                            .padding(.top, 16)
+                    } else if isSearchBarVisible && !searchResults.isEmpty {
+                        ScrollView {
+                            LazyVStack {
+                                Section(header: Text(LocalizedStringKey("Search Results"))) {
+                                    ForEach(searchResults.indices, id: \.self) { index in
+                                        let place = searchResults[index]
+                                        NavigationLink(destination: DetailView(place: place)) {
+                                            VStack(alignment: .leading) {
+                                                Text(place.name)
+                                                    .font(.headline)
+                                            }
+                                            .padding(.vertical, 8)
+                                        }
+                                        .buttonStyle(PlainButtonStyle())
+                                    }
+                                }
+                            }
+                        }
+                        .frame(maxHeight: 250) // Set the maximum height as needed
+                    }
+
+                    
+                    // Image carousel with TabView
+>>>>>>> 4eaa5a40f4c3eccbede45f8d6db12aec9695036a
                     VStack {
                       if let photoReference = places[index].photos?.first?.photo_reference {
                         let url = imageURL(photoReference: photoReference, maxWidth: 800)
@@ -265,6 +344,7 @@ struct HomeView: View {
               }
               
             }
+<<<<<<< HEAD
             .frame(height: UIScreen.main.bounds.height * 0.3)
             .onAppear {
               fetchCafes(within: 1000)
@@ -321,6 +401,56 @@ struct HomeView: View {
             .navigationBarTitle("", displayMode: .inline)
             
           }
+=======
+            .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
+        }
+    }
+    
+    // Function to fetch cafes
+    private func fetchCafes(within radius: Int) {
+        // Fetches cafes within a specified radius
+        let cafeTypes = restaurantTypes.filter { $0.rawValue.lowercased() == "cafe" }
+        
+        fetchPlaces(for: cafeTypes.map { $0.rawValue }, radius: radius) { fetchedPlaces in
+            if let fetchedPlaces = fetchedPlaces {
+                // Filter out places with type "lodging"
+                self.places = fetchedPlaces.filter { $0.types.contains("lodging") == false }
+            }
+        }
+    }
+    
+    // Function to search places
+    private func searchPlaces() {
+        // Searches for places based on the entered text
+        Search.searchPlaces(query: searchText) { fetchedPlaces in
+            if let fetchedPlaces = fetchedPlaces {
+                DispatchQueue.main.async {
+                    searchResults = fetchedPlaces
+                }
+            }
+        }
+    }
+    // WebView struct for displaying web content
+    struct WebView: UIViewRepresentable {
+        let urlString: String
+        @Binding var isMuted: Bool
+        
+        // Creates and returns a WKWebView
+        func makeUIView(context: Context) -> WKWebView {
+            let webView = WKWebView()
+            webView.navigationDelegate = context.coordinator
+            if let url = URL(string: urlString) {
+                webView.load(URLRequest(url: url))
+            }
+            return webView
+        }
+        // Updates the WKWebView
+        func updateUIView(_ uiView: WKWebView, context: Context) {}
+        
+        // Coordinator class for WKNavigationDelegate
+        func makeCoordinator() -> Coordinator {
+            Coordinator(self)
+>>>>>>> 4eaa5a40f4c3eccbede45f8d6db12aec9695036a
         }
         Spacer()
         
