@@ -8,7 +8,7 @@ struct DetailView: View {
     let place: Place
 
     // State variables to track coordinates, navigation state, and map region
-    @State private var coordinates: CLLocationCoordinate2D?
+    @State internal var coordinates: CLLocationCoordinate2D?
     @State private var isNavigationActive = false
     @State private var region = MKCoordinateRegion(
         center: CLLocationCoordinate2D(latitude: 60.1695, longitude: 24.9354),
@@ -99,7 +99,7 @@ struct DetailView: View {
     }
 
     // Function to fetch coordinates using Google Places API
-    func fetchCoordinates() {
+    func fetchCoordinates(urlSession: URLSession = URLSession.shared) {
         // Retrieving the API key and ensuring the place ID is not empty
         let apiKey = APIKeys.googlePlacesAPIKey
         guard !place.place_id.isEmpty else { return }

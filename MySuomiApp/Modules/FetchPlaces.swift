@@ -33,11 +33,11 @@ struct Place: Codable, Hashable {
     
     // Computed property to get the URL for the first photo
     var photoURL: URL? {
-           guard let photoReference = photos?.first?.photo_reference else {
-               return nil
-           }
-           return imageURL(photoReference: photoReference, maxWidth: 200) // Adjust maxWidth as needed
-       }
+        guard let photoReference = photos?.first?.photo_reference else {
+            return nil
+        }
+        return imageURL(photoReference: photoReference, maxWidth: 200) // Adjust maxWidth as needed
+    }
     
     // Provide a hash value based on the place_id
     func hash(into hasher: inout Hasher) {
@@ -62,6 +62,8 @@ struct Photo: Codable {
 
 struct PlacesResponse: Codable {
     let results: [Place]
+    let status: String
+    let error_message: String?
 }
 
 // Enum to represent place types
@@ -100,6 +102,13 @@ let museumTypes: [PlaceType] = [.museum]
 
 // Function to fetch places from the Google Places API
 func fetchPlaces(for typeStrings: [String], radius: Int = defaultRadius, completion: @escaping ([Place]?) -> Void) {
+    
+    guard !typeStrings.isEmpty else {
+        print("Error: Empty type array")
+        completion(nil)
+        return
+    }
+    
     let apiKey = APIKeys.googlePlacesAPIKey
     
     
@@ -125,38 +134,47 @@ func fetchPlaces(for typeStrings: [String], radius: Int = defaultRadius, complet
         return
     }
     
-    print("Fetching places from URL: \(url)")
-    
     // Use async/await to perform the API request
     Task {
         do {
-            let (data, _) = try await URLSession.shared.data(from: url)
+            let (data, response) = try await URLSession.shared.data(from: url)
+            
+            // Check for network errors
+            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
+                print("Error: Invalid response")
+                completion(nil)
+                return
+            }
             
             // Decode the JSON response using JSONDecoder
             let decoder = JSONDecoder()
             do {
                 let response = try decoder.decode(PlacesResponse.self, from: data)
                 
-                // Map API response to custom Place struct
-                let places = response.results.map { apiPlace -> Place in
-                    return Place(
-                        name: apiPlace.name,
-                        place_id: apiPlace.place_id,
-                        rating: apiPlace.rating,
-                        types: apiPlace.types,
-                        vicinity: apiPlace.vicinity,
-                        opening_hours: apiPlace.opening_hours,
-                        photos: apiPlace.photos
-                    )
+                // Check the status and handle errors
+                if response.status == "OK" {
+                    // Map API response to custom Place struct
+                    let places = response.results.map { apiPlace -> Place in
+                        return Place(
+                            name: apiPlace.name,
+                            place_id: apiPlace.place_id,
+                            rating: apiPlace.rating,
+                            types: apiPlace.types,
+                            vicinity: apiPlace.vicinity,
+                            opening_hours: apiPlace.opening_hours,
+                            photos: apiPlace.photos
+                        )
+                    }
+                    
+                    print("Fetched \(places.count) places.")
+                    // Call the completion handler with the mapped places
+                    completion(places)
+                } else {
+                    print("Error in API response. Status: \(response.status), Message: \(response.error_message ?? "Unknown error")")
+                    completion(nil)
                 }
-                
-                print("Fetched \(places.count) places.")
-                
-                // Call the completion handler with the mapped places
-                completion(places)
-                
             } catch {
-                print("Error fetching or decoding JSON: \(error)")
+                print("Error decoding JSON: \(error)")
                 completion(nil)
             }
         } catch {

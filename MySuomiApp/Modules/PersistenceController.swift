@@ -35,24 +35,6 @@ struct PersistenceController {
         }
     }
     
-    // Function to print likes from CoreData to the console
-    func printLikesFromCoreData() {
-        let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
-        
-        do {
-            // Fetch likes from Core Data
-            let likes = try container.viewContext.fetch(request) as? [Like]
-            
-            // Iterate through likes and print name and image
-            likes?.forEach { like in
-                print("Name: \(like.name ?? ""), Image: \(like.image ?? "")")
-            }
-        } catch {
-            // Handle errors during fetching
-            print("Error fetching likes from CoreData: \(error)")
-        }
-    }
-    
     // Fetch places from Core Data
     func fetchPlaces() -> [Place] {
         let request = NSFetchRequest<NSFetchRequestResult>(entityName: "Like")
