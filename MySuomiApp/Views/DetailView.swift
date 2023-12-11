@@ -2,10 +2,12 @@ import SwiftUI
 import URLImage
 import MapKit
 
+// DetailView displays information about a specific place, including a map view for its location.
 struct DetailView: View {
     @EnvironmentObject var languageSettings: LanguageSettings
     let place: Place
 
+    // State variables to track coordinates, navigation state, and map region
     @State private var coordinates: CLLocationCoordinate2D?
     @State private var isNavigationActive = false
     @State private var region = MKCoordinateRegion(
@@ -13,24 +15,29 @@ struct DetailView: View {
         span: MKCoordinateSpan(latitudeDelta: 0.4, longitudeDelta: 0.4)
     )
 
+    // Callback closure to notify parent views of coordinate updates
     var onCoordinateUpdate: ((CLLocationCoordinate2D?) -> Void)?
 
     var body: some View {
         NavigationView {
             if isNavigationActive {
+                // MapView for displaying the location when navigation is active
                 MapView(region: $region, selectedCoordinate: .constant(coordinates))
                     .environmentObject(languageSettings)
                     .navigationBarHidden(true)
                     .onAppear {
+                        // Callback to update coordinates when the view appears
                         let updateCallback: (CLLocationCoordinate2D?) -> Void = { updatedCoordinate in
                             self.updateCoordinates(updatedCoordinate)
                         }
                         updateCallback(coordinates)
                     }
             } else {
+                // List of details when not navigating
                 List {
                     Section(header: Text(LocalizedStringKey("Details for \(place.name)")).font(.title2)) {
                         VStack(alignment: .leading, spacing: 10) {
+                            // Displaying place details, such as rating, types, vicinity, etc.
                             if let rating = place.rating {
                                 Text(LocalizedStringKey("Rating: \(rating, specifier: "%.1f")"))
                                     .font(.headline)
@@ -91,22 +98,31 @@ struct DetailView: View {
         }
     }
 
+    // Function to fetch coordinates using Google Places API
     func fetchCoordinates() {
+        // Retrieving the API key and ensuring the place ID is not empty
         let apiKey = APIKeys.googlePlacesAPIKey
         guard !place.place_id.isEmpty else { return }
+        
+        // Constructing the URL for fetching place details
         let url = URL(string: "https://maps.googleapis.com/maps/api/place/details/json?place_id=\(place.place_id)&key=\(apiKey)")!
 
+        // Using async/await to perform the network request and handle the response
         Task {
             do {
+                // Fetching data from the URL
                 let (data, _) = try await URLSession.shared.data(from: url)
                 let decoder = JSONDecoder()
                 let detailsResponse = try decoder.decode(PlaceDetailsResponse.self, from: data)
 
+                // Extracting and updating coordinates if available
                 if let location = detailsResponse.result?.geometry?.location {
                     coordinates = CLLocationCoordinate2D(latitude: location.lat, longitude: location.lng)
                     region.center = coordinates ?? CLLocationCoordinate2D(latitude: 0, longitude: 0)
                     region.span = MKCoordinateSpan(latitudeDelta: 0.05, longitudeDelta: 0.05)
                     print("Fetched coordinates: \(coordinates?.latitude ?? 0), \(coordinates?.longitude ?? 0)")
+                    
+                    // Notifying parent views about coordinate updates
                     onCoordinateUpdate?(coordinates)
                 }
             } catch {
@@ -115,6 +131,7 @@ struct DetailView: View {
         }
     }
 
+    // Function to update coordinates and region
     private func updateCoordinates(_ updatedCoordinate: CLLocationCoordinate2D?) {
         if let updatedCoordinate = updatedCoordinate {
             coordinates = updatedCoordinate
