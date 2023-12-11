@@ -90,7 +90,7 @@ struct DetailView: View {
                         }
                         .padding(.horizontal, 15)
                     }
-                    .listStyle(InsetGroupedListStyle()) // Apply a modern inset grouped style
+                    .listStyle(InsetGroupedListStyle())
                     .padding()
                     
                     // "Locate Place" button to activate navigation
