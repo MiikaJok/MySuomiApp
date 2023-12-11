@@ -1,6 +1,7 @@
 import SwiftUI
 import CoreData
 
+// SwiftUI View representing a card with an image and a like button
 struct CardView: View {
     let title: String
     let imageURL: URL
@@ -47,7 +48,7 @@ struct CardView: View {
                     .padding(.leading, 8)
                     .imageScale(.large)
             }
-                        
+            // AsyncImage for displaying the card image
             AsyncImage(url: imageURL) { image in
                 image
                     .resizable()
@@ -77,6 +78,7 @@ struct CardView: View {
         .padding(.horizontal, -8)
         .padding(.vertical, 8)
         .onAppear {
+            // Check if the item is liked when the view appears
             checkLike()
         }
     }
