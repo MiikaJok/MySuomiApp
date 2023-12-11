@@ -1,14 +1,17 @@
 import CoreData
 
+// class for managing Core Data persistence
 struct PersistenceController {
+    // Shared instance accessible across the application
     static let shared = PersistenceController()
     
     let container: NSPersistentContainer
-
+    
     init(inMemory: Bool = false) {
         // Initialize the persistent container with the model name "FavoritesModel"
         container = NSPersistentContainer(name: "FavoritesModel")
         
+        // Configure for in-memory storage if specified
         if inMemory {
             container.persistentStoreDescriptions.first?.url = URL(string: "/dev/null")
         }
@@ -20,7 +23,7 @@ struct PersistenceController {
             }
         })
     }
-    
+    // Save changes to the managed object context
     func save() {
         let context = container.viewContext
         if context.hasChanges {
@@ -72,7 +75,6 @@ struct PersistenceController {
             newPlace.name = place.name
             newPlace.image = place.photos?.first?.photo_reference
         }
-        
         do {
             // Save changes to Core Data
             try container.viewContext.save()
@@ -82,5 +84,4 @@ struct PersistenceController {
         }
     }
 }
-
 

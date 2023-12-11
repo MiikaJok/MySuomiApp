@@ -4,6 +4,7 @@ import WebKit
 import MapKit
 import URLImage
 
+// The main view of the app
 struct HomeView: View {
     // Environment object for language settings
     @EnvironmentObject var languageSettings: LanguageSettings
@@ -154,6 +155,7 @@ struct HomeView: View {
                             Spacer(minLength: 32)
                         }
                         
+                        // Show recording message if speech recognition is active
                         if showRecordingMessage {
                             Text(LocalizedStringKey("Speech recognition is active. Press mic again after searching to see the result."))
                                 .font(.caption)
@@ -374,7 +376,7 @@ struct HomeView: View {
     
     // Function to fetch cafes
     private func fetchCafes(within radius: Int) {
-        // Assuming restaurantTypes contains a cafe type
+        // Fetches cafes within a specified radius
         let cafeTypes = restaurantTypes.filter { $0.rawValue.lowercased() == "cafe" }
         
         fetchPlaces(for: cafeTypes.map { $0.rawValue }, radius: radius) { fetchedPlaces in
@@ -385,7 +387,9 @@ struct HomeView: View {
         }
     }
     
+    // Function to search places
     private func searchPlaces() {
+        // Searches for places based on the entered text
         Search.searchPlaces(query: searchText) { fetchedPlaces in
             if let fetchedPlaces = fetchedPlaces {
                 DispatchQueue.main.async {
@@ -394,11 +398,12 @@ struct HomeView: View {
             }
         }
     }
-    
+    // WebView struct for displaying web content
     struct WebView: UIViewRepresentable {
         let urlString: String
         @Binding var isMuted: Bool
         
+        // Creates and returns a WKWebView
         func makeUIView(context: Context) -> WKWebView {
             let webView = WKWebView()
             webView.navigationDelegate = context.coordinator
@@ -407,9 +412,10 @@ struct HomeView: View {
             }
             return webView
         }
-        
+        // Updates the WKWebView
         func updateUIView(_ uiView: WKWebView, context: Context) {}
         
+        // Coordinator class for WKNavigationDelegate
         func makeCoordinator() -> Coordinator {
             Coordinator(self)
         }

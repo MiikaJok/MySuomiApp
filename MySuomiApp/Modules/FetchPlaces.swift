@@ -31,7 +31,7 @@ struct Place: Codable, Hashable {
     let opening_hours: OpeningHours?
     let photos: [Photo]?
     
-    
+    // Computed property to get the URL for the first photo
     var photoURL: URL? {
            guard let photoReference = photos?.first?.photo_reference else {
                return nil

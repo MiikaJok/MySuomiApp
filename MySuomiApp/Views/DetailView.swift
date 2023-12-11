@@ -78,10 +78,10 @@ struct DetailView: View {
                         }
                         .padding(.horizontal, 15)
                     }
+
                     .listStyle(InsetGroupedListStyle())
                     .padding()
 
-                    
                 }
                 .navigationTitle(place.name)
                 .navigationBarBackButtonHidden(false)
