@@ -11,6 +11,7 @@ final class LocationManager: NSObject, ObservableObject {
     // Handling location services
     private let locationManager = CLLocationManager()
     
+    
     /* Published variables to track search results, suggestions, map region, and error messages*/
     @Published var searchResults: [MKPlacemark] = []
     @Published var suggestions: [MKLocalSearchCompletion] = []
@@ -54,10 +55,16 @@ final class LocationManager: NSObject, ObservableObject {
             guard let self = self else { return }
             
             if let error = error {
-                self.errorMessage = "Search failed: \(error.localizedDescription)"
+                self.handleSearchError(error)
             }
         }
     }
+    
+    // Function to handle search errors
+    private func handleSearchError(_ error: Error) {
+        errorMessage = "Search failed: \(error.localizedDescription)"
+    }
+    
     // Setup method to check and request location permissions
     func setup() {
         switch locationManager.authorizationStatus {
@@ -71,7 +78,8 @@ final class LocationManager: NSObject, ObservableObject {
             
         case .notDetermined:
             // Request location when authorization is not determined
-            locationManager.delegate = self // Add this line to ensure the delegate is set
+            locationManager.delegate = self
+            completer?.delegate = self
             locationManager.requestWhenInUseAuthorization()
             locationManager.requestLocation()
             
@@ -98,7 +106,7 @@ extension LocationManager: CLLocationManagerDelegate {
         case .notDetermined:
             // Wait for the user to respond to the authorization prompt
             locationManager.requestLocation()
-
+            
         case .denied, .restricted:
             errorMessage = "Access denied. Authorize location settings."
             locationManager.requestLocation()
@@ -109,12 +117,22 @@ extension LocationManager: CLLocationManagerDelegate {
     }
     // Delegate method called when location manager encounters an error
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
+        handleLocationManagerError(error)
+    }
+    
+    // Function to handle location manager errors
+    private func handleLocationManagerError(_ error: Error) {
         errorMessage = "Location manager did fail: \(error.localizedDescription)"
     }
     
     // Delegate method called when the location is updated
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
-        return
+        guard let newLocation = locations.last else {
+            return
+        }
+        // Update the region based on the new location
+        let span = MKCoordinateSpan(latitudeDelta: 0.4, longitudeDelta: 0.4)
+        region = MKCoordinateRegion(center: newLocation.coordinate, span: span)
     }
 }
 
@@ -134,16 +152,19 @@ extension LocationManager: MKLocalSearchCompleterDelegate {
             }
         }
     }
-
+    
     func completer(_ completer: MKLocalSearchCompleter, didFailWithError error: Error) {
-        // Handle completer errors
-        print("Completer failed with error: \(error.localizedDescription)")
+        handleCompleterError(error)
     }
-
+    
     func completerDidFinish(_ completer: MKLocalSearchCompleter) {
         // If completer finishes, perform a search using the current query
         searchPlaces(query: currentSearchQuery)
     }
+    
+    // Function to handle completer errors
+    private func handleCompleterError(_ error: Error) {
+        errorMessage = "Completer failed with error: \(error.localizedDescription)"
+    }
 }
-
 
