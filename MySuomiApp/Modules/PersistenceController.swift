@@ -71,6 +71,10 @@ struct PersistenceController {
             let newPlace = Like(context: container.viewContext)
             newPlace.name = place.name
             newPlace.image = place.photos?.first?.photo_reference
+            newPlace.rating = place.rating ?? 0.0
+            newPlace.types = place.types.joined(separator: ", ")
+            newPlace.vicinity = place.vicinity
+            newPlace.isOpenNow = place.opening_hours?.open_now ?? false
         }
         
         do {

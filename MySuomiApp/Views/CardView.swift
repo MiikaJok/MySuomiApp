@@ -6,6 +6,9 @@ struct CardView: View {
     let imageURL: URL
     @State private var isFavorite = false
     
+    var onDelete: (() -> Void)? // Add a closure for the delete action
+
+    
     // Inject the managedObjectContext
     @Environment(\.managedObjectContext) var viewContext
     

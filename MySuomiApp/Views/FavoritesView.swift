@@ -2,16 +2,14 @@ import SwiftUI
 import CoreData
 
 struct FavoritesView: View {
-    // Inject the managedObjectContext
     @Environment(\.managedObjectContext) private var viewContext
     @EnvironmentObject var languageSettings: LanguageSettings
-    
-    // Fetch request to get all likes
+
     @FetchRequest(
         entity: Like.entity(),
         sortDescriptors: []
     ) var fetchedLikes: FetchedResults<Like>
-    
+
     var body: some View {
         NavigationView {
             List {
@@ -19,26 +17,34 @@ struct FavoritesView: View {
                     if let name = like.name,
                        let imageUrlString = like.image,
                        let imageUrl = URL(string: imageUrlString) {
-                        HStack {
-                            // Use CardView with heart icon from CardView
-                            CardView(title: name, imageURL: imageUrl)
-                                .padding(.vertical, 8)
-                        }
+
+                        NavigationLink(
+                            destination: DetailView(place: Place(name: name, place_id: "", rating: nil, types: [], vicinity: "", opening_hours: nil, photos: [Photo(photo_reference: imageUrlString, width: 0, height: 0)]))
+                                .environmentObject(languageSettings),
+
+                            label: {
+                                HStack {
+                                    CardView(title: name, imageURL: imageUrl, onDelete: {
+                                        removeLikeFromCoreData(like)
+                                    })
+                                    .padding(.vertical, 8)
+                                }
+                            }
+                        )
                     }
                 }
             }
         }
     }
-    
-    private func deleteLike(_ place: Like) {
+
+    private func removeLikeFromCoreData(_ place: Like) {
         withAnimation {
             viewContext.delete(place)
             do {
                 try viewContext.save()
             } catch {
-                print("Error deleting place: \(error)")
+                print("Error removing liked item from CoreData: \(error)")
             }
         }
     }
-    
 }
