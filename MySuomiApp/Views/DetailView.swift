@@ -90,7 +90,11 @@ struct DetailView: View {
                         }
                         .padding(.horizontal, 15)
                     }
+<<<<<<< HEAD
                     .listStyle(InsetGroupedListStyle())
+=======
+                    .listStyle(InsetGroupedListStyle()) 
+>>>>>>> 6101565caa48fccc968bf6c149c68156dffd08e6
                     .padding()
                     
                     // "Locate Place" button to activate navigation

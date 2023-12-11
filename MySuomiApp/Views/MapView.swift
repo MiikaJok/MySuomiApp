@@ -245,6 +245,7 @@ struct MapView: View {
                                                     Text(LocalizedStringKey("Image not available"))
                                                         .foregroundColor(.white)
                                                 case .empty:
+                                                    // Placeholder while image is loading
                                                     ProgressView()
                                                         .progressViewStyle(CircularProgressViewStyle(tint: Color(hex: "33703C"))) // Green
                                                 }

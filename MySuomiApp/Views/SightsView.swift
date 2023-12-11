@@ -2,16 +2,18 @@ import CoreData
 import SwiftUI
 import URLImage
 
+// SightsView struct representing the view for displaying sights places
 struct SightsView: View {
-    @State private var sightsPlaces: [Place] = []
-    @State private var hasFetchedData = false
-    @EnvironmentObject var languageSettings: LanguageSettings
+    @State private var sightsPlaces: [Place] = [] // Array to store sights places
+    @State private var hasFetchedData = false // Flag to track whether data has been fetched
+    @EnvironmentObject var languageSettings: LanguageSettings  // EnvironmentObject for language settings
 
     var body: some View {
         // Display your sights places here
         List(sightsPlaces, id: \.place_id) { place in
             NavigationLink(destination: DetailView(place: place).environmentObject(languageSettings)) {
                 HStack {
+                    // Display each sight place as a card
                     CardView(title: place.name, imageURL: imageURL(photoReference: place.photos?.first?.photo_reference ?? "", maxWidth: 100))
                 }
             }
