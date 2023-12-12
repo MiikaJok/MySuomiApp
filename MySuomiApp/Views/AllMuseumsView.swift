@@ -2,15 +2,17 @@ import SwiftUI
 import URLImage
 import CoreData
 
+// show all museums
 struct AllMuseumsView: View {
     @State private var museumPlaces: [Place] = []
-    @State private var hasFetchedData = false
+    @State private var hasFetchedData = false // Flag to track whether data has been fetched
     @EnvironmentObject var languageSettings: LanguageSettings
 
     var body: some View {
         List(museumPlaces, id: \.place_id) { museum in
             NavigationLink(destination: DetailView(place: museum).environmentObject(languageSettings)) {
                 HStack {
+                    // Display each museum as a card
                     CardView(title: museum.name, imageURL: imageURL(photoReference: museum.photos?.first?.photo_reference ?? "", maxWidth: 100))
                 }
             }
@@ -40,9 +42,9 @@ struct AllMuseumsView: View {
         // Create a dispatch group to wait for the fetch to complete
         let dispatchGroup = DispatchGroup()
 
-        // Fetch places of type .museum
+        // Fetch places of type museum
         dispatchGroup.enter() // Enter the group before starting the fetch
-        fetchPlaces(for: ["museum"]) { places in
+        fetchPlaces(for: ["museum"], radius: 1000) { places in
             defer {
                 dispatchGroup.leave() // Leave the group when the fetch is complete
             }

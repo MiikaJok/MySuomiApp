@@ -2,6 +2,7 @@ import SwiftUI
 import CoreData
 import URLImage
 
+// EatView struct representing the view for displaying restaurant places
 struct EatView: View {
     @EnvironmentObject var languageSettings: LanguageSettings
     @State private var restaurantPlaces: [Place] = []
@@ -12,6 +13,7 @@ struct EatView: View {
         List(restaurantPlaces, id: \.place_id) { place in
             NavigationLink(destination: DetailView(place: place).environmentObject(languageSettings)) {
                 HStack {
+                    // Display each restaurant place as a card
                     CardView(title: place.name, imageURL: imageURL(photoReference: place.photos?.first?.photo_reference ?? "", maxWidth: 100))
                 }
             }
@@ -27,6 +29,7 @@ struct EatView: View {
         }
     }
     
+    // Function to fetch and save restaurant places
     func fetchAndSaveRestaurantPlaces() {
         // Fetch existing places from Core Data
         let existingPlaces = PersistenceController.shared.fetchPlaces()
@@ -45,7 +48,7 @@ struct EatView: View {
             dispatchGroup.enter() // Enter the group before starting a fetch
             
             // Use the type.rawValue to fetch places for the current type
-            fetchPlaces(for: [type.rawValue]) { places in
+            fetchPlaces(for: [type.rawValue], radius: 1500) { places in
                 defer {
                     dispatchGroup.leave() // Leave the group when the fetch is complete
                 }
@@ -61,6 +64,7 @@ struct EatView: View {
                 }
             }
         }
+        // Notify when all fetches are complete
         dispatchGroup.notify(queue: .main) {
             // Convert the set back to an array and update the state
             let sortedPlaces = Array(uniquePlaces).sorted(by: { $0.name < $1.name })

@@ -1,13 +1,16 @@
 import Foundation
 
+// Struct for handling place search operations
 struct Search {
     
+    // Default place types for searching
     static let defaultPlaceTypes: [PlaceType] = [
         .restaurant, .bar, .lodging, .cafe, .park, .museum, .tourist_attraction, .zoo,
          .aquarium, .bakery, .campground, .night_club, .amusement_park,
         .church, .library, .stadium, .rv_park, .university, .art_gallery
     ]
     
+    // Function to fetch places for given types using Google Places API
     static func fetchPlaces(for types: [PlaceType], completion: @escaping ([Place]?) -> Void) {
         let apiKey = APIKeys.googlePlacesAPIKey
         let baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
@@ -36,6 +39,8 @@ struct Search {
                     let (data, _) = try await URLSession.shared.data(from: url)
                     let decoder = JSONDecoder()
                     let response = try decoder.decode(PlacesResponse.self, from: data)
+                    
+                    // Map API response to the custom Place model
                     let places = response.results.map { apiPlace -> Place in
                         return Place(
                             name: apiPlace.name,
@@ -58,6 +63,7 @@ struct Search {
         }
     }
     
+    // Function to search places based on a query string
     static func searchPlaces(query: String, completion: @escaping ([Place]?) -> Void) {
         fetchPlaces(for: defaultPlaceTypes) { places in
             guard let places = places else {
@@ -65,6 +71,7 @@ struct Search {
                 return
             }
             
+            // Filter places based on name and type
             let filteredPlaces = places.filter { place in
                 let nameContainsQuery = place.name.lowercased().contains(query.lowercased())
                 let typesContainQuery = place.types.contains { $0.lowercased().contains(query.lowercased()) }

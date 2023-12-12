@@ -4,6 +4,7 @@ import AVFoundation
 
 // ObservableObject class responsible for handling speech recognition functionality
 class SpeechRecognition: ObservableObject {
+    
     // Published property to store the recognized text
     @Published var recognizedText: String = ""
     
@@ -14,8 +15,9 @@ class SpeechRecognition: ObservableObject {
     private let audioEngine = AVAudioEngine()
     
     // Speech recognizer instance for handling speech recognition
-    private let speechRecognizer: SFSpeechRecognizer? = SFSpeechRecognizer()
-    
+    //private let speechRecognizer: SFSpeechRecognizer? = SFSpeechRecognizer()
+    internal let speechRecognizer: SFSpeechRecognizer? = SFSpeechRecognizer()
+
     // Request to recognize speech from audio buffers
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     

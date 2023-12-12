@@ -2,11 +2,12 @@ import SwiftUI
 import URLImage
 import CoreData
 
+// AccommodationView struct representing the view for displaying accommodation places
 struct AccommodationView: View {
     
     @State private var accommodationPlaces: [Place] = []
     @State private var hasFetchedData = false
-    @EnvironmentObject var languageSettings: LanguageSettings
+    @EnvironmentObject var languageSettings: LanguageSettings // EnvironmentObject for language settings
 
 
     var body: some View {
@@ -14,6 +15,7 @@ struct AccommodationView: View {
         List(accommodationPlaces, id: \.place_id) { place in
             NavigationLink(destination: DetailView(place: place).environmentObject(languageSettings)) {
                 HStack {
+                    // Display each accommodation place as a card
                     CardView(title: place.name, imageURL: imageURL(photoReference: place.photos?.first?.photo_reference ?? "", maxWidth: 100))
                 }
             }
@@ -48,7 +50,7 @@ struct AccommodationView: View {
             dispatchGroup.enter() // Enter the group before starting a fetch
             
             // Use the type.rawValue to fetch places for the current type
-            fetchPlaces(for: [type.rawValue]) { places in
+            fetchPlaces(for: [type.rawValue], radius: 3000) { places in
                 defer {
                     dispatchGroup.leave() // Leave the group when the fetch is complete
                 }
