@@ -185,9 +185,8 @@ struct HomeView: View {
                                 }
                             }
                         }
-                        .frame(maxHeight: 250) // Set the maximum height as needed
+                        .frame(maxHeight: 250)
                     }
-                    
                     
                     // Image carousel with TabView
                     VStack {
@@ -277,7 +276,6 @@ struct HomeView: View {
                     // Button to see all museums
                     NavigationLink(destination: AllMuseumsView()) {
                         ZStack {
-                            // Museum Image
                             Image("museo")
                                 .resizable()
                                 .scaledToFill()
@@ -368,9 +366,8 @@ struct HomeView: View {
         }
     }
     
-    // Function to fetch cafes
+    // Function to fetch cafes with a specified radius(used in .onAppear)
     private func fetchCafes(within radius: Int) {
-        // Fetches cafes within a specified radius
         let cafeTypes = restaurantTypes.filter { $0.rawValue.lowercased() == "cafe" }
         
         fetchPlaces(for: cafeTypes.map { $0.rawValue }, radius: radius) { fetchedPlaces in

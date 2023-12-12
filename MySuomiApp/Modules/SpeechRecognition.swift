@@ -15,7 +15,6 @@ class SpeechRecognition: ObservableObject {
     private let audioEngine = AVAudioEngine()
     
     // Speech recognizer instance for handling speech recognition
-    //private let speechRecognizer: SFSpeechRecognizer? = SFSpeechRecognizer()
     internal let speechRecognizer: SFSpeechRecognizer? = SFSpeechRecognizer()
 
     // Request to recognize speech from audio buffers

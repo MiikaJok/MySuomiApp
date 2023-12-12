@@ -36,7 +36,7 @@ struct Place: Codable, Hashable {
         guard let photoReference = photos?.first?.photo_reference else {
             return nil
         }
-        return imageURL(photoReference: photoReference, maxWidth: 200) // Adjust maxWidth as needed
+        return imageURL(photoReference: photoReference, maxWidth: 200)
     }
     
     // Provide a hash value based on the place_id
@@ -87,7 +87,6 @@ enum PlaceType: String {
     case rv_park
     case university
     case art_gallery
-    // Add more types as needed
 }
 
 // Constants for default values
@@ -134,7 +133,7 @@ func fetchPlaces(for typeStrings: [String], radius: Int = defaultRadius, complet
         return
     }
     
-    // Use async/await to perform the API request
+    // Use async to perform the API request
     Task {
         do {
             let (data, response) = try await URLSession.shared.data(from: url)

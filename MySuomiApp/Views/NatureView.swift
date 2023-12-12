@@ -6,7 +6,7 @@ import CoreData
 struct NatureView: View {
     @State private var naturePlaces: [Place] = []
     @State private var hasFetchedData = false
-    @EnvironmentObject var languageSettings: LanguageSettings // EnvironmentObject for language settings
+    @EnvironmentObject var languageSettings: LanguageSettings
 
     
     var body: some View {
@@ -49,7 +49,7 @@ struct NatureView: View {
         for type in natureTypes {
             dispatchGroup.enter() // Enter the group before starting a fetch
             
-            // Use the type.rawValue to fetch places for the current type
+            // Use the type.rawValue to fetch places for the current type and custom radius
             fetchPlaces(for: [type.rawValue], radius: 30000) { places in
                 defer {
                     dispatchGroup.leave() // Leave the group when the fetch is complete

@@ -47,7 +47,7 @@ struct EatView: View {
         for type in restaurantTypes {
             dispatchGroup.enter() // Enter the group before starting a fetch
             
-            // Use the type.rawValue to fetch places for the current type
+            // Use the type.rawValue to fetch places for the current type and custom radius
             fetchPlaces(for: [type.rawValue], radius: 1500) { places in
                 defer {
                     dispatchGroup.leave() // Leave the group when the fetch is complete

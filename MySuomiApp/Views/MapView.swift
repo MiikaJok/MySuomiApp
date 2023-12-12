@@ -13,7 +13,7 @@ struct MapView: View {
     // Language settings object
     @EnvironmentObject var languageSettings: LanguageSettings
     
-    // State variables to control search, suggestions, coordinates and menu
+    // State variables to control search, suggestions, overlay,placemarks, coordinates and menu
     @State private var selectedMenu: String? = nil
     @State private var places: [Place] = []
     @State private var currentTabIndex = 0
@@ -50,7 +50,7 @@ struct MapView: View {
                         .cornerRadius(10)
                         .overlay(
                             RoundedRectangle(cornerRadius: 10)
-                                .stroke(Color(hex: "B1D4FC"), lineWidth: 4) // Light blue border
+                                .stroke(Color(hex: "B1D4FC"), lineWidth: 4) // Light blue
                         )
                         .disableAutocorrection(true)
                         .foregroundColor(.black)
@@ -205,7 +205,6 @@ struct MapView: View {
                         let selectedPlacemark = MKPlacemark(coordinate: placemark.coordinate, addressDictionary: placemark.addressDictionary as? [String: Any])
                         // Append the selected placemark to the search results
                         manager.searchResults.append(selectedPlacemark)
-                        // Show the overlay card
                     }
                 }
                 .navigationBarTitle("", displayMode: .inline)
@@ -295,7 +294,6 @@ struct MapView: View {
         
         fetchPlaces(for: barTypes.map { $0.rawValue }, radius: radius) { fetchedPlaces in
             if let fetchedPlaces = fetchedPlaces {
-                // Filter out places with type "lodging"
                 self.places = fetchedPlaces.filter { $0.types.contains("lodging") == false }
             }
         }

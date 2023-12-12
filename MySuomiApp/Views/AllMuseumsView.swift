@@ -2,10 +2,10 @@ import SwiftUI
 import URLImage
 import CoreData
 
-// show all museums
+// show all museums in a listview
 struct AllMuseumsView: View {
     @State private var museumPlaces: [Place] = []
-    @State private var hasFetchedData = false // Flag to track whether data has been fetched
+    @State private var hasFetchedData = false
     @EnvironmentObject var languageSettings: LanguageSettings
 
     var body: some View {
@@ -44,6 +44,8 @@ struct AllMuseumsView: View {
 
         // Fetch places of type museum
         dispatchGroup.enter() // Enter the group before starting the fetch
+        
+        //fetch places from api from type "museum" and with custom radius
         fetchPlaces(for: ["museum"], radius: 1000) { places in
             defer {
                 dispatchGroup.leave() // Leave the group when the fetch is complete

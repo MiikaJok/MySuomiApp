@@ -1,6 +1,6 @@
 import CoreData
 
-// class for managing Core Data persistence
+//for managing Core Data persistence
 struct PersistenceController {
     // Shared instance accessible across the application
     static let shared = PersistenceController()
@@ -8,7 +8,7 @@ struct PersistenceController {
     let container: NSPersistentContainer
     
     init(inMemory: Bool = false) {
-        // Initialize the persistent container with the model name "FavoritesModel"
+        // Initialize the persistent container with the model name
         container = NSPersistentContainer(name: "FavoritesModel")
         
         // Configure for in-memory storage if specified

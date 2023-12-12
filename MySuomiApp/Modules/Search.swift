@@ -16,7 +16,7 @@ struct Search {
         let baseUrl = "https://maps.googleapis.com/maps/api/place/nearbysearch/json"
         let baseLocation = "\(defaultLatitude),\(defaultLongitude)"
         
-        // Use async/await to perform the API requests for each type
+        // Use async to perform the API requests for each type
         Task {
             var allPlaces: [Place] = []
             

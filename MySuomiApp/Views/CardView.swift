@@ -1,6 +1,7 @@
 import SwiftUI
 import CoreData
 
+//for presenting cardview in a list fetched from API
 struct CardView: View {
     let title: String
     let imageURL: URL

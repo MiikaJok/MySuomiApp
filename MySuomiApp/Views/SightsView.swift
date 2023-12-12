@@ -4,9 +4,9 @@ import URLImage
 
 // SightsView struct representing the view for displaying sights places
 struct SightsView: View {
-    @State private var sightsPlaces: [Place] = [] // Array to store sights places
-    @State private var hasFetchedData = false // Flag to track whether data has been fetched
-    @EnvironmentObject var languageSettings: LanguageSettings  // EnvironmentObject for language settings
+    @State private var sightsPlaces: [Place] = [] 
+    @State private var hasFetchedData = false
+    @EnvironmentObject var languageSettings: LanguageSettings
 
     var body: some View {
         // Display your sights places here
@@ -45,7 +45,7 @@ struct SightsView: View {
         for type in sightsTypes {
             dispatchGroup.enter() // Enter the group before starting a fetch
             
-            // Use the type.rawValue to fetch places for the current type
+            // Use the type.rawValue to fetch places for the current type and custom radius
             fetchPlaces(for: [type.rawValue], radius: 20000) { places in
                 defer {
                     dispatchGroup.leave() // Leave the group when the fetch is complete
