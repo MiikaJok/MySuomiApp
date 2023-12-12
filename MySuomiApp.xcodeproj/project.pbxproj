@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		3F6DFA7B2B231C8100745F2B /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = 3F6DFA7D2B231C8100745F2B /* Localizable.strings */; };
 		3F8A9B0C2B1CCB56004838D6 /* FavoritesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F8A9B0B2B1CCB56004838D6 /* FavoritesView.swift */; };
-		3F9C0B812B0F6A950012170E /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9C0B802B0F6A950012170E /* APIKeys.swift */; };
 		3F9C0B832B0FB6AF0012170E /* Search.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F9C0B822B0FB6AF0012170E /* Search.swift */; };
 		3FA1FF002B1F4BCE00E3B492 /* AllMuseumsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FA1FEFF2B1F4BCE00E3B492 /* AllMuseumsView.swift */; };
 		3FD06CA22B0BC61A001B829D /* EatView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3FD06CA12B0BC61A001B829D /* EatView.swift */; };
@@ -20,6 +19,8 @@
 		6A0A671B2AFD15780028328E /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A0A671A2AFD15780028328E /* HomeView.swift */; };
 		6A0A671D2AFD15790028328E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A0A671C2AFD15790028328E /* Assets.xcassets */; };
 		6A0A67202AFD15790028328E /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 6A0A671F2AFD15790028328E /* Preview Assets.xcassets */; };
+		6A21BCC82B28919800DD1930 /* APIKeys.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A21BCC72B28919800DD1930 /* APIKeys.swift */; };
+		6A21BCCC2B2891F400DD1930 /* FavoritesModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6A21BCCA2B2891F400DD1930 /* FavoritesModel.xcdatamodeld */; };
 		6A27AF132B21D18B006BF06D /* WebKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A27AF122B21D189006BF06D /* WebKit.framework */; };
 		6A2B22342B08F339009D9EB6 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6A2B22332B08F338009D9EB6 /* CoreLocation.framework */; };
 		6A2B22372B09036E009D9EB6 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6A2B22362B09036E009D9EB6 /* LocationManager.swift */; };
@@ -36,7 +37,6 @@
 		6ABFF4FE2B27381F00F4866E /* FetchPlacesTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ABFF4FD2B27381F00F4866E /* FetchPlacesTests.swift */; };
 		6ABFF5002B273E5000F4866E /* LocationManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6ABFF4FF2B273E5000F4866E /* LocationManagerTests.swift */; };
 		6AC9C6512B17EC7E0059E956 /* PersistenceController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AC9C6502B17EC7E0059E956 /* PersistenceController.swift */; };
-		6AD6BCA72B175C4C00EA0C4F /* FavoritesModel.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 6AD6BCA52B175C4C00EA0C4F /* FavoritesModel.xcdatamodeld */; };
 		6AD6BCA92B175D7C00EA0C4F /* CoreData.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 6AD6BCA82B175D7B00EA0C4F /* CoreData.framework */; };
 		6AD764552B2759AC00A785FF /* SearchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD764542B2759AC00A785FF /* SearchTests.swift */; };
 		6AD764572B275B3B00A785FF /* PersistenceControllerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6AD764562B275B3B00A785FF /* PersistenceControllerTests.swift */; };
@@ -57,7 +57,6 @@
 		3F6DFA7C2B231C8100745F2B /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3F6DFA7E2B231CEE00745F2B /* fi */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = fi; path = fi.lproj/Localizable.strings; sourceTree = "<group>"; };
 		3F8A9B0B2B1CCB56004838D6 /* FavoritesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FavoritesView.swift; sourceTree = "<group>"; };
-		3F9C0B802B0F6A950012170E /* APIKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeys.swift; sourceTree = "<group>"; };
 		3F9C0B822B0FB6AF0012170E /* Search.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Search.swift; sourceTree = "<group>"; };
 		3FA1FEFF2B1F4BCE00E3B492 /* AllMuseumsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AllMuseumsView.swift; sourceTree = "<group>"; };
 		3FD06CA12B0BC61A001B829D /* EatView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EatView.swift; sourceTree = "<group>"; };
@@ -69,6 +68,8 @@
 		6A0A671A2AFD15780028328E /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		6A0A671C2AFD15790028328E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		6A0A671F2AFD15790028328E /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		6A21BCC72B28919800DD1930 /* APIKeys.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = APIKeys.swift; sourceTree = "<group>"; };
+		6A21BCCB2B2891F400DD1930 /* FavoritesModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FavoritesModel.xcdatamodel; sourceTree = "<group>"; };
 		6A27AF122B21D189006BF06D /* WebKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = WebKit.framework; path = System/Library/Frameworks/WebKit.framework; sourceTree = SDKROOT; };
 		6A2B22332B08F338009D9EB6 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		6A2B22362B09036E009D9EB6 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
@@ -89,7 +90,6 @@
 		6ABFF4FD2B27381F00F4866E /* FetchPlacesTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FetchPlacesTests.swift; sourceTree = "<group>"; };
 		6ABFF4FF2B273E5000F4866E /* LocationManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManagerTests.swift; sourceTree = "<group>"; };
 		6AC9C6502B17EC7E0059E956 /* PersistenceController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceController.swift; sourceTree = "<group>"; };
-		6AD6BCA62B175C4C00EA0C4F /* FavoritesModel.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = FavoritesModel.xcdatamodel; sourceTree = "<group>"; };
 		6AD6BCA82B175D7B00EA0C4F /* CoreData.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreData.framework; path = System/Library/Frameworks/CoreData.framework; sourceTree = SDKROOT; };
 		6AD764542B2759AC00A785FF /* SearchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SearchTests.swift; sourceTree = "<group>"; };
 		6AD764562B275B3B00A785FF /* PersistenceControllerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PersistenceControllerTests.swift; sourceTree = "<group>"; };
@@ -160,8 +160,8 @@
 		6A0A67172AFD15780028328E /* MySuomiApp */ = {
 			isa = PBXGroup;
 			children = (
+				6A21BCC92B2891D600DD1930 /* Models */,
 				6AAA88E22B1CBE3F00C2CE8F /* MySuomiApp.entitlements */,
-				6AD6BCA42B175C2200EA0C4F /* Models */,
 				6A2B22352B090352009D9EB6 /* Modules */,
 				6A4874242B03B48C00ADD0FF /* Info.plist */,
 				3FCA50722B038B2400FDF254 /* Views */,
@@ -181,13 +181,21 @@
 			path = "Preview Content";
 			sourceTree = "<group>";
 		};
+		6A21BCC92B2891D600DD1930 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				6A21BCCA2B2891F400DD1930 /* FavoritesModel.xcdatamodeld */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
 		6A2B22352B090352009D9EB6 /* Modules */ = {
 			isa = PBXGroup;
 			children = (
 				6A4874202B03A93600ADD0FF /* LanguageSettings.swift */,
 				6A965CFF2B0ECB3400DBF47A /* FetchPlaces.swift */,
 				6A2B22362B09036E009D9EB6 /* LocationManager.swift */,
-				3F9C0B802B0F6A950012170E /* APIKeys.swift */,
+				6A21BCC72B28919800DD1930 /* APIKeys.swift */,
 				3F9C0B822B0FB6AF0012170E /* Search.swift */,
 				6AC9C6502B17EC7E0059E956 /* PersistenceController.swift */,
 				6AAA88E52B1CC17A00C2CE8F /* SpeechRecognition.swift */,
@@ -225,14 +233,6 @@
 				6A3607902B17BC0400CE8D12 /* PersistenceController.swift */,
 			);
 			name = "Recovered References";
-			sourceTree = "<group>";
-		};
-		6AD6BCA42B175C2200EA0C4F /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				6AD6BCA52B175C4C00EA0C4F /* FavoritesModel.xcdatamodeld */,
-			);
-			path = Models;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -343,22 +343,22 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				3F9C0B812B0F6A950012170E /* APIKeys.swift in Sources */,
 				6ABB8BE72B263FCB00EC7831 /* Colors.swift in Sources */,
 				6A0A671B2AFD15780028328E /* HomeView.swift in Sources */,
 				3FD06CA82B0CCB20001B829D /* CardView.swift in Sources */,
 				3FD06CA42B0BC70B001B829D /* SightsView.swift in Sources */,
-				6AD6BCA72B175C4C00EA0C4F /* FavoritesModel.xcdatamodeld in Sources */,
 				6A48741D2B03A29E00ADD0FF /* MapView.swift in Sources */,
 				6A7C043A2B14A6DB00637CA5 /* NatureView.swift in Sources */,
 				6A965D002B0ECB3400DBF47A /* FetchPlaces.swift in Sources */,
 				6A3607932B17D2E900CE8D12 /* DetailView.swift in Sources */,
 				6AAA88E62B1CC17B00C2CE8F /* SpeechRecognition.swift in Sources */,
+				6A21BCC82B28919800DD1930 /* APIKeys.swift in Sources */,
 				3FD06CA62B0BC7B3001B829D /* AccommodationView.swift in Sources */,
 				3FA1FF002B1F4BCE00E3B492 /* AllMuseumsView.swift in Sources */,
 				6AC9C6512B17EC7E0059E956 /* PersistenceController.swift in Sources */,
 				6A2B22372B09036E009D9EB6 /* LocationManager.swift in Sources */,
 				6A4874212B03A93600ADD0FF /* LanguageSettings.swift in Sources */,
+				6A21BCCC2B2891F400DD1930 /* FavoritesModel.xcdatamodeld in Sources */,
 				3F8A9B0C2B1CCB56004838D6 /* FavoritesView.swift in Sources */,
 				3F9C0B832B0FB6AF0012170E /* Search.swift in Sources */,
 				6A0A67192AFD15780028328E /* MySuomiAppApp.swift in Sources */,
@@ -691,12 +691,12 @@
 /* End XCSwiftPackageProductDependency section */
 
 /* Begin XCVersionGroup section */
-		6AD6BCA52B175C4C00EA0C4F /* FavoritesModel.xcdatamodeld */ = {
+		6A21BCCA2B2891F400DD1930 /* FavoritesModel.xcdatamodeld */ = {
 			isa = XCVersionGroup;
 			children = (
-				6AD6BCA62B175C4C00EA0C4F /* FavoritesModel.xcdatamodel */,
+				6A21BCCB2B2891F400DD1930 /* FavoritesModel.xcdatamodel */,
 			);
-			currentVersion = 6AD6BCA62B175C4C00EA0C4F /* FavoritesModel.xcdatamodel */;
+			currentVersion = 6A21BCCB2B2891F400DD1930 /* FavoritesModel.xcdatamodel */;
 			path = FavoritesModel.xcdatamodeld;
 			sourceTree = "<group>";
 			versionGroupType = wrapper.xcdatamodel;

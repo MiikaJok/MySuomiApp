@@ -1,6 +1,5 @@
 import SwiftUI
 import Speech
-import WebKit
 import MapKit
 import URLImage
 
@@ -20,10 +19,6 @@ struct HomeView: View {
     @State private var searchResults: [Place] = []
     @State private var showRecordingMessage = false
     @State private var currentTabIndex = 0
-    // helsinki video
-    @State private var isVideoPlaying = true // Auto-play the video
-    @State private var isMuted = true
-    private let youtubeVideoID = "videon id"
     @State private var coordinates: CLLocationCoordinate2D?
     
     @Binding var region: MKCoordinateRegion
@@ -34,7 +29,7 @@ struct HomeView: View {
                 VStack {
                     // Header with language toggle, app title, search bar toggle, and menu button
                     HStack {
-                        Spacer().frame(minWidth: 0, maxWidth: 10)
+                        Spacer().frame(minWidth: 0, maxWidth: 20)
                         // Language toggle button
                         Button(action: {
                             self.languageSettings.isEnglish.toggle()
@@ -47,8 +42,7 @@ struct HomeView: View {
                                 .padding(8)
                         }
                         Spacer()
-                        Spacer()
-                        
+
                         Button(action: {
                             self.isSearchBarVisible.toggle()
                             // reset searchtext and results when closing the search
@@ -59,8 +53,10 @@ struct HomeView: View {
                         }) {
                             Image(systemName: "magnifyingglass")
                                 .padding()
+                                .frame(width: 15, height: 15)
+
                         }
-                        
+                        Spacer().frame(maxWidth: 32)
                         // Menu button
                         Menu {
                             // Menu items for different categories
@@ -114,7 +110,10 @@ struct HomeView: View {
                         } label: {
                             Image(systemName: "line.horizontal.3")
                                 .padding()
+                                .frame(width: 15, height: 15)
+
                         }
+                        Spacer().frame(minWidth: 0, maxWidth: 30)
                     }
                     
                     // Search bar when visible
@@ -188,7 +187,7 @@ struct HomeView: View {
                         }
                         .frame(maxHeight: 250) // Set the maximum height as needed
                     }
-
+                    
                     
                     // Image carousel with TabView
                     VStack {
@@ -233,6 +232,7 @@ struct HomeView: View {
                                                                     .frame(height: UIScreen.main.bounds.height * 0.3)
                                                             case .failure:
                                                                 Text(LocalizedStringKey("Image not available"))
+                                                                
                                                             case .empty:
                                                                 ProgressView()
                                                             }
@@ -315,7 +315,7 @@ struct HomeView: View {
                                 .foregroundColor(.white)
                                 .padding(.top, 8)
                         }
-                        .frame(width: 120, height: 120) 
+                        .frame(width: 120, height: 120)
                         .background(Color.green)
                         .cornerRadius(16)
                         .padding()
@@ -354,7 +354,7 @@ struct HomeView: View {
                             label: { EmptyView() }
                         )
                         .hidden()
-
+                        
                         .onAppear {
                             selectedMenu = nil
                             
@@ -362,14 +362,8 @@ struct HomeView: View {
                             .opacity(0)
                             .buttonStyle(PlainButtonStyle())
                     )
-                // Video Section
-                WebView(urlString: "https://www.youtube.com/embed/\(youtubeVideoID)", isMuted: $isMuted)
-                    .frame(height: UIScreen.main.bounds.height * 0.3)
-                    .onAppear {
-                        // Auto-play the video when it appears on screen
-                        isVideoPlaying = true
-                    }
             }
+            .background(Gradient(colors: [.white, Color(hex: "E660A5")]))//pink
             .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
         }
     }
@@ -398,36 +392,4 @@ struct HomeView: View {
             }
         }
     }
-    // WebView struct for displaying web content
-    struct WebView: UIViewRepresentable {
-        let urlString: String
-        @Binding var isMuted: Bool
-        
-        // Creates and returns a WKWebView
-        func makeUIView(context: Context) -> WKWebView {
-            let webView = WKWebView()
-            webView.navigationDelegate = context.coordinator
-            if let url = URL(string: urlString) {
-                webView.load(URLRequest(url: url))
-            }
-            return webView
-        }
-        // Updates the WKWebView
-        func updateUIView(_ uiView: WKWebView, context: Context) {}
-        
-        // Coordinator class for WKNavigationDelegate
-        func makeCoordinator() -> Coordinator {
-            Coordinator(self)
-        }
-        
-        class Coordinator: NSObject, WKNavigationDelegate {
-            var parent: WebView
-            
-            init(_ parent: WebView) {
-                self.parent = parent
-            }
-        }
-    }
 }
-
-

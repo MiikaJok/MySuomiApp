@@ -50,6 +50,7 @@ struct CardView: View {
                     .resizable()
                     .aspectRatio(contentMode: .fill)
                     .frame(width: 80, height: 80)
+                    .border(Gradient(colors: [Color(hex: "E660A5"), .white]), width: 5)
                     .cornerRadius(10)
                     .clipped()
             } placeholder: {
@@ -62,8 +63,6 @@ struct CardView: View {
                     .font(.headline)
                     .foregroundColor(.primary)
                     .padding(.bottom, 4)
-                
-                Spacer()
             }
             .padding(.horizontal, 8)
             
@@ -77,7 +76,6 @@ struct CardView: View {
             checkLike()
         }
     }
-    
     // Function to save liked item to CoreData
     private func saveLikeToCoreData() {
         let newLikedItem = Like(context: viewContext)

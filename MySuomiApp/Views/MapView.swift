@@ -36,8 +36,7 @@ struct MapView: View {
                     Text("MySuomiApp")
                         .padding(8)
                         .font(.title)
-                        .foregroundColor(Color(hex: "33703C"))//green
-                        .background(Color.white)
+                        .foregroundColor(Color.black)
                         .cornerRadius(8)
                         .padding([.leading, .trailing], 16)
                         .padding(.top, 8)
@@ -214,11 +213,11 @@ struct MapView: View {
             VStack {
                 Text(LocalizedStringKey("Bars"))
                     .font(.headline)
-                    .foregroundColor(Color(hex: "33703C")) // green
+                    .foregroundColor(Color.black)
                 
                 if places.isEmpty {
                     Text(LocalizedStringKey("Loading places..."))
-                        .foregroundColor(Color(hex: "33703C")) // green
+                        .foregroundColor(Color.black)
                     
                 } else {
                     // CarouselView to display places
@@ -247,7 +246,7 @@ struct MapView: View {
                                                 case .empty:
                                                     // Placeholder while image is loading
                                                     ProgressView()
-                                                        .progressViewStyle(CircularProgressViewStyle(tint: Color(hex: "33703C"))) // Green
+                                                        .progressViewStyle(CircularProgressViewStyle(tint: Color.green))
                                                 }
                                             }
                                             Text(place.name)
@@ -282,6 +281,7 @@ struct MapView: View {
                 fetchBars(within: 1000)
             }
         }
+        .background(Gradient(colors: [.white, Color(hex: "E660A5")]))//pink
         .environment(\.locale, languageSettings.isEnglish ? Locale(identifier: "en") : Locale(identifier: "fi"))
     }
     //function to check if the placemark is done from MapKit search or coordinates
